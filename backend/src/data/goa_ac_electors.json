@@ -1,0 +1,334 @@
+{
+  "1": {
+    "electors_male": 16085,
+    "electors_female": 16491,
+    "electors_other": 0,
+    "electors_total": 32576,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "2": {
+    "electors_male": 16219,
+    "electors_female": 16027,
+    "electors_other": 0,
+    "electors_total": 32246,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "3": {
+    "electors_male": 13843,
+    "electors_female": 14132,
+    "electors_other": 0,
+    "electors_total": 27975,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "4": {
+    "electors_male": 13404,
+    "electors_female": 13790,
+    "electors_other": 0,
+    "electors_total": 27194,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "5": {
+    "electors_male": 12721,
+    "electors_female": 13279,
+    "electors_other": 0,
+    "electors_total": 26000,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "6": {
+    "electors_male": 13494,
+    "electors_female": 14422,
+    "electors_other": 0,
+    "electors_total": 27916,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "7": {
+    "electors_male": 11976,
+    "electors_female": 12699,
+    "electors_other": 0,
+    "electors_total": 24675,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "8": {
+    "electors_male": 10908,
+    "electors_female": 11714,
+    "electors_other": 0,
+    "electors_total": 22622,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "9": {
+    "electors_male": 11814,
+    "electors_female": 12564,
+    "electors_other": 0,
+    "electors_total": 24378,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "10": {
+    "electors_male": 12276,
+    "electors_female": 13271,
+    "electors_other": 0,
+    "electors_total": 25547,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "11": {
+    "electors_male": 8554,
+    "electors_female": 9721,
+    "electors_other": 0,
+    "electors_total": 18275,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "12": {
+    "electors_male": 12266,
+    "electors_female": 13874,
+    "electors_other": 0,
+    "electors_total": 26140,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "13": {
+    "electors_male": 12007,
+    "electors_female": 13465,
+    "electors_other": 0,
+    "electors_total": 25472,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "14": {
+    "electors_male": 8338,
+    "electors_female": 10045,
+    "electors_other": 0,
+    "electors_total": 18383,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "15": {
+    "electors_male": 11822,
+    "electors_female": 12907,
+    "electors_other": 0,
+    "electors_total": 24729,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "16": {
+    "electors_male": 13850,
+    "electors_female": 14442,
+    "electors_other": 0,
+    "electors_total": 28292,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "17": {
+    "electors_male": 13377,
+    "electors_female": 13967,
+    "electors_other": 0,
+    "electors_total": 27344,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "18": {
+    "electors_male": 16683,
+    "electors_female": 16907,
+    "electors_other": 0,
+    "electors_total": 33590,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "19": {
+    "electors_male": 14984,
+    "electors_female": 15444,
+    "electors_other": 0,
+    "electors_total": 30428,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "20": {
+    "electors_male": 14570,
+    "electors_female": 15427,
+    "electors_other": 0,
+    "electors_total": 29997,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "21": {
+    "electors_male": 14190,
+    "electors_female": 14230,
+    "electors_other": 0,
+    "electors_total": 28420,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "22": {
+    "electors_male": 13703,
+    "electors_female": 14445,
+    "electors_other": 0,
+    "electors_total": 28148,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "23": {
+    "electors_male": 13127,
+    "electors_female": 13856,
+    "electors_other": 0,
+    "electors_total": 26983,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "24": {
+    "electors_male": 8425,
+    "electors_female": 8525,
+    "electors_other": 0,
+    "electors_total": 16950,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "25": {
+    "electors_male": 13078,
+    "electors_female": 13083,
+    "electors_other": 3,
+    "electors_total": 26164,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "26": {
+    "electors_male": 11360,
+    "electors_female": 11349,
+    "electors_other": 0,
+    "electors_total": 22709,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "27": {
+    "electors_male": 12289,
+    "electors_female": 12702,
+    "electors_other": 2,
+    "electors_total": 24993,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "28": {
+    "electors_male": 12040,
+    "electors_female": 14467,
+    "electors_other": 0,
+    "electors_total": 26507,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "29": {
+    "electors_male": 13215,
+    "electors_female": 14658,
+    "electors_other": 0,
+    "electors_total": 27873,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "30": {
+    "electors_male": 12795,
+    "electors_female": 14429,
+    "electors_other": 0,
+    "electors_total": 27224,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "31": {
+    "electors_male": 12724,
+    "electors_female": 13827,
+    "electors_other": 4,
+    "electors_total": 26555,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "32": {
+    "electors_male": 12837,
+    "electors_female": 14559,
+    "electors_other": 0,
+    "electors_total": 27396,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "33": {
+    "electors_male": 12241,
+    "electors_female": 13478,
+    "electors_other": 0,
+    "electors_total": 25719,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "34": {
+    "electors_male": 13088,
+    "electors_female": 14569,
+    "electors_other": 0,
+    "electors_total": 27657,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "35": {
+    "electors_male": 13694,
+    "electors_female": 15611,
+    "electors_other": 0,
+    "electors_total": 29305,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "36": {
+    "electors_male": 15634,
+    "electors_female": 16455,
+    "electors_other": 0,
+    "electors_total": 32089,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "37": {
+    "electors_male": 12593,
+    "electors_female": 13574,
+    "electors_other": 0,
+    "electors_total": 26167,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "38": {
+    "electors_male": 13662,
+    "electors_female": 14514,
+    "electors_other": 0,
+    "electors_total": 28176,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "39": {
+    "electors_male": 12378,
+    "electors_female": 13684,
+    "electors_other": 0,
+    "electors_total": 26062,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "40": {
+    "electors_male": 16069,
+    "electors_female": 17061,
+    "electors_other": 0,
+    "electors_total": 33130,
+    "source": "CEO Goa State Fact Sheet (ceogoa.nic.in/appln/UIL/StateProfile.aspx), AC-wise elector population",
+    "as_of": "2026-07-01"
+  },
+  "_meta": {
+    "description": "AC-wise general electors from the CEO Goa State Fact Sheet table 'AC wise elector population as on 1st July 2026 (qualifying date)'. That is the SIR 2026 final roll of 21 Feb 2026 plus continuous-updation supplements. The CEO lists service voters (303 statewide) separately, and each published total equals male + female + third gender. For reference, the state total in the 21 Feb 2026 SIR final roll was 10,57,566, and in the 2022 roll it was 11,56,464.",
+    "source": "https://ceogoa.nic.in/appln/UIL/StateProfile.aspx (fetched 2026-09-25)",
+    "as_of": "2026-07-01",
+    "state_totals": {
+      "male": 518333,
+      "female": 553664,
+      "third_gender": 9,
+      "total": 1072006,
+      "service_voters": 303
+    }
+  }
+}

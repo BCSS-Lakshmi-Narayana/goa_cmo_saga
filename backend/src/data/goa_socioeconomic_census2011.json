@@ -1,0 +1,165 @@
+{
+  "_meta": {
+    "description": "Census 2011 Primary Census Abstract (PCA) worker classification for Goa districts. The four worker categories are % of TOTAL workers (main + marginal) and sum to 100. work_participation_rate = total workers / total population x 100.",
+    "source": "Census of India 2011, PCA State & District level (NADA catalog 6191, file PC11 PCA district); CD-block PCA for North Goa (catalog 41261) and South Goa (catalog 41262); District Census Handbook Part B North Goa (catalog 369, DH_2011_3001_PART_B_DCHB_NORTH_GOA.pdf, pp.41-46) and South Goa (catalog 371, DH_2011_3002_PART_B_DCHB_SOUTH_GOA.pdf, pp.29-34) for statutory-town rows; DCHB Village & Town Directory (catalog 368) for taluka populations.",
+    "source_url": "https://censusindia.gov.in/nada/index.php/catalog/6191",
+    "vintage": "2011 (reference date 1 March 2011)",
+    "district_note": "Census 2011 had two districts. northgoa/southgoa below are the 2011 districts as enumerated (Ponda taluka was then in North Goa). Goa was re-constituted by Revenue Dept Notification No. 16/29/1/2023-Rev-I/3259 dated 31-12-2025 into North Goa (Pernem, Bardez, Tiswadi, Bicholim, Sattari), South Goa (Ponda, Salcete, Mormugao) and Kushavati (Quepem, Sanguem, Dharbandora, Canacona; HQ Quepem). The kushavati entry is NOT a proxy: it is an exact re-aggregation of Census 2011 units that fall wholly inside the new district (Quepem, Sanguem and Canacona CD blocks + Quepem, Curchorem-Cacora, Sanguem and Canacona municipal councils; Dharbandora taluka was carved out of Sanguem in April 2011, after the census reference date, so it is inside the 2011 Sanguem figures). The current_boundaries block re-aggregates North Goa and South Goa to their 2026 extent.",
+    "correction_note": "A coordinator message suggested South Goa is now only Salcete and Mormugao. The notification itself (kushavati.goa.gov.in, file 17787404111914.pdf, pp.5-7) lists Ponda under South Goa, and southgoa.nic.in listed 7 talukas incl. Ponda before the split. So current South Goa = Ponda + Salcete + Mormugao. Ponda was moved from North Goa to South Goa in Jan 2015 (Wikipedia, Ponda taluka)."
+  },
+  "northgoa": {
+    "population_2011": 818008,
+    "total_workers": 327658,
+    "work_participation_rate": 40.06,
+    "wpr_male": 57.39,
+    "wpr_female": 22.06,
+    "cultivators": 4.7,
+    "agricultural_labourers": 4.31,
+    "household_industry": 2.7,
+    "other_workers": 88.29,
+    "census_parent_district": "North Goa",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification)"
+  },
+  "southgoa": {
+    "population_2011": 640537,
+    "total_workers": 249590,
+    "work_participation_rate": 38.97,
+    "wpr_male": 55.95,
+    "wpr_female": 21.75,
+    "cultivators": 6.39,
+    "agricultural_labourers": 5.06,
+    "household_industry": 2.34,
+    "other_workers": 86.2,
+    "census_parent_district": "South Goa",
+    "source": "Census 2011 Primary Census Abstract (district-level worker classification)"
+  },
+  "kushavati": {
+    "population_2011": 191512,
+    "total_workers": 79219,
+    "work_participation_rate": 41.37,
+    "wpr_male": 56.61,
+    "wpr_female": 26.09,
+    "cultivators": 14.33,
+    "agricultural_labourers": 12.29,
+    "household_industry": 2.58,
+    "other_workers": 70.8,
+    "census_parent_district": "South Goa",
+    "source": "Census 2011 PCA re-aggregated: CD blocks Quepem+Sanguem+Canacona (catalog 41262) + 4 municipal councils (DCHB South Goa Part B pp.29-34)",
+    "note": "Kushavati did not exist in 2011 (created 31-12-2025). Figures are an exact re-aggregation of 2011 South Goa units now in Kushavati, not the southgoa proxy."
+  },
+  "current_boundaries": {
+    "note": "Census 2011 numbers re-aggregated to the 2026 district boundaries. north_goa = 2011 North Goa minus Ponda taluka (Ponda CD block + Ponda M Cl). south_goa = 2011 South Goa minus Kushavati units plus Ponda taluka.",
+    "northgoa": {
+      "population_2011": 652178,
+      "total_workers": 258541,
+      "work_participation_rate": 39.64,
+      "wpr_male": 56.95,
+      "wpr_female": 21.79,
+      "cultivators": 4.89,
+      "agricultural_labourers": 4.37,
+      "household_industry": 2.83,
+      "other_workers": 87.92,
+      "census_parent_district": "North Goa"
+    },
+    "southgoa": {
+      "population_2011": 614855,
+      "total_workers": 239488,
+      "work_participation_rate": 38.95,
+      "wpr_male": 56.61,
+      "wpr_female": 20.75,
+      "cultivators": 3.08,
+      "agricultural_labourers": 2.39,
+      "household_industry": 2.23,
+      "other_workers": 92.3,
+      "census_parent_district": "South Goa (Salcete, Mormugao) + North Goa (Ponda)"
+    },
+    "kushavati": {
+      "population_2011": 191512,
+      "total_workers": 79219,
+      "work_participation_rate": 41.37,
+      "wpr_male": 56.61,
+      "wpr_female": 26.09,
+      "cultivators": 14.33,
+      "agricultural_labourers": 12.29,
+      "household_industry": 2.58,
+      "other_workers": 70.8,
+      "census_parent_district": "South Goa"
+    }
+  },
+  "statewide_2011": {
+    "population_2011": 1458545,
+    "total_workers": 577248,
+    "work_participation_rate": 39.58,
+    "wpr_male": 56.76,
+    "wpr_female": 21.92,
+    "cultivators": 5.43,
+    "agricultural_labourers": 4.64,
+    "household_industry": 2.55,
+    "other_workers": 87.38,
+    "literacy_rate": 88.7,
+    "literacy_note": "literates / population aged 7+ (PCA P_LIT / (TOT_P - P_06)); Census 2011 Goa = 88.70%"
+  },
+  "talukas": {
+    "_note": "Census 2011 population by taluka (sub-district) = sum of village-directory + town-directory populations (DCHB Goa, catalog 368). Totals match state 1,458,545. Dharbandora (notified April 2011) = its 16 villages listed in the 31-12-2025 notification, taken out of 2011 Sanguem. district = current (2026) district; district_2011 = census district.",
+    "Pernem": {
+      "population_2011": 75747,
+      "district": "North Goa",
+      "district_2011": "North Goa"
+    },
+    "Bardez": {
+      "population_2011": 237440,
+      "district": "North Goa",
+      "district_2011": "North Goa"
+    },
+    "Tiswadi": {
+      "population_2011": 177219,
+      "district": "North Goa",
+      "district_2011": "North Goa"
+    },
+    "Bicholim": {
+      "population_2011": 97955,
+      "district": "North Goa",
+      "district_2011": "North Goa"
+    },
+    "Sattari": {
+      "population_2011": 63817,
+      "district": "North Goa",
+      "district_2011": "North Goa"
+    },
+    "Ponda": {
+      "population_2011": 165830,
+      "district": "South Goa",
+      "district_2011": "North Goa"
+    },
+    "Mormugao": {
+      "population_2011": 154561,
+      "district": "South Goa",
+      "district_2011": "South Goa"
+    },
+    "Salcete": {
+      "population_2011": 294464,
+      "district": "South Goa",
+      "district_2011": "South Goa"
+    },
+    "Quepem": {
+      "population_2011": 81193,
+      "district": "Kushavati",
+      "district_2011": "South Goa"
+    },
+    "Sanguem": {
+      "population_2011": 38873,
+      "district": "Kushavati",
+      "district_2011": "South Goa"
+    },
+    "Dharbandora": {
+      "population_2011": 26274,
+      "district": "Kushavati",
+      "district_2011": "South Goa"
+    },
+    "Canacona": {
+      "population_2011": 45172,
+      "district": "Kushavati",
+      "district_2011": "South Goa"
+    }
+  }
+}

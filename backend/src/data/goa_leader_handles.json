@@ -1,0 +1,250 @@
+{
+  "_meta": {
+    "purpose": "Official social-media accounts of Goa leaders and parties. Merged into politicalData.js / politicalEntities.js so the sentiment pipeline recognises a leader both when a post names their handle and when the leader (or party) is the post's AUTHOR (author-is-target correction, cross-camp prior).",
+    "researched": "2026-09-25, web research (profile bios, CM/party tags, Wikidata, official sites). X/Instagram pages were read through search-indexed snippets; accounts were not opened directly.",
+    "status": "CONFIRMED = official source or two independent sources agree; LIKELY = one decent source (usually the profile's own bio naming the person and office). Fan pages, parody accounts, namesakes and anything weaker than LIKELY are deliberately left out.",
+    "keys": "people are keyed by politicalData id; MLAs who are not in the curated lists are keyed 'ac:<roster key from goa_mlas.json>'.",
+    "maintenance": "When a handle changes, edit it here with a source URL, then run `npm run test:sentiment`."
+  },
+  "people": {
+    "pramod-sawant": [
+      { "platform": "x", "handle": "DrPramodPSawant", "status": "CONFIRMED", "source": "Wikidata Q28222879; https://www.drpramodsawant.in/" },
+      { "platform": "x", "handle": "goacm", "status": "CONFIRMED", "source": "https://x.com/PMOIndia/status/1882355450253062166", "note": "CM's Office account" },
+      { "platform": "instagram", "handle": "drpramodpsawant", "status": "CONFIRMED", "source": "Wikidata P2003; drpramodsawant.in" },
+      { "platform": "facebook", "handle": "DrPramodPSawant", "status": "CONFIRMED", "source": "https://www.facebook.com/DrPramodPSawant/" },
+      { "platform": "instagram", "handle": "goacmo", "status": "LIKELY", "source": "https://www.instagram.com/goacmo/", "note": "CM's Office" }
+    ],
+    "vishwajit-rane": [
+      { "platform": "instagram", "handle": "visrane", "status": "CONFIRMED", "source": "https://www.instagram.com/visrane/" },
+      { "platform": "facebook", "handle": "visrane", "status": "CONFIRMED", "source": "https://www.facebook.com/visrane/" }
+    ],
+    "subhash-shirodkar": [
+      { "platform": "instagram", "handle": "subhashshirodkr", "status": "CONFIRMED", "source": "https://www.instagram.com/subhashshirodkr/" },
+      { "platform": "facebook", "handle": "subhashshirodkr", "status": "CONFIRMED", "source": "https://www.facebook.com/subhashshirodkr/" }
+    ],
+    "mauvin-godinho": [
+      { "platform": "instagram", "handle": "mauvingodinho", "status": "CONFIRMED", "source": "https://www.instagram.com/mauvingodinho/" },
+      { "platform": "facebook", "handle": "MauvinGodinhoOfficial", "status": "LIKELY", "source": "https://www.facebook.com/MauvinGodinhoOfficial/" }
+    ],
+    "rohan-khaunte": [
+      { "platform": "instagram", "handle": "rohankhaunteofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/rohankhaunteofficial/" },
+      { "platform": "facebook", "handle": "RohanKhaunte", "status": "CONFIRMED", "source": "https://www.facebook.com/RohanKhaunte/" }
+    ],
+    "babush-monserrate": [
+      { "platform": "instagram", "handle": "babushmonserrateofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/babushmonserrateofficial/" },
+      { "platform": "facebook", "handle": "babushmonserrateofficial", "status": "CONFIRMED", "source": "https://www.facebook.com/babushmonserrateofficial/" }
+    ],
+    "subhash-phal-dessai": [
+      { "platform": "instagram", "handle": "subhashphaldessai", "status": "LIKELY", "source": "https://www.instagram.com/subhashphaldessai/" }
+    ],
+    "sudin-dhavalikar": [
+      { "platform": "instagram", "handle": "sudindhavalikar", "status": "LIKELY", "source": "https://www.instagram.com/sudindhavalikar/" },
+      { "platform": "facebook", "handle": "SudinDhavalikar", "status": "CONFIRMED", "source": "https://www.facebook.com/SudinDhavalikar/" }
+    ],
+    "nilkanth-halarnkar": [
+      { "platform": "instagram", "handle": "nilkant_halarnkar", "status": "CONFIRMED", "source": "https://www.instagram.com/nilkant_halarnkar/" },
+      { "platform": "facebook", "handle": "nilkant.halarnkar", "status": "LIKELY", "source": "https://www.facebook.com/nilkant.halarnkar/", "note": "personal profile" }
+    ],
+    "digambar-kamat": [
+      { "platform": "instagram", "handle": "digambarvkamat", "status": "CONFIRMED", "source": "https://www.instagram.com/digambarvkamat/" },
+      { "platform": "facebook", "handle": "digambarvkamat", "status": "LIKELY", "source": "https://www.facebook.com/digambarvkamat" }
+    ],
+    "ramesh-tawadkar": [
+      { "platform": "instagram", "handle": "dr.ramesh_tawadkar", "status": "LIKELY", "source": "https://www.instagram.com/dr.ramesh_tawadkar/" },
+      { "platform": "facebook", "handle": "RameshTawadkarOfficial", "status": "LIKELY", "source": "https://www.facebook.com/RameshTawadkarOfficial/" }
+    ],
+    "ganesh-gaonkar": [
+      { "platform": "x", "handle": "DrGaneshGaonkar", "status": "CONFIRMED", "source": "https://x.com/DrPramodPSawant/status/1971121015196704934" },
+      { "platform": "instagram", "handle": "drganeshgaonkar", "status": "LIKELY", "source": "https://www.instagram.com/drganeshgaonkar/" },
+      { "platform": "facebook", "handle": "drganeshgaonkar0909", "status": "LIKELY", "source": "https://www.facebook.com/drganeshgaonkar0909/" }
+    ],
+    "joshua-de-souza": [
+      { "platform": "x", "handle": "Joshua_De_Souza", "status": "LIKELY", "source": "https://x.com/Joshua_De_Souza", "note": "not @TheJoshuaDsouza (different person)" },
+      { "platform": "facebook", "handle": "joshuadesouzaofficial", "status": "LIKELY", "source": "https://www.facebook.com/joshuadesouzaofficial/" },
+      { "platform": "instagram", "handle": "joshuadesouzaofficial", "status": "LIKELY", "source": "https://www.instagram.com/joshuadesouzaofficial/" }
+    ],
+    "damu-naik": [
+      { "platform": "instagram", "handle": "damu_naik", "status": "LIKELY", "source": "https://www.instagram.com/damu_naik/" },
+      { "platform": "facebook", "handle": "damugnaik", "status": "LIKELY", "source": "https://www.facebook.com/damugnaik" }
+    ],
+    "sidharth-kuncalienker": [
+      { "platform": "x", "handle": "sidkuks", "status": "LIKELY", "source": "https://x.com/sidkuks/status/1284715905839243267", "note": "possibly inactive since 2020" },
+      { "platform": "facebook", "handle": "kuncalienkersidharth", "status": "LIKELY", "source": "https://www.facebook.com/kuncalienkersidharth/" }
+    ],
+    "sarvanand-bhagat": [
+      { "platform": "x", "handle": "SarvanandBhagat", "status": "LIKELY", "source": "https://x.com/SarvanandBhagat" }
+    ],
+    "deepak-dhavalikar": [
+      { "platform": "x", "handle": "DhavalikarDMGP", "status": "CONFIRMED", "source": "https://x.com/dhavalikardmgp; https://x.com/AmitPalekar10/status/1907396308966732007" }
+    ],
+    "mp-north-goa": [
+      { "platform": "instagram", "handle": "shripadyessonaik", "status": "LIKELY", "source": "https://www.instagram.com/shripadyessonaik/" },
+      { "platform": "facebook", "handle": "shripadynaik", "status": "CONFIRMED", "source": "https://www.facebook.com/shripadynaik/" }
+    ],
+    "mp-rajya-sabha-goa": [
+      { "platform": "instagram", "handle": "shetsadanand", "status": "CONFIRMED", "source": "https://www.instagram.com/shetsadanand/" },
+      { "platform": "facebook", "handle": "ShetSadanand", "status": "CONFIRMED", "source": "https://www.facebook.com/ShetSadanand/" }
+    ],
+    "yuri-alemao": [
+      { "platform": "instagram", "handle": "yuri.alemao.9", "status": "LIKELY", "source": "https://www.instagram.com/yuri.alemao.9/" },
+      { "platform": "facebook", "handle": "yuri.alemao.961", "status": "LIKELY", "source": "https://www.facebook.com/yuri.alemao.961/", "note": "personal profile" }
+    ],
+    "girish-chodankar": [
+      { "platform": "instagram", "handle": "girish_chodankar", "status": "LIKELY", "source": "https://www.instagram.com/girish_chodankar/" },
+      { "platform": "facebook", "handle": "GirishChodankarGoa", "status": "CONFIRMED", "source": "https://www.facebook.com/GirishChodankarGoa/" }
+    ],
+    "amit-patkar": [
+      { "platform": "instagram", "handle": "amitpatkarofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/amitpatkarofficial/" },
+      { "platform": "facebook", "handle": "amitpatkarofficial", "status": "CONFIRMED", "source": "https://www.facebook.com/amitpatkarofficial/" }
+    ],
+    "carlos-alvares-ferreira": [
+      { "platform": "instagram", "handle": "carlosalvaresferreira", "status": "CONFIRMED", "source": "https://www.instagram.com/carlosalvaresferreira/" },
+      { "platform": "facebook", "handle": "carlosalvaresferreira", "status": "CONFIRMED", "source": "https://www.facebook.com/carlosalvaresferreira/" }
+    ],
+    "altone-dcosta": [
+      { "platform": "instagram", "handle": "altonedcosta", "status": "LIKELY", "source": "https://www.instagram.com/altonedcosta/" },
+      { "platform": "facebook", "handle": "altonedcosta", "status": "CONFIRMED", "source": "https://www.facebook.com/altonedcosta/" }
+    ],
+    "viriato-fernandes": [
+      { "platform": "instagram", "handle": "viriatofernandes.captain", "status": "CONFIRMED", "source": "https://www.instagram.com/viriatofernandes.captain/" },
+      { "platform": "facebook", "handle": "viriatofernandes.captain", "status": "CONFIRMED", "source": "https://www.facebook.com/viriatofernandes.captain/" }
+    ],
+    "ramakant-khalap": [
+      { "platform": "x", "handle": "bhaikhalap", "status": "CONFIRMED", "source": "https://x.com/INCGoa/status/1931743861753438313" },
+      { "platform": "instagram", "handle": "rdkhalap", "status": "LIKELY", "source": "https://www.instagram.com/rdkhalap/" }
+    ],
+    "francisco-sardinha": [
+      { "platform": "facebook", "handle": "Franciscofbpage", "status": "LIKELY", "source": "https://www.facebook.com/Franciscofbpage/" }
+    ],
+    "venzy-viegas": [
+      { "platform": "instagram", "handle": "venzyviegas", "status": "CONFIRMED", "source": "https://www.instagram.com/venzyviegas/" },
+      { "platform": "facebook", "handle": "VenzyViegas4Benaulim", "status": "LIKELY", "source": "https://www.facebook.com/VenzyViegas4Benaulim/" }
+    ],
+    "cruz-silva": [
+      { "platform": "facebook", "handle": "Cruzsilvaaap", "status": "CONFIRMED", "source": "https://www.facebook.com/Cruzsilvaaap/" }
+    ],
+    "vijai-sardesai": [
+      { "platform": "instagram", "handle": "vijaisardesai", "status": "CONFIRMED", "source": "https://www.instagram.com/vijaisardesai/" },
+      { "platform": "facebook", "handle": "SardesaiVijai", "status": "LIKELY", "source": "https://www.facebook.com/SardesaiVijai/" },
+      { "platform": "x", "handle": "PresidentGFP", "status": "LIKELY", "source": "https://x.com/PresidentGFP", "note": "office of the GFP president" }
+    ],
+    "viresh-borkar": [
+      { "platform": "facebook", "handle": "vireshborkar8899", "status": "LIKELY", "source": "https://www.facebook.com/vireshborkar8899/" }
+    ],
+    "manoj-parab": [
+      { "platform": "x", "handle": "manojparab9", "status": "CONFIRMED", "source": "https://x.com/goanewshub/status/1780188063202787482" },
+      { "platform": "instagram", "handle": "manojparab90", "status": "LIKELY", "source": "https://www.instagram.com/manojparab90/" },
+      { "platform": "facebook", "handle": "ManojParabOfficial", "status": "LIKELY", "source": "https://en.wikipedia.org/wiki/Manoj_Parab" }
+    ],
+    "ac:mandrem": [
+      { "platform": "x", "handle": "arolkarjit30", "status": "LIKELY", "source": "https://x.com/arolkarjit30" },
+      { "platform": "instagram", "handle": "arolkarjit", "status": "LIKELY", "source": "https://www.instagram.com/arolkarjit/" },
+      { "platform": "facebook", "handle": "jit4mandrem", "status": "LIKELY", "source": "https://www.facebook.com/jit4mandrem/" }
+    ],
+    "ac:pernem": [
+      { "platform": "instagram", "handle": "pravinarlekarofficial", "status": "LIKELY", "source": "https://www.instagram.com/pravinarlekarofficial/" },
+      { "platform": "facebook", "handle": "pravin4pernem", "status": "LIKELY", "source": "https://www.facebook.com/pravin4pernem" }
+    ],
+    "ac:bicholim": [
+      { "platform": "x", "handle": "DrChandrakantS3", "status": "LIKELY", "source": "https://x.com/drchandrakants3" },
+      { "platform": "instagram", "handle": "dr.chandrakantshetye", "status": "CONFIRMED", "source": "https://www.instagram.com/dr.chandrakantshetye/" },
+      { "platform": "facebook", "handle": "dr.chandrakantshetye", "status": "CONFIRMED", "source": "https://www.facebook.com/dr.chandrakantshetye/" }
+    ],
+    "ac:siolim": [
+      { "platform": "x", "handle": "DelilahLobo77", "status": "CONFIRMED", "source": "https://x.com/DelilahLobo77" },
+      { "platform": "instagram", "handle": "delilahloboofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/delilahloboofficial/" },
+      { "platform": "facebook", "handle": "DelilahLoboofficial", "status": "CONFIRMED", "source": "https://www.facebook.com/DelilahLoboofficial/" }
+    ],
+    "ac:saligao": [
+      { "platform": "x", "handle": "naikkedar0919", "status": "CONFIRMED", "source": "https://x.com/DrPramodPSawant/status/1943707658625958139" },
+      { "platform": "instagram", "handle": "kedarnaikofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/kedarnaikofficial/" },
+      { "platform": "facebook", "handle": "kedarnaikofficial", "status": "CONFIRMED", "source": "https://www.facebook.com/kedarnaikofficial/" }
+    ],
+    "ac:calangute": [
+      { "platform": "x", "handle": "MichaelLobo76", "status": "CONFIRMED", "source": "https://x.com/MichaelLobo76" },
+      { "platform": "instagram", "handle": "michaellobo76", "status": "CONFIRMED", "source": "https://www.instagram.com/michaellobo76/" },
+      { "platform": "facebook", "handle": "michaellobo76", "status": "CONFIRMED", "source": "https://www.facebook.com/michaellobo76/" }
+    ],
+    "ac:stcruz": [
+      { "platform": "x", "handle": "iamrudolffern", "status": "CONFIRMED", "source": "https://x.com/DrPramodPSawant/status/1807693476500271328" },
+      { "platform": "instagram", "handle": "rodolfovictoriafernandes", "status": "CONFIRMED", "source": "https://www.instagram.com/rodolfovictoriafernandes/" },
+      { "platform": "facebook", "handle": "rodolfovictoriafernandes", "status": "CONFIRMED", "source": "https://www.facebook.com/rodolfovictoriafernandes/" }
+    ],
+    "ac:cumbarjua": [
+      { "platform": "instagram", "handle": "rajeshfaldessai", "status": "LIKELY", "source": "https://www.instagram.com/rajeshfaldessai/" },
+      { "platform": "facebook", "handle": "faldessairajesh", "status": "LIKELY", "source": "https://www.facebook.com/faldessairajesh/" }
+    ],
+    "ac:maem": [
+      { "platform": "x", "handle": "PremendraShet", "status": "LIKELY", "source": "https://x.com/premendrashet" },
+      { "platform": "instagram", "handle": "premendrashetofficial", "status": "LIKELY", "source": "https://www.instagram.com/premendrashetofficial/" },
+      { "platform": "facebook", "handle": "premendra.shet.5", "status": "LIKELY", "source": "https://www.facebook.com/premendra.shet.5/", "note": "personal profile" }
+    ],
+    "ac:poriem": [
+      { "platform": "x", "handle": "draneofficial", "status": "CONFIRMED", "source": "https://x.com/draneofficial" },
+      { "platform": "instagram", "handle": "draneofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/draneofficial/" },
+      { "platform": "facebook", "handle": "DRaneOfficial", "status": "CONFIRMED", "source": "https://www.facebook.com/DRaneOfficial/" }
+    ],
+    "ac:priol": [
+      { "platform": "x", "handle": "Govind_Gaude", "status": "CONFIRMED", "source": "https://x.com/DrPramodPSawant/status/1906054102435729701" },
+      { "platform": "instagram", "handle": "govindgaudeofficial", "status": "LIKELY", "source": "https://www.instagram.com/govindgaudeofficial/" },
+      { "platform": "facebook", "handle": "GovindForPriol", "status": "LIKELY", "source": "https://www.facebook.com/GovindForPriol/" }
+    ],
+    "ac:mormugao": [
+      { "platform": "x", "handle": "SankalpAmonkar", "status": "CONFIRMED", "source": "https://x.com/SankalpAmonkar" },
+      { "platform": "instagram", "handle": "sankalppamonkar", "status": "CONFIRMED", "source": "https://www.instagram.com/sankalppamonkar/" },
+      { "platform": "facebook", "handle": "SankalpAmonkar1313", "status": "LIKELY", "source": "https://www.facebook.com/SankalpAmonkar1313/" }
+    ],
+    "ac:vascodagama": [
+      { "platform": "x", "handle": "DajiSalkar", "status": "CONFIRMED", "source": "https://x.com/dajisalkar" },
+      { "platform": "instagram", "handle": "dajisalkar", "status": "CONFIRMED", "source": "https://www.instagram.com/dajisalkar/" },
+      { "platform": "facebook", "handle": "dajisalkar", "status": "CONFIRMED", "source": "https://www.facebook.com/dajisalkar/" }
+    ],
+    "ac:nuvem": [
+      { "platform": "x", "handle": "AleixoASequeira", "status": "CONFIRMED", "source": "https://x.com/AleixoASequeira" },
+      { "platform": "instagram", "handle": "aleixoasequeira", "status": "CONFIRMED", "source": "https://www.instagram.com/aleixoasequeira/" },
+      { "platform": "facebook", "handle": "AleixoASequeira", "status": "CONFIRMED", "source": "https://www.facebook.com/AleixoASequeira/" }
+    ],
+    "ac:curtorim": [
+      { "platform": "x", "handle": "ReginaldoGoa", "status": "CONFIRMED", "source": "https://x.com/ReginaldoGoa" },
+      { "platform": "instagram", "handle": "reginaldogoa", "status": "CONFIRMED", "source": "https://www.instagram.com/reginaldogoa/" },
+      { "platform": "facebook", "handle": "MLACURTORIM", "status": "LIKELY", "source": "https://www.facebook.com/MLACURTORIM/" }
+    ],
+    "ac:navelim": [
+      { "platform": "x", "handle": "UlhasTuenkar", "status": "CONFIRMED", "source": "https://x.com/DrPramodPSawant/status/1807693476500271328" },
+      { "platform": "instagram", "handle": "ulhastuenkarofficial", "status": "LIKELY", "source": "https://www.instagram.com/ulhastuenkarofficial/" },
+      { "platform": "facebook", "handle": "ulhas.tuenkar", "status": "LIKELY", "source": "https://www.facebook.com/ulhas.tuenkar/", "note": "personal profile" }
+    ],
+    "ac:curchorem": [
+      { "platform": "x", "handle": "nileshcabral", "status": "CONFIRMED", "source": "https://x.com/nileshcabral" },
+      { "platform": "instagram", "handle": "nileshcabral", "status": "CONFIRMED", "source": "https://www.instagram.com/nileshcabral/" },
+      { "platform": "facebook", "handle": "nileshcabral", "status": "CONFIRMED", "source": "https://www.facebook.com/nileshcabral/" }
+    ]
+  },
+  "parties": {
+    "bjp": [
+      { "platform": "x", "handle": "BJP4Goa", "status": "CONFIRMED", "source": "https://x.com/BJP4Goa" },
+      { "platform": "instagram", "handle": "bjp4goa", "status": "CONFIRMED", "source": "https://www.instagram.com/bjp4goa/" },
+      { "platform": "facebook", "handle": "BJP4Goa", "status": "CONFIRMED", "source": "https://www.facebook.com/BJP4Goa/" }
+    ],
+    "inc": [
+      { "platform": "x", "handle": "INCGoa", "status": "CONFIRMED", "source": "https://x.com/INCGoa" },
+      { "platform": "instagram", "handle": "incgoa", "status": "CONFIRMED", "source": "https://www.instagram.com/incgoa/" },
+      { "platform": "facebook", "handle": "INCGoa", "status": "CONFIRMED", "source": "https://www.facebook.com/INCGoa/" }
+    ],
+    "aap": [
+      { "platform": "x", "handle": "AAPGoa", "status": "CONFIRMED", "source": "https://x.com/AAPGoa" },
+      { "platform": "instagram", "handle": "aapgoa", "status": "CONFIRMED", "source": "https://www.instagram.com/aapgoa/" },
+      { "platform": "facebook", "handle": "AAPGoa", "status": "CONFIRMED", "source": "https://www.facebook.com/AAPGoa/" }
+    ],
+    "gfp": [
+      { "platform": "x", "handle": "Goaforwardparty", "status": "CONFIRMED", "source": "https://x.com/Goaforwardparty" },
+      { "platform": "instagram", "handle": "goaforwardofficial", "status": "CONFIRMED", "source": "https://www.instagram.com/goaforwardofficial/" },
+      { "platform": "facebook", "handle": "GoaForwardParty", "status": "CONFIRMED", "source": "https://www.facebook.com/GoaForwardParty/" }
+    ],
+    "rgp": [
+      { "platform": "x", "handle": "RGPOfficial_Goa", "status": "CONFIRMED", "source": "https://x.com/RGPOfficial_Goa" },
+      { "platform": "instagram", "handle": "revolutionarygoans", "status": "CONFIRMED", "source": "https://www.instagram.com/revolutionarygoans/" },
+      { "platform": "facebook", "handle": "RevolutionaryGoans", "status": "LIKELY", "source": "https://www.facebook.com/RevolutionaryGoans/" }
+    ]
+  }
+}

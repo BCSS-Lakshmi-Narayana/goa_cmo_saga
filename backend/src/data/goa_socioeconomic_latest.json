@@ -1,0 +1,66 @@
+{
+  "_meta": {
+    "description": "Goa statewide labour-market indicators from the Periodic Labour Force Survey (PLFS) Annual Report July 2023 - June 2024, Appendix-A state tables. All rates are in per cent, usual status (ps+ss), age 15 years and above, rural+urban, unless a field name says otherwise.",
+    "source": "NSO/MoSPI, Annual Report PLFS 2023-24 (July 2023 - June 2024): Table 16 (LFPR, 15+) PDF p.125; Table 16 (LFPR 15-29) PDF p.123; Table 17 (WPR, 15+) PDF p.130; Table 18 (UR 15-29) PDF p.133; Table 18 (UR 15+) PDF p.135; Table 27 (industry by NIC-2008 section, rural+urban persons) PDF p.237; Table 35 (non-agricultural workers by enterprise type) PDF pp.276, 279, 282; Table 32 (UR, current weekly status) PDF p.260.",
+    "source_url": "https://www.mospi.gov.in/sites/default/files/publication_reports/AnnualReport_PLFS2023-24L2.pdf",
+    "vintage": "2023-24",
+    "definition": "Usual status (principal status + subsidiary status, ps+ss), persons aged 15 years and above. Youth = age 15-29, same definition.",
+    "granularity": "statewide",
+    "granularity_note": "PLFS publishes no district-level estimates. Goa's sample is small (Table 35 lists 545 sampled non-agricultural workers: 209 rural, 336 urban), so the sub-group rates (female, youth, rural/urban) have wide sampling error. Use the Census 2011 file for district contrasts.",
+    "why_not_newer": "PLFS moved to a calendar-year design in 2025, and no July 2024 - June 2025 annual report exists. The Annual Report PLFS 2025 (Jan-Dec 2025, released 2026-03-26/27) is the newest release, but I could not retrieve its full state tables; the MoSPI press note (https://www.mospi.gov.in/uploads/latestReleases/latest_release_1774607827733_3e8964a9-268b-4cc9-ad65-cfc8a9e32f08_Press_note_AR_PLFS_2025_23032025_V2.1_26032026_final.pdf) has no state figures. MoSPI says 2025 estimates are not strictly comparable with the earlier annual reports. See latest_headline_2025.",
+    "cross_check": "The press-reported Goa figure of 8.7% for 2023-24 (Herald Goa) is the current weekly status (CWS) rate for age 15+ (Table 32: 8.7). The usual-status rate is 8.5."
+  },
+  "statewide": {
+    "labour_force_participation_rate": 51.8,
+    "lfpr_male": 74.1,
+    "lfpr_female": 29.3,
+    "work_participation_rate": 47.4,
+    "wpr_male": 70.2,
+    "wpr_female": 24.4,
+    "lfpr_rural": 52,
+    "lfpr_urban": 51.6,
+    "sector_employment": {
+      "agriculture": 8.08,
+      "manufacturing_and_industry": 20.51,
+      "construction": 12.29,
+      "services": 59.14,
+      "_note": "% of usually working persons (ps+ss), all ages, rural+urban (Table 27). agriculture = NIC section A; manufacturing_and_industry = B mining 1.18 + C manufacturing 17.80 + D electricity 0.92 + E water/waste 0.61; construction = F; services = sections G-T summed (17.05 trade + 7.11 transport + 11.00 accommodation & food + 0.67 + 1.24 + 2.26 + 1.64 + 1.13 + 3.94 public admin + 6.14 education + 2.50 health + 0.27 + 0.73 + 3.46 households). The published sections add to 100.02 because of rounding."
+    },
+    "unemployment_rate": 8.5,
+    "unemployment_rural": 8.9,
+    "unemployment_urban": 8.2,
+    "unemployment_youth_15_29": 19.1,
+    "unemployment_female": 16.7,
+    "unemployment_male": 5.2,
+    "unemployment_female_urban": 18.6,
+    "informal_sector_rural": 50.6,
+    "informal_sector_urban": 56.1,
+    "_informal_note": "Share of non-agricultural workers (NIC divisions 05-99, ps+ss) in proprietary and partnership enterprises (Table 35). If employer's households are also counted as informal, rural stays 50.6 and urban becomes 56.9. This measures the informal SECTOR, not informal employment.",
+    "extra": {
+      "unemployment_female_rural": 13.8,
+      "unemployment_male_rural": 7.1,
+      "unemployment_male_urban": 3.8,
+      "youth_15_29": {
+        "unemployment_rate": 19.1,
+        "unemployment_male": 13.2,
+        "unemployment_female": 31,
+        "unemployment_rural": 18.4,
+        "unemployment_urban": 19.7,
+        "lfpr": 41.5,
+        "wpr": 33.5,
+        "_note": "Table 18, Table 16 and Table 17 (age 15-29, ps+ss). All-India youth UR for comparison: 10.2."
+      },
+      "unemployment_rate_cws_15plus": 8.7,
+      "all_india_unemployment_rate_15plus": 3.2,
+      "all_india_youth_unemployment_15_29": 10.2
+    }
+  },
+  "latest_headline_2025": {
+    "vintage": "Calendar year 2025 (PLFS Annual Report 2025, Jan-Dec 2025)",
+    "unemployment_rate": 8.3,
+    "unemployment_youth_15_29": null,
+    "all_india_unemployment_rate_15plus": 3.1,
+    "all_india_youth_unemployment_15_29": 9.9,
+    "note": "The Goa figure of 8.3% (age 15+, usual status, reported as the highest among states) comes from press coverage (Goemkarponn, 6 Apr 2026: https://goemkarponn.com/goa-tops-india-in-unemployment-rate-at-8-3-plfs-report-reveals/). I did not check it against the report's state table. The all-India 3.1% and 9.9% come from the MoSPI press note. Goa's 2025 youth rate was not found, so it is null. The rural/urban split in that article looked inconsistent and was not used."
+  }
+}

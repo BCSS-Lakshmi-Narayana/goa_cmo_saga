@@ -1,0 +1,1930 @@
+[
+  {
+    "ac_number": 1,
+    "constituency": "MANDREM",
+    "key": "mandrem",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Pernem",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Jit Arolkar",
+      "party": "MGP",
+      "alliance": "NDA",
+      "party_at_election": "MGP",
+      "criminal_cases": 2,
+      "education": "10th Pass",
+      "assets": "Rs 11,69,93,900 ~ 11 Crore+",
+      "liabilities": "Rs 3,10,45,680 ~ 3 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "JIT VINAYAK AROLKAR",
+        "party": "Maharashtrawadi Gomantak Party",
+        "votes": 10387,
+        "vote_pct": 35.04
+      },
+      "runner_up": {
+        "name": "DAYANAND RAGHUNATH SOPTE",
+        "party": "Bharatiya Janata Party",
+        "votes": 9672,
+        "vote_pct": 32.63
+      },
+      "margin": 715,
+      "total_votes_polled": 29643,
+      "candidate_count": 9,
+      "nota_votes": 261
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=21: https://myneta.info/goa2022/candidate.php?candidate_id=21",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911153727/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS051.htm?ac=1 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 2,
+    "constituency": "PERNEM",
+    "key": "pernem",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Pernem",
+    "reserved_category": "SC",
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Pravin Arlekar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "8th Pass",
+      "assets": "Rs 4,73,32,007 ~ 4 Crore+",
+      "liabilities": "Rs 47,16,144 ~ 47 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Reserved for Scheduled Castes. ECI results list it as 'Pernem' and ADR as 'PERNEM (SC)'.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "PRAVIN PRABHAKAR ARLEKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 13063,
+        "vote_pct": 44.73
+      },
+      "runner_up": {
+        "name": "RAJAN BABUSO KORGAONKAR",
+        "party": "Maharashtrawadi Gomantak Party",
+        "votes": 9645,
+        "vote_pct": 33.03
+      },
+      "margin": 3418,
+      "total_votes_polled": 29203,
+      "candidate_count": 9,
+      "nota_votes": 363
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=131: https://myneta.info/goa2022/candidate.php?candidate_id=131",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250912032314/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS052.htm?ac=2 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 3,
+    "constituency": "BICHOLIM",
+    "key": "bicholim",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bicholim",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Chandrakant Shetye",
+      "party": "IND",
+      "alliance": "NDA",
+      "party_at_election": "IND",
+      "criminal_cases": 0,
+      "education": "Post Graduate",
+      "assets": "Rs 59,63,01,413 ~ 59 Crore+",
+      "liabilities": "Rs 3,43,55,590 ~ 3 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "This Independent has supported the Sawant government since March 2022: all 3 Independents backed its formation, and each chairs a state corporation or board (GIDC, Goa Infotech Corporation, KVIB). Wikipedia's '8th Goa Assembly' also lists them under NDA.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "DR. CHANDRAKANT SHETYE",
+        "party": "Independent",
+        "votes": 9608,
+        "vote_pct": 37.12
+      },
+      "runner_up": {
+        "name": "NARESH RAJARAM SAWAL",
+        "party": "Maharashtrawadi Gomantak Party",
+        "votes": 9290,
+        "vote_pct": 35.89
+      },
+      "margin": 318,
+      "total_votes_polled": 25886,
+      "candidate_count": 5,
+      "nota_votes": 341
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=227: https://myneta.info/goa2022/candidate.php?candidate_id=227",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911160400/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS053.htm?ac=3 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 4,
+    "constituency": "TIVIM",
+    "key": "tivim",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Nilkanth Halarnkar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "10th Pass",
+      "assets": "Rs 8,21,48,820 ~ 8 Crore+",
+      "liabilities": "Rs 72,25,766 ~ 72 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "NILKANTH RAMNATH HALARNKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 9414,
+        "vote_pct": 39.34
+      },
+      "runner_up": {
+        "name": "KAVITA  KANDOLKAR",
+        "party": "All India Trinamool Congress",
+        "votes": 7363,
+        "vote_pct": 30.77
+      },
+      "margin": 2051,
+      "total_votes_polled": 23929,
+      "candidate_count": 7,
+      "nota_votes": 202
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=16: https://myneta.info/goa2022/candidate.php?candidate_id=16",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906103611/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS054.htm?ac=4 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 5,
+    "constituency": "MAPUSA",
+    "key": "mapusa",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Joshua De Souza",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 4,15,97,663 ~ 4 Crore+",
+      "liabilities": "Rs 32,92,761 ~ 32 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "JOSHUA PETER DE SOUZA",
+        "party": "Bharatiya Janata Party",
+        "votes": 10195,
+        "vote_pct": 44.06
+      },
+      "runner_up": {
+        "name": "SUDHIR RAMA KANDOLKAR",
+        "party": "Indian National Congress",
+        "votes": 8548,
+        "vote_pct": 36.94
+      },
+      "margin": 1647,
+      "total_votes_polled": 23138,
+      "candidate_count": 8,
+      "nota_votes": 296
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=101: https://myneta.info/goa2022/candidate.php?candidate_id=101",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911143552/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS055.htm?ac=5 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 6,
+    "constituency": "SIOLIM",
+    "key": "siolim",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Delilah Lobo",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 2,
+      "education": "Graduate",
+      "assets": "Rs 92,91,01,865 ~ 92 Crore+",
+      "liabilities": "Rs 28,87,35,436 ~ 28 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP. myneta shows the same assets and liabilities for both spouses (Lobo, Monserrate and Rane couples), apparently because each affidavit declares the combined family holdings.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "DELILAH MICHAEL LOBO",
+        "party": "Indian National Congress",
+        "votes": 9699,
+        "vote_pct": 38.89
+      },
+      "runner_up": {
+        "name": "DAYANAND RAYU MANDREKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 7972,
+        "vote_pct": 31.96
+      },
+      "margin": 1727,
+      "total_votes_polled": 24940,
+      "candidate_count": 13,
+      "nota_votes": 206
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=211: https://myneta.info/goa2022/candidate.php?candidate_id=211",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911154511/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS056.htm?ac=6 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 7,
+    "constituency": "SALIGAO",
+    "key": "saligao",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Kedar Naik",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 1,
+      "education": "Graduate",
+      "assets": "Rs 4,24,62,142 ~ 4 Crore+",
+      "liabilities": "Rs 1,97,36,246 ~ 1 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "KEDAR JAYPRAKASH NAIK",
+        "party": "Indian National Congress",
+        "votes": 10045,
+        "vote_pct": 44.97
+      },
+      "runner_up": {
+        "name": "JAYESH SALGAONKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 8146,
+        "vote_pct": 36.47
+      },
+      "margin": 1899,
+      "total_votes_polled": 22335,
+      "candidate_count": 6,
+      "nota_votes": 212
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=267: https://myneta.info/goa2022/candidate.php?candidate_id=267",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906005044/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS057.htm?ac=7 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 8,
+    "constituency": "CALANGUTE",
+    "key": "calangute",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Michael Lobo",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 3,
+      "education": "12th Pass",
+      "assets": "Rs 92,91,01,865 ~ 92 Crore+",
+      "liabilities": "Rs 28,87,35,436 ~ 28 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP. myneta shows the same assets and liabilities for both spouses (Lobo, Monserrate and Rane couples), apparently because each affidavit declares the combined family holdings.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "MICHAEL VINCENT LOBO",
+        "party": "Indian National Congress",
+        "votes": 9285,
+        "vote_pct": 45.09
+      },
+      "runner_up": {
+        "name": "JOSEPH ROBERT SEQUEIRA",
+        "party": "Bharatiya Janata Party",
+        "votes": 4306,
+        "vote_pct": 20.91
+      },
+      "margin": 4979,
+      "total_votes_polled": 20590,
+      "candidate_count": 7,
+      "nota_votes": 173
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=61: https://myneta.info/goa2022/candidate.php?candidate_id=61",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911161213/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS058.htm?ac=8 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 9,
+    "constituency": "PORVORIM",
+    "key": "porvorim",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Rohan Khaunte",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 1,
+      "education": "Others",
+      "assets": "Rs 21,63,52,326 ~ 21 Crore+",
+      "liabilities": "Rs 3,36,53,813 ~ 3 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "The liabilities figure comes from the myneta candidate detail page. ADR's winners-list table shows Rs 3,36,53,814 instead.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ROHAN KHAUNTE",
+        "party": "Bharatiya Janata Party",
+        "votes": 11714,
+        "vote_pct": 55.16
+      },
+      "runner_up": {
+        "name": "SANDEEP VAZARKAR",
+        "party": "All India Trinamool Congress",
+        "votes": 3764,
+        "vote_pct": 17.72
+      },
+      "margin": 7950,
+      "total_votes_polled": 21237,
+      "candidate_count": 5,
+      "nota_votes": 473
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=7: https://myneta.info/goa2022/candidate.php?candidate_id=7",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911152936/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS059.htm?ac=9 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 10,
+    "constituency": "ALDONA",
+    "key": "aldona",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bardez",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Carlos Ferreira",
+      "party": "INC",
+      "alliance": "INDIA",
+      "party_at_election": "INC",
+      "criminal_cases": 0,
+      "education": "Graduate Professional",
+      "assets": "Rs 21,42,77,799 ~ 21 Crore+",
+      "liabilities": "Rs 12,44,176 ~ 12 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "CARLOS ALVARES FERREIRA",
+        "party": "Indian National Congress",
+        "votes": 9320,
+        "vote_pct": 41.43
+      },
+      "runner_up": {
+        "name": "GLENN JOHN VIJAY AMBROSE E SOUZA TICLO",
+        "party": "Bharatiya Janata Party",
+        "votes": 7497,
+        "vote_pct": 33.33
+      },
+      "margin": 1823,
+      "total_votes_polled": 22496,
+      "candidate_count": 6,
+      "nota_votes": 260
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=222: https://myneta.info/goa2022/candidate.php?candidate_id=222",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250907105730/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0510.htm?ac=10 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 11,
+    "constituency": "PANAJI",
+    "key": "panaji",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Tiswadi",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Atanasio Monserrate",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 2,
+      "education": "12th Pass",
+      "assets": "Rs 48,48,54,264 ~ 48 Crore+",
+      "liabilities": "Rs 6,46,28,862 ~ 6 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "The liabilities figure comes from the myneta candidate detail page. ADR's winners-list table shows Rs 6,46,28,864 instead. myneta shows the same assets and liabilities for both spouses (Lobo, Monserrate and Rane couples), apparently because each affidavit declares the combined family holdings.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ATANASIO MONSERRATE",
+        "party": "Bharatiya Janata Party",
+        "votes": 6787,
+        "vote_pct": 38.96
+      },
+      "runner_up": {
+        "name": "UTPAL MANOHAR  PARRIKAR",
+        "party": "Independent",
+        "votes": 6071,
+        "vote_pct": 34.85
+      },
+      "margin": 716,
+      "total_votes_polled": 17419,
+      "candidate_count": 7,
+      "nota_votes": 173
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=124: https://myneta.info/goa2022/candidate.php?candidate_id=124",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905132734/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0511.htm?ac=11 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 12,
+    "constituency": "TALEIGAO",
+    "key": "taleigao",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Tiswadi",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": null,
+      "party": null,
+      "alliance": null,
+      "party_at_election": "BJP",
+      "criminal_cases": null,
+      "education": null,
+      "assets": null,
+      "liabilities": null,
+      "in_static_roster": false
+    },
+    "vacancy": {
+      "since": "2026-07-19",
+      "reason": "Death of sitting MLA Jennifer Monserrate",
+      "note": "The Goa Legislative Assembly member list (updated 24 Sep 2026) records her death on 19 Jul 2026 (Bulletin No. 272). Herald Goa and The Tribune reported it on 19 Jul 2026. No by-election had been announced when this was checked; less than one year of the Assembly term remains."
+    },
+    "notes": "Seat VACANT. The mla fields are null. election_2022 and party_at_election describe the 2022 winner. myneta shows the same assets and liabilities for both spouses (Lobo, Monserrate and Rane couples), apparently because each affidavit declares the combined family holdings.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "JENNIFER MONSERRATE",
+        "party": "Bharatiya Janata Party",
+        "votes": 10167,
+        "vote_pct": 43.38
+      },
+      "runner_up": {
+        "name": "TONY ALFREDO RODRIGUES",
+        "party": "Indian National Congress",
+        "votes": 8126,
+        "vote_pct": 34.67
+      },
+      "margin": 2041,
+      "total_votes_polled": 23435,
+      "candidate_count": 8,
+      "nota_votes": 421
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "Not applicable: seat vacant. The 2022 winner's affidavit is on myneta.info/goa2022.",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250907122110/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0512.htm?ac=12 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 13,
+    "constituency": "ST. CRUZ",
+    "key": "stcruz",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Tiswadi",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Rodolfo Fernandes",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 1,
+      "education": "10th Pass",
+      "assets": "Rs 34,66,61,782 ~ 34 Crore+",
+      "liabilities": "Rs 72,16,182 ~ 72 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP. ECI lists it as 'St.Cruz' and Wikipedia as 'Santa Cruz'. The name here follows the 2008 Delimitation Order ('St. Cruz').",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "RODOLFO LOUIS FERNANDES",
+        "party": "Indian National Congress",
+        "votes": 8841,
+        "vote_pct": 38.97
+      },
+      "runner_up": {
+        "name": "ANTONIO CAETANO FERNANDES",
+        "party": "Bharatiya Janata Party",
+        "votes": 6377,
+        "vote_pct": 28.11
+      },
+      "margin": 2464,
+      "total_votes_polled": 22685,
+      "candidate_count": 5,
+      "nota_votes": 349
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=53: https://myneta.info/goa2022/candidate.php?candidate_id=53",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911214958/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0513.htm?ac=13 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 14,
+    "constituency": "ST. ANDRE",
+    "key": "standre",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Tiswadi",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Viresh Borkar",
+      "party": "RGP",
+      "alliance": "OTHERS",
+      "party_at_election": "RGP",
+      "criminal_cases": 0,
+      "education": "12th Pass",
+      "assets": "Rs 8,29,155 ~ 8 Lacs+",
+      "liabilities": "Rs 3,96,719 ~ 3 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "VIRESH MUKESH BORKAR",
+        "party": "Revolutionary Goans Party",
+        "votes": 5395,
+        "vote_pct": 33.14
+      },
+      "runner_up": {
+        "name": "FRANCISCO SILVEIRA",
+        "party": "Bharatiya Janata Party",
+        "votes": 5319,
+        "vote_pct": 32.67
+      },
+      "margin": 76,
+      "total_votes_polled": 16279,
+      "candidate_count": 7,
+      "nota_votes": 137
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=199: https://myneta.info/goa2022/candidate.php?candidate_id=199",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911214204/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0514.htm?ac=14 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 15,
+    "constituency": "CUMBARJUA",
+    "key": "cumbarjua",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Tiswadi",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Rajesh Faldessai",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 1,
+      "education": "12th Pass",
+      "assets": "Rs 5,73,95,617 ~ 5 Crore+",
+      "liabilities": "Rs 2,85,77,010 ~ 2 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP. Cumbarjua AC lies wholly in Tiswadi taluka (Delimitation Order 2008).",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "RAJESH FALDESSAI",
+        "party": "Indian National Congress",
+        "votes": 6776,
+        "vote_pct": 31.44
+      },
+      "runner_up": {
+        "name": "JANITA PANDURANG MADKAIKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 3949,
+        "vote_pct": 18.32
+      },
+      "margin": 2827,
+      "total_votes_polled": 21550,
+      "candidate_count": 7,
+      "nota_votes": 328
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=237: https://myneta.info/goa2022/candidate.php?candidate_id=237",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905122539/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0515.htm?ac=15 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 16,
+    "constituency": "MAEM",
+    "key": "maem",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bicholim",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Premendra Shet",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 4,41,01,862 ~ 4 Crore+",
+      "liabilities": "Rs 1,61,36,133 ~ 1 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Maem AC is mostly Bicholim taluka but also includes Chorao saza of Tiswadi taluka (both North Goa). The 2008 Delimitation Order AC table spells it 'Maem' (its PC table uses 'Mayem').",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "PREMENDRA VISHNU SHET",
+        "party": "Bharatiya Janata Party",
+        "votes": 7874,
+        "vote_pct": 30.89
+      },
+      "runner_up": {
+        "name": "SANTOSH KUMAR SAWANT",
+        "party": "Goa Forward Party",
+        "votes": 4738,
+        "vote_pct": 18.59
+      },
+      "margin": 3136,
+      "total_votes_polled": 25488,
+      "candidate_count": 9,
+      "nota_votes": 332
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=44: https://myneta.info/goa2022/candidate.php?candidate_id=44",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911145431/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0516.htm?ac=16 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 17,
+    "constituency": "SANQUELIM",
+    "key": "sanquelim",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Bicholim",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Pramod Sawant",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Post Graduate",
+      "assets": "Rs 9,37,79,584 ~ 9 Crore+",
+      "liabilities": "Rs 1,50,14,007 ~ 1 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "DR. PRAMOD SAWANT",
+        "party": "Bharatiya Janata Party",
+        "votes": 12250,
+        "vote_pct": 47.73
+      },
+      "runner_up": {
+        "name": "DHARMESH SAGLANI",
+        "party": "Indian National Congress",
+        "votes": 11584,
+        "vote_pct": 45.13
+      },
+      "margin": 666,
+      "total_votes_polled": 25666,
+      "candidate_count": 12,
+      "nota_votes": 286
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=157: https://myneta.info/goa2022/candidate.php?candidate_id=157",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906002443/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0517.htm?ac=17 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 18,
+    "constituency": "PORIEM",
+    "key": "poriem",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Sattari",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Deviya Rane",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Graduate Professional",
+      "assets": "Rs 23,18,10,596 ~ 23 Crore+",
+      "liabilities": "Rs 11,62,98,925 ~ 11 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "myneta shows the same assets and liabilities for both spouses (Lobo, Monserrate and Rane couples), apparently because each affidavit declares the combined family holdings.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "DEVIYA VISHWAJIT RANE",
+        "party": "Bharatiya Janata Party",
+        "votes": 17816,
+        "vote_pct": 60.92
+      },
+      "runner_up": {
+        "name": "VISHWAJIT RANE",
+        "party": "Aam Aadmi Party",
+        "votes": 3873,
+        "vote_pct": 13.24
+      },
+      "margin": 13943,
+      "total_votes_polled": 29245,
+      "candidate_count": 7,
+      "nota_votes": 542
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=254: https://myneta.info/goa2022/candidate.php?candidate_id=254",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911141719/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0518.htm?ac=18 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 19,
+    "constituency": "VALPOI",
+    "key": "valpoi",
+    "district": "North Goa",
+    "district_2022": "North Goa",
+    "taluka": "Sattari",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Vishwajit Rane",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 23,18,10,596 ~ 23 Crore+",
+      "liabilities": "Rs 11,62,98,925 ~ 11 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "myneta shows the same assets and liabilities for both spouses (Lobo, Monserrate and Rane couples), apparently because each affidavit declares the combined family holdings. Valpoi AC is mostly Sattari taluka (North Goa) but also includes Usgao saza of Ponda taluka, which is in South Goa district. The AC is assigned to North Goa as a whole.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "VISHWAJIT PRATAPSINGH RANE",
+        "party": "Bharatiya Janata Party",
+        "votes": 14462,
+        "vote_pct": 53.62
+      },
+      "runner_up": {
+        "name": "TUKARAM BHARAT PARAB",
+        "party": "Revolutionary Goans Party",
+        "votes": 6377,
+        "vote_pct": 23.64
+      },
+      "margin": 8085,
+      "total_votes_polled": 26970,
+      "candidate_count": 8,
+      "nota_votes": 411
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=177: https://myneta.info/goa2022/candidate.php?candidate_id=177",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250912041823/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0519.htm?ac=19 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 20,
+    "constituency": "PRIOL",
+    "key": "priol",
+    "district": "South Goa",
+    "district_2022": "North Goa",
+    "taluka": "Ponda",
+    "reserved_category": null,
+    "lok_sabha": "North Goa",
+    "mla": {
+      "name": "Govind Gaude",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 1,
+      "education": "Others",
+      "assets": "Rs 2,67,61,955 ~ 2 Crore+",
+      "liabilities": "Rs 29,39,405 ~ 29 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Lies in Ponda taluka. It was listed under North Goa district for the 2022 election and is in South Goa district now. It is in the North Goa Lok Sabha seat but is in South Goa district.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "GOVIND SHEPU GAUDE",
+        "party": "Bharatiya Janata Party",
+        "votes": 11019,
+        "vote_pct": 39.26
+      },
+      "runner_up": {
+        "name": "PANDURANG ALIAS DEEPAK DHAVALIKAR",
+        "party": "Maharashtrawadi Gomantak Party",
+        "votes": 10806,
+        "vote_pct": 38.5
+      },
+      "margin": 213,
+      "total_votes_polled": 28065,
+      "candidate_count": 8,
+      "nota_votes": 244
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=1: https://myneta.info/goa2022/candidate.php?candidate_id=1",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906110954/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0520.htm?ac=20 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 21,
+    "constituency": "PONDA",
+    "key": "ponda",
+    "district": "South Goa",
+    "district_2022": "North Goa",
+    "taluka": "Ponda",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": null,
+      "party": null,
+      "alliance": null,
+      "party_at_election": "BJP",
+      "criminal_cases": null,
+      "education": null,
+      "assets": null,
+      "liabilities": null,
+      "in_static_roster": false
+    },
+    "vacancy": {
+      "since": "2025-10-15",
+      "reason": "Death of sitting MLA Ravi Naik",
+      "note": "The Goa Legislative Assembly says he died on 15 Oct 2025 (Bulletin No. 236); Wikipedia says 14 Oct, and he was declared dead at about 1 am on 15 Oct. The by-election set for 9 Apr 2026 was quashed by the Bombay HC (Goa bench) on 8 Apr 2026 because less than one year of the Assembly term was left (RP Act s.151A). Congress candidate Ketan Bhatikar appealed to the Supreme Court (filed Apr 2026); no final SC ruling was found as of 2026-09-25."
+    },
+    "notes": "Seat VACANT. The mla fields are null. election_2022 and party_at_election describe the 2022 winner. Lies in Ponda taluka. It was listed under North Goa district for the 2022 election and is in South Goa district now. It is in the South Goa Lok Sabha seat under the 2008 delimitation, although the district was North Goa until Dec 2025.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "RAVI NAIK",
+        "party": "Bharatiya Janata Party",
+        "votes": 7514,
+        "vote_pct": 29.12
+      },
+      "runner_up": {
+        "name": "KETAN PRABHU BHATIKAR",
+        "party": "Maharashtrawadi Gomantak Party",
+        "votes": 7437,
+        "vote_pct": 28.82
+      },
+      "margin": 77,
+      "total_votes_polled": 25801,
+      "candidate_count": 7,
+      "nota_votes": 292
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "Not applicable: seat vacant. The 2022 winner's affidavit is on myneta.info/goa2022.",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905125234/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0521.htm?ac=21 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 22,
+    "constituency": "SIRODA",
+    "key": "siroda",
+    "district": "South Goa",
+    "district_2022": "North Goa",
+    "taluka": "Ponda",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Subhash Shirodkar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "12th Pass",
+      "assets": "Rs 4,92,31,424 ~ 4 Crore+",
+      "liabilities": "Rs 1,69,88,497 ~ 1 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Lies in Ponda taluka. It was listed under North Goa district for the 2022 election and is in South Goa district now. It is in the South Goa Lok Sabha seat under the 2008 delimitation, although the district was North Goa until Dec 2025. The 2008 Delimitation Order AC table spells it 'Siroda' (its PC table uses 'Shiroda'). The Assembly website uses 'Shiroda'.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "SUBHASH SHIRODKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 8307,
+        "vote_pct": 33.18
+      },
+      "runner_up": {
+        "name": "MAHADEV NAIK",
+        "party": "Aam Aadmi Party",
+        "votes": 6133,
+        "vote_pct": 24.5
+      },
+      "margin": 2174,
+      "total_votes_polled": 25034,
+      "candidate_count": 8,
+      "nota_votes": 235
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=5: https://myneta.info/goa2022/candidate.php?candidate_id=5",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906010712/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0522.htm?ac=22 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 23,
+    "constituency": "MARCAIM",
+    "key": "marcaim",
+    "district": "South Goa",
+    "district_2022": "North Goa",
+    "taluka": "Ponda",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Sudin Dhavalikar",
+      "party": "MGP",
+      "alliance": "NDA",
+      "party_at_election": "MGP",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 16,90,67,222 ~ 16 Crore+",
+      "liabilities": "Rs 50,62,832 ~ 50 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Lies in Ponda taluka. It was listed under North Goa district for the 2022 election and is in South Goa district now. It is in the South Goa Lok Sabha seat under the 2008 delimitation, although the district was North Goa until Dec 2025.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "RAMKRISHNA ALIAS SUDIN DHAVALIKAR",
+        "party": "Maharashtrawadi Gomantak Party",
+        "votes": 13963,
+        "vote_pct": 58.86
+      },
+      "runner_up": {
+        "name": "SUDESH BHINGI",
+        "party": "Bharatiya Janata Party",
+        "votes": 4000,
+        "vote_pct": 16.86
+      },
+      "margin": 9963,
+      "total_votes_polled": 23722,
+      "candidate_count": 8,
+      "nota_votes": 373
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=4: https://myneta.info/goa2022/candidate.php?candidate_id=4",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906101611/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0523.htm?ac=23 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 24,
+    "constituency": "MORMUGAO",
+    "key": "mormugao",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Mormugao",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Sankalp Amonkar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 5,
+      "education": "Graduate",
+      "assets": "Rs 7,51,45,421 ~ 7 Crore+",
+      "liabilities": "Rs 3,05,48,223 ~ 3 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP. The liabilities figure comes from the myneta candidate detail page. ADR's winners-list table shows Rs 3,04,62,424 instead.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "SANKALP AMONKAR",
+        "party": "Indian National Congress",
+        "votes": 9067,
+        "vote_pct": 53.68
+      },
+      "runner_up": {
+        "name": "MILIND SAGUN NAIK",
+        "party": "Bharatiya Janata Party",
+        "votes": 7126,
+        "vote_pct": 42.19
+      },
+      "margin": 1941,
+      "total_votes_polled": 16892,
+      "candidate_count": 8,
+      "nota_votes": 107
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=6: https://myneta.info/goa2022/candidate.php?candidate_id=6",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906003657/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0524.htm?ac=24 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 25,
+    "constituency": "VASCO-DA-GAMA",
+    "key": "vascodagama",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Mormugao",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Krishna Salkar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 1,
+      "education": "Graduate",
+      "assets": "Rs 5,46,29,784 ~ 5 Crore+",
+      "liabilities": "Rs 7,78,500 ~ 7 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "ADR/myneta's live 2022 page (candidate_id=168) now returns 'Page Not Found', and ADR's winners list covers only 38 winners. The affidavit fields were taken from the archived page: https://web.archive.org/web/20251208191406/https://myneta.info/goa2022/candidate.php?candidate_id=168.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "KRISHNA V. SALKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 13118,
+        "vote_pct": 51.43
+      },
+      "runner_up": {
+        "name": "JOSE LUIS CARLOS ALMEIDA",
+        "party": "Indian National Congress",
+        "votes": 9461,
+        "vote_pct": 37.09
+      },
+      "margin": 3657,
+      "total_votes_polled": 25506,
+      "candidate_count": 9,
+      "nota_votes": 244
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=168: https://myneta.info/goa2022/candidate.php?candidate_id=168",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905180634/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0525.htm?ac=25 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 26,
+    "constituency": "DABOLIM",
+    "key": "dabolim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Mormugao",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Mauvin Godinho",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 22,22,11,488 ~ 22 Crore+",
+      "liabilities": "Rs 0 ~",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "MAUVIN HELIODORO GODINHO",
+        "party": "Bharatiya Janata Party",
+        "votes": 7594,
+        "vote_pct": 40.51
+      },
+      "runner_up": {
+        "name": "CAPTAIN VIRIATO HIPOLITO MENDONCA FERNANDES",
+        "party": "Indian National Congress",
+        "votes": 6024,
+        "vote_pct": 32.14
+      },
+      "margin": 1570,
+      "total_votes_polled": 18745,
+      "candidate_count": 7,
+      "nota_votes": 198
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=13: https://myneta.info/goa2022/candidate.php?candidate_id=13",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905132521/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0526.htm?ac=26 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 27,
+    "constituency": "CORTALIM",
+    "key": "cortalim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Mormugao",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Antonio Vas",
+      "party": "IND",
+      "alliance": "NDA",
+      "party_at_election": "IND",
+      "criminal_cases": 0,
+      "education": "10th Pass",
+      "assets": "Rs 4,98,82,575 ~ 4 Crore+",
+      "liabilities": "Rs 1,34,56,604 ~ 1 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "This Independent has supported the Sawant government since March 2022: all 3 Independents backed its formation, and each chairs a state corporation or board (GIDC, Goa Infotech Corporation, KVIB). Wikipedia's '8th Goa Assembly' also lists them under NDA.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ANTONIO VAS",
+        "party": "Independent",
+        "votes": 5522,
+        "vote_pct": 23.08
+      },
+      "runner_up": {
+        "name": "OLENCIO SIMOES",
+        "party": "Indian National Congress",
+        "votes": 4344,
+        "vote_pct": 18.16
+      },
+      "margin": 1178,
+      "total_votes_polled": 23924,
+      "candidate_count": 9,
+      "nota_votes": 213
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=71: https://myneta.info/goa2022/candidate.php?candidate_id=71",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905131206/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0527.htm?ac=27 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 28,
+    "constituency": "NUVEM",
+    "key": "nuvem",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Aleixo Sequeira",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 18,27,58,355 ~ 18 Crore+",
+      "liabilities": "Rs 5,97,000 ~ 5 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ALEIXO SEQUEIRA",
+        "party": "Indian National Congress",
+        "votes": 8745,
+        "vote_pct": 40.09
+      },
+      "runner_up": {
+        "name": "ARVIND D'COSTA",
+        "party": "Revolutionary Goans Party",
+        "votes": 4348,
+        "vote_pct": 19.93
+      },
+      "margin": 4397,
+      "total_votes_polled": 21811,
+      "candidate_count": 7,
+      "nota_votes": 175
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=118: https://myneta.info/goa2022/candidate.php?candidate_id=118",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250907120110/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0528.htm?ac=28 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 29,
+    "constituency": "CURTORIM",
+    "key": "curtorim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Aleixo Lourenco",
+      "party": "IND",
+      "alliance": "NDA",
+      "party_at_election": "IND",
+      "criminal_cases": 0,
+      "education": "10th Pass",
+      "assets": "Rs 8,39,69,976 ~ 8 Crore+",
+      "liabilities": "Rs 58,79,056 ~ 58 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "This Independent has supported the Sawant government since March 2022: all 3 Independents backed its formation, and each chairs a state corporation or board (GIDC, Goa Infotech Corporation, KVIB). Wikipedia's '8th Goa Assembly' also lists them under NDA. ADR/myneta's live 2022 page (candidate_id=84) now returns 'Page Not Found', and ADR's winners list covers only 38 winners. The affidavit fields were taken from the archived page: https://web.archive.org/web/20251210055422/https://myneta.info/goa2022/candidate.php?candidate_id=84. The liabilities figure comes from the myneta candidate detail page. ADR's winners-list table shows Rs 49,11,056 instead.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ALEIXO REGINALDO LOURENCO",
+        "party": "Independent",
+        "votes": 8960,
+        "vote_pct": 40.12
+      },
+      "runner_up": {
+        "name": "MORENO REBELO",
+        "party": "Indian National Congress",
+        "votes": 3905,
+        "vote_pct": 17.49
+      },
+      "margin": 5055,
+      "total_votes_polled": 22333,
+      "candidate_count": 8,
+      "nota_votes": 232
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=84: https://myneta.info/goa2022/candidate.php?candidate_id=84",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906104055/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0529.htm?ac=29 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 30,
+    "constituency": "FATORDA",
+    "key": "fatorda",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Vijai Sardesai",
+      "party": "GFP",
+      "alliance": "INDIA",
+      "party_at_election": "GFP",
+      "criminal_cases": 1,
+      "education": "Graduate",
+      "assets": "Rs 37,16,45,465 ~ 37 Crore+",
+      "liabilities": "Rs 6,53,09,351 ~ 6 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "VIJAI SARDESAI",
+        "party": "Goa Forward Party",
+        "votes": 11063,
+        "vote_pct": 45.81
+      },
+      "runner_up": {
+        "name": "DAMU G. NAIK",
+        "party": "Bharatiya Janata Party",
+        "votes": 9536,
+        "vote_pct": 39.49
+      },
+      "margin": 1527,
+      "total_votes_polled": 24150,
+      "candidate_count": 6,
+      "nota_votes": 254
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=90: https://myneta.info/goa2022/candidate.php?candidate_id=90",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905122752/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0530.htm?ac=30 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 31,
+    "constituency": "MARGAO",
+    "key": "margao",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Digambar Kamat",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "INC",
+      "criminal_cases": 4,
+      "education": "Graduate",
+      "assets": "Rs 15,15,65,314 ~ 15 Crore+",
+      "liabilities": "Rs 20,45,000 ~ 20 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Won in 2022 as an INC candidate. Switched to BJP on 14 Sep 2022 as one of the 8 Congress MLAs who merged into BJP.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "DIGAMBAR KAMAT",
+        "party": "Indian National Congress",
+        "votes": 13674,
+        "vote_pct": 60.42
+      },
+      "runner_up": {
+        "name": "AJGAONKAR MANOHAR (BABU)",
+        "party": "Bharatiya Janata Party",
+        "votes": 5880,
+        "vote_pct": 25.98
+      },
+      "margin": 7794,
+      "total_votes_polled": 22633,
+      "candidate_count": 5,
+      "nota_votes": 261
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=108: https://myneta.info/goa2022/candidate.php?candidate_id=108",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911150103/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0531.htm?ac=31 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 32,
+    "constituency": "BENAULIM",
+    "key": "benaulim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Venzy Viegas",
+      "party": "AAP",
+      "alliance": "INDIA",
+      "party_at_election": "AAP",
+      "criminal_cases": 0,
+      "education": "Others",
+      "assets": "Rs 5,12,32,418 ~ 5 Crore+",
+      "liabilities": "Rs 5,84,248 ~ 5 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Alliance is set to INDIA by the project rule. However, AAP announced in July 2025 that it was leaving the INDIA bloc, and Wikipedia's '8th Goa Assembly' lists AAP separately from INDIA.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "VENZY VIEGAS",
+        "party": "Aam Aadmi Party",
+        "votes": 6411,
+        "vote_pct": 30.36
+      },
+      "runner_up": {
+        "name": "CHURCHILL ALEMAO",
+        "party": "All India Trinamool Congress",
+        "votes": 5140,
+        "vote_pct": 24.34
+      },
+      "margin": 1271,
+      "total_votes_polled": 21114,
+      "candidate_count": 5,
+      "nota_votes": 161
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=57: https://myneta.info/goa2022/candidate.php?candidate_id=57",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250912031340/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0532.htm?ac=32 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 33,
+    "constituency": "NAVELIM",
+    "key": "navelim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Ulhas Tuenkar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Others",
+      "assets": "Rs 2,30,96,512 ~ 2 Crore+",
+      "liabilities": "Rs 1,10,000 ~ 1 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ULHAS TUENKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 5168,
+        "vote_pct": 24.23
+      },
+      "runner_up": {
+        "name": "VALANKA NATASHA ALEMAO",
+        "party": "All India Trinamool Congress",
+        "votes": 4738,
+        "vote_pct": 22.21
+      },
+      "margin": 430,
+      "total_votes_polled": 21332,
+      "candidate_count": 9,
+      "nota_votes": 168
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=115: https://myneta.info/goa2022/candidate.php?candidate_id=115",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250907104245/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0533.htm?ac=33 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 34,
+    "constituency": "CUNCOLIM",
+    "key": "cuncolim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Yuri Alemao",
+      "party": "INC",
+      "alliance": "INDIA",
+      "party_at_election": "INC",
+      "criminal_cases": 0,
+      "education": "Others",
+      "assets": "Rs 30,16,72,604 ~ 30 Crore+",
+      "liabilities": "Rs 0 ~",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Cuncolim AC is mostly Salcete taluka (South Goa) but also includes Ambaulim and Bali villages of Quepem taluka, which have been in Kushavati district since 31 Dec 2025.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ALEMAO YURI",
+        "party": "Indian National Congress",
+        "votes": 9866,
+        "vote_pct": 42.7
+      },
+      "runner_up": {
+        "name": "CLAFASIO DIAS",
+        "party": "Bharatiya Janata Party",
+        "votes": 6632,
+        "vote_pct": 28.71
+      },
+      "margin": 3234,
+      "total_votes_polled": 23103,
+      "candidate_count": 10,
+      "nota_votes": 186
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=243: https://myneta.info/goa2022/candidate.php?candidate_id=243",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911160608/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0534.htm?ac=34 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 35,
+    "constituency": "VELIM",
+    "key": "velim",
+    "district": "South Goa",
+    "district_2022": "South Goa",
+    "taluka": "Salcete",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Cruz Silva",
+      "party": "AAP",
+      "alliance": "INDIA",
+      "party_at_election": "AAP",
+      "criminal_cases": 0,
+      "education": "Graduate Professional",
+      "assets": "Rs 12,21,81,868 ~ 12 Crore+",
+      "liabilities": "Rs 95,88,514 ~ 95 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Alliance is set to INDIA by the project rule. However, AAP announced in July 2025 that it was leaving the INDIA bloc, and Wikipedia's '8th Goa Assembly' lists AAP separately from INDIA.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "CRUZ SILVA",
+        "party": "Aam Aadmi Party",
+        "votes": 5390,
+        "vote_pct": 23.04
+      },
+      "runner_up": {
+        "name": "D'SILVA SAVIO",
+        "party": "Indian National Congress",
+        "votes": 5221,
+        "vote_pct": 22.32
+      },
+      "margin": 169,
+      "total_votes_polled": 23390,
+      "candidate_count": 6,
+      "nota_votes": 241
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=166: https://myneta.info/goa2022/candidate.php?candidate_id=166",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250907121336/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0535.htm?ac=35 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 36,
+    "constituency": "QUEPEM",
+    "key": "quepem",
+    "district": "Kushavati",
+    "district_2022": "South Goa",
+    "taluka": "Quepem",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Altone D'Costa",
+      "party": "INC",
+      "alliance": "INDIA",
+      "party_at_election": "INC",
+      "criminal_cases": 0,
+      "education": "10th Pass",
+      "assets": "Rs 20,87,28,330 ~ 20 Crore+",
+      "liabilities": "Rs 30,66,500 ~ 30 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "Quepem AC is mostly Quepem taluka but also includes Cola saza of Canacona taluka (both Kushavati).",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "ALTONE D'COSTA",
+        "party": "Indian National Congress",
+        "votes": 14994,
+        "vote_pct": 52.51
+      },
+      "runner_up": {
+        "name": "CHANDRAKANT KAVLEKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 11393,
+        "vote_pct": 39.9
+      },
+      "margin": 3601,
+      "total_votes_polled": 28556,
+      "candidate_count": 7,
+      "nota_votes": 246
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=144: https://myneta.info/goa2022/candidate.php?candidate_id=144",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905190609/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0536.htm?ac=36 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 37,
+    "constituency": "CURCHOREM",
+    "key": "curchorem",
+    "district": "Kushavati",
+    "district_2022": "South Goa",
+    "taluka": "Quepem",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Nilesh Cabral",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Others",
+      "assets": "Rs 28,23,29,390 ~ 28 Crore+",
+      "liabilities": "Rs 11,99,06,394 ~ 11 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "NILESH CABRAL",
+        "party": "Bharatiya Janata Party",
+        "votes": 9973,
+        "vote_pct": 43.77
+      },
+      "runner_up": {
+        "name": "AMIT PATKAR",
+        "party": "Indian National Congress",
+        "votes": 9301,
+        "vote_pct": 40.82
+      },
+      "margin": 672,
+      "total_votes_polled": 22787,
+      "candidate_count": 6,
+      "nota_votes": 216
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=3: https://myneta.info/goa2022/candidate.php?candidate_id=3",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250907114404/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0537.htm?ac=37 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 38,
+    "constituency": "SANVORDEM",
+    "key": "sanvordem",
+    "district": "Kushavati",
+    "district_2022": "South Goa",
+    "taluka": "Dharbandora",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Ganesh Gaunker",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Graduate",
+      "assets": "Rs 19,57,68,960 ~ 19 Crore+",
+      "liabilities": "Rs 4,24,94,120 ~ 4 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "The Goa Legislative Assembly spells the MLA's name 'Dr. Ganesh Gaunker'; ECI and ADR spell it 'Ganesh Gaonkar'. He has been Speaker since 25 Sep 2025. Sanvordem AC: the 2008 Delimitation Order lists all 7 sazas under Sanguem taluka. Under the 31 Dec 2025 gazette, 5 of them (Dharbandora, Sancordem, Molem, Colem, Codli) are in Dharbandora taluka (created 2015), and Sanvordem and Calem stay in Sanguem taluka. All are in Kushavati district.",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "GANESH GAONKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 11877,
+        "vote_pct": 44.77
+      },
+      "runner_up": {
+        "name": "DEEPAK PRABHU PAUSKAR",
+        "party": "Independent",
+        "votes": 6687,
+        "vote_pct": 25.21
+      },
+      "margin": 5190,
+      "total_votes_polled": 26530,
+      "candidate_count": 7,
+      "nota_votes": 280
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=34: https://myneta.info/goa2022/candidate.php?candidate_id=34",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250911150523/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0538.htm?ac=38 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 39,
+    "constituency": "SANGUEM",
+    "key": "sanguem",
+    "district": "Kushavati",
+    "district_2022": "South Goa",
+    "taluka": "Sanguem",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Subhash Phal Dessai",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 0,
+      "education": "Post Graduate",
+      "assets": "Rs 8,76,51,774 ~ 8 Crore+",
+      "liabilities": "Rs 1,55,34,834 ~ 1 Crore+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "The liabilities figure comes from the myneta candidate detail page. ADR's winners-list table shows Rs 1,49,80,668 instead. Sanguem AC is mostly Sanguem taluka but also includes Molcarnem and Cavorem sazas of Quepem taluka (both Kushavati).",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "SUBHASH UTTAM PHAL DESSAI",
+        "party": "Bharatiya Janata Party",
+        "votes": 8724,
+        "vote_pct": 36.73
+      },
+      "runner_up": {
+        "name": "SAVITRI CHANDRAKANT KAVLEKAR",
+        "party": "Independent",
+        "votes": 7295,
+        "vote_pct": 30.71
+      },
+      "margin": 1429,
+      "total_votes_polled": 23751,
+      "candidate_count": 8,
+      "nota_votes": 241
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=30: https://myneta.info/goa2022/candidate.php?candidate_id=30",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250906003422/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0539.htm?ac=39 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  },
+  {
+    "ac_number": 40,
+    "constituency": "CANACONA",
+    "key": "canacona",
+    "district": "Kushavati",
+    "district_2022": "South Goa",
+    "taluka": "Canacona",
+    "reserved_category": null,
+    "lok_sabha": "South Goa",
+    "mla": {
+      "name": "Ramesh Tawadkar",
+      "party": "BJP",
+      "alliance": "NDA",
+      "party_at_election": "BJP",
+      "criminal_cases": 1,
+      "education": "Graduate Professional",
+      "assets": "Rs 1,68,01,407 ~ 1 Crore+",
+      "liabilities": "Rs 40,74,196 ~ 40 Lacs+",
+      "in_static_roster": true
+    },
+    "vacancy": null,
+    "notes": "",
+    "election_year": 2022,
+    "election_latest": {
+      "winner": {
+        "name": "RAMESH TAWADKAR",
+        "party": "Bharatiya Janata Party",
+        "votes": 9063,
+        "vote_pct": 31.11
+      },
+      "runner_up": {
+        "name": "ISIDORE ALEIXINHO FERNANDES",
+        "party": "Independent",
+        "votes": 6012,
+        "vote_pct": 20.64
+      },
+      "margin": 3051,
+      "total_votes_polled": 29132,
+      "candidate_count": 8,
+      "nota_votes": 296
+    },
+    "data_sources": {
+      "district_lok_sabha_reserved": "Delimitation of Parliamentary and Assembly Constituencies Order, 2008 (Schedule VIII Goa, Tables A and B); current district from the Goa Govt Revenue Dept notification 16/29/1/2023-Rev-I/3259 of 31 Dec 2025 (Official Gazette Series I No. 39, Extraordinary No. 2), which is consistent with the CEO Goa State Fact Sheet district grouping",
+      "mla_affidavit": "ADR/myneta Goa 2022 affidavit, candidate_id=69: https://myneta.info/goa2022/candidate.php?candidate_id=69",
+      "current_mla": "Goa Legislative Assembly, Members of the Eighth Legislative Assembly (https://www.goavidhansabha.gov.in/mlas.php, last updated 24 Sep 2026)",
+      "election_latest": "ECI results portal, archived by the Wayback Machine: https://web.archive.org/web/20250905115458/https://results.eci.gov.in/ResultAcGenMar2022/ConstituencywiseS0540.htm?ac=40 (cross-checked against the winner/runner-up/margin table in Wikipedia '2022 Goa Legislative Assembly election'). total_votes_polled is the ECI 'Total' row: EVM plus postal votes for all candidates and NOTA. It excludes rejected postal ballots. vote_pct is ECI's % of that total. candidate_count excludes NOTA."
+    }
+  }
+]

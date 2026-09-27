@@ -1,0 +1,596 @@
+[
+  {
+    "platform": "x",
+    "identifier": "@prudentgoa",
+    "display_name": "Prudent Media",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/user/prudentmediagoa",
+    "display_name": "Prudent Media",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/PrudentMedia/",
+    "display_name": "Prudent Media",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@prudentmediagoa",
+    "display_name": "Prudent Media",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@oheraldogoa",
+    "display_name": "O Heraldo / Herald Goa",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/channel/UC7J_xpeCOZ7OMFC__2VF1pw",
+    "display_name": "OHeraldo Goa / Herald TV",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/oheraldogoa",
+    "display_name": "O Heraldo",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@heraldo_goa",
+    "display_name": "O Heraldo",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Navhind_Times",
+    "display_name": "The Navhind Times",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@navhind_times",
+    "display_name": "The Navhind Times",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/navhindtimes/",
+    "display_name": "The Navhind Times",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@thegoanonline",
+    "display_name": "The Goan",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@TheGoanOnline",
+    "display_name": "The Goan",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/TheGoanEveryday",
+    "display_name": "The Goan Everyday",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@thegoanonline",
+    "display_name": "The Goan",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@goanvarta",
+    "display_name": "Goan Varta (Marathi, The Goan group)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/goanvarta/",
+    "display_name": "Goan Varta",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@goanvarta",
+    "display_name": "Goan Varta",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@goemkarponnlive",
+    "display_name": "Goemkarponn",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Gomantak_Times",
+    "display_name": "Gomantak Times",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@gomantak_times",
+    "display_name": "Gomantak Times",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/gomantaktimes",
+    "display_name": "Gomantak Times",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@gomantak_times",
+    "display_name": "Gomantak Times",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@GomantakDainik",
+    "display_name": "Dainik Gomantak",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "UCETBxO93JjoGNkH1zRB0zwg",
+    "display_name": "Gomantak TV (Dainik Gomantak)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/DainikGomantakTV/",
+    "display_name": "Dainik Gomantak TV",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@dainikgomantak",
+    "display_name": "Dainik Gomantak",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@tbdnews",
+    "display_name": "Tarun Bharat (all editions)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "UC-QDfZ9qM4DAQEAH5DHgdbQ",
+    "display_name": "Tarun Bharat Goa",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/tarunbharatnewsofficial",
+    "display_name": "Tarun Bharat News",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@navprabha",
+    "display_name": "Navprabha",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/navprabha",
+    "display_name": "Navprabha",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@rdxgoa",
+    "display_name": "RDX Goa",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/rdxgoa",
+    "display_name": "RDX Goa",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/rdxgoa",
+    "display_name": "RDX Goa",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@rdxgoa",
+    "display_name": "RDX Goa",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@goa365tv1",
+    "display_name": "Goa 365 TV",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/channel/UCDFOkbaN9IuV6tjO8Aqo1ww",
+    "display_name": "Goa 365 TV (Konkani/English)",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/goa365tv/",
+    "display_name": "Goa 365 TV",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@InGoa24x7",
+    "display_name": "In Goa 24x7 (Marathi TV)",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/@ingoanews",
+    "display_name": "In Goa 24x7",
+    "category": "news"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@ingoa24x7",
+    "display_name": "In Goa 24x7",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@goachronicle",
+    "display_name": "Goa Chronicle",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/user/GoaChronicle",
+    "display_name": "Goa Chronicle",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@goanewshub",
+    "display_name": "Goa News Hub",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/channel/UCzipBcQBo9rFNV58nfP-KyQ",
+    "display_name": "Goa News Hub",
+    "category": "news"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://facebook.com/goanewshub",
+    "display_name": "Goa News Hub",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@digitalgoa",
+    "display_name": "Digital Goa",
+    "category": "news"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/digitalgoatv",
+    "display_name": "Digital Goa TV",
+    "category": "news"
+  },
+  {
+    "platform": "x",
+    "identifier": "@dip_goa",
+    "display_name": "DIP Goa (Dept of Information & Publicity)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/IPGoa/",
+    "display_name": "DIP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@dirdip.goa",
+    "display_name": "DIP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@BJP4Goa",
+    "display_name": "BJP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/BJP4Goa/",
+    "display_name": "BJP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@bjp4goa",
+    "display_name": "BJP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@INCGoa",
+    "display_name": "Goa Congress (GPCC)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/INCGoa/",
+    "display_name": "Goa Congress",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@AAPGoa",
+    "display_name": "Aam Aadmi Party Goa",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/AAPGoa/",
+    "display_name": "AAP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@aapgoa",
+    "display_name": "AAP Goa",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Goaforwardparty",
+    "display_name": "Goa Forward Party",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@PresidentGFP",
+    "display_name": "Goa Forward Party - President's Office",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@RGPOfficial_Goa",
+    "display_name": "Revolutionary Goans Party",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/RevolutionaryGoans/",
+    "display_name": "Revolutionary Goans Party",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@DhavalikarDMGP",
+    "display_name": "Deepak Dhavalikar (MGP President)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@SudinDhavalikar",
+    "display_name": "Sudin Dhavalikar (MGP, Power Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@goacm",
+    "display_name": "CMO Goa",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@DrPramodPSawant",
+    "display_name": "Dr. Pramod Sawant (CM)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/DrPramodPSawant/",
+    "display_name": "Dr. Pramod Sawant",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@drpramodpsawant",
+    "display_name": "Dr. Pramod Sawant",
+    "category": "political"
+  },
+  {
+    "platform": "youtube",
+    "identifier": "https://www.youtube.com/channel/UCLl4icXh2UYbgF0MvQpiXpg",
+    "display_name": "Dr. Pramod Sawant",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@DamuNaik",
+    "display_name": "Damu Naik (BJP Goa President)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@visrane",
+    "display_name": "Vishwajit Rane (Health/TCP Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "instagram",
+    "identifier": "@visrane",
+    "display_name": "Vishwajit Rane",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@RohanKhaunte",
+    "display_name": "Rohan Khaunte (Tourism Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "facebook",
+    "identifier": "https://www.facebook.com/RohanKhaunte/",
+    "display_name": "Rohan Khaunte",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@MichaelLobo76",
+    "display_name": "Michael Lobo (Calangute MLA)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@shripadynaik",
+    "display_name": "Shripad Naik (North Goa MP, Union MoS)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Yurialemao9",
+    "display_name": "Yuri Alemao (Leader of Opposition)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@amitspatkar",
+    "display_name": "Amit Patkar (former GPCC President)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ViriatoFern",
+    "display_name": "Capt. Viriato Fernandes (South Goa MP)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@VijaiSardesai",
+    "display_name": "Vijai Sardesai (GFP)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@Viresh_Borkar",
+    "display_name": "Viresh Borkar (RGP)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@VenzyViegas",
+    "display_name": "Capt. Venzy Viegas (AAP, Benaulim MLA)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@govtofgoa",
+    "display_name": "Government of Goa",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@girishgoaINC",
+    "display_name": "Girish Chodankar (GPCC President)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ValmikiNaik",
+    "display_name": "Valmiki Naik (AAP Goa President)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@MKShaikGoa",
+    "display_name": "M K Shaikh (GPCC Working President)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@carlosgoa25",
+    "display_name": "Carlos Alvares Ferreira (INC, Aldona MLA)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@altone_d",
+    "display_name": "Altone D'Costa (INC, Quepem MLA)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@CruzSilvaVelim",
+    "display_name": "Cruz Silva (AAP, Velim MLA)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@MauvinGodinho",
+    "display_name": "Mauvin Godinho (Transport Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@subhashshirodkr",
+    "display_name": "Subhash Shirodkar (WRD Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@babushofficial",
+    "display_name": "Babush Monserrate (Revenue Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@SubhashGoa",
+    "display_name": "Subhash Phal Dessai (Social Welfare Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@NilkantHalarnk1",
+    "display_name": "Nilkanth Halarnkar (Fisheries Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@digambarkamat",
+    "display_name": "Digambar Kamat (PWD Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ramesh_tawadkar",
+    "display_name": "Ramesh Tawadkar (Sports Minister)",
+    "category": "political"
+  },
+  {
+    "platform": "x",
+    "identifier": "@ShetSadanand",
+    "display_name": "Sadanand Shet Tanavade (Rajya Sabha MP)",
+    "category": "political"
+  }
+]
