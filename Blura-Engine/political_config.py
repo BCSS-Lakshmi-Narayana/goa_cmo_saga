@@ -101,15 +101,24 @@ RSS_FEEDS = [
 DISTRICTS = [
     ('North Goa', 'North Goa',                                       'उत्तर गोवा'),
     ('South Goa', 'South Goa',                                       'दक्षिण गोवा'),
-    ('Kushavati', 'Kushavati OR Quepem OR Canacona OR Sanguem OR Curchorem -price -"on road"',
+    ('Kushavati', 'Kushavati OR Quepem OR Canacona OR Sanguem OR Curchorem',
                   'कुशावती OR केपे OR काणकोण OR सांगे OR कुडचडे'),
 ]
 
 
+# Google News matches a bare district name against classifieds and almanac
+# pages as readily as against news — "North Goa" pulls property and used-car
+# listings, weather and air-quality dailies. These negatives are appended to
+# every district query so the district feeds stay editorial. Mirrors the
+# Chhattisgarh engine.
+_DISTRICT_NEG_EN = " -price -\"on road\" -AQI -\"air quality\" -weather"
+_DISTRICT_NEG_MR = " -किंमत -प्राइस"
+
+
 def _district_feeds(canonical, query_en, query_mr):
     return [
-        {**_gn(_GN_EN, query_en, f"Goa District – {canonical}", "en"), "district": canonical},
-        {**_gn(_GN_MR, query_mr, f"Goa District (mr) – {canonical}", "mr"), "district": canonical},
+        {**_gn(_GN_EN, query_en + _DISTRICT_NEG_EN, f"Goa District – {canonical}", "en"), "district": canonical},
+        {**_gn(_GN_MR, query_mr + _DISTRICT_NEG_MR, f"Goa District (mr) – {canonical}", "mr"), "district": canonical},
     ]
 
 

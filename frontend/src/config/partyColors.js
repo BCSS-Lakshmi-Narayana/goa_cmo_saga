@@ -22,7 +22,16 @@ export const PARTY_PALETTE = {
 export const DEFAULT_PARTY_STYLE = PARTY_PALETTE.IND;
 
 /* Legend / tab order: ruling alliance first, then opposition, then others. */
-export const PARTY_ORDER = ['BJP', 'MGP', 'INC', 'AAP', 'GFP', 'RGP', 'IND', 'VACANT'];
+// Only parties that actually hold a seat. 'VACANT' was removed: it is a seat
+// state, not a party, and no Goa seat is currently vacant. The palette still
+// carries a VACANT entry so partyStyle() stays safe if the data ever has one.
+// Parties with more than two seats in the current assembly.
+// BJP 26 · IND 3 · INC 3 are kept; MGP 2, AAP 2, RGP 1 and GFP 1 were dropped
+// — a filter that returns one MLA with no mentions is noise, not a view.
+// 'VACANT' is not a party and was removed too. PARTY_PALETTE still carries
+// every code, so partyStyle() keeps rendering their colour wherever a
+// one-seat party appears in the data.
+export const PARTY_ORDER = ['BJP', 'INC', 'IND'];
 
 export const PARTY_FULL_NAMES = {
   BJP: 'Bharatiya Janata Party',
