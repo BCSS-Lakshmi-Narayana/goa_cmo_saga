@@ -33,7 +33,11 @@ export const BRAND = {
 export const PARTY_PORTRAITS = [
   {
     id: 'portrait-primary',
-    src: wiki('Pramod_Sawant_at_the_inauguration_of_the_Chhatrapati_Shivaji_Maharaj_Chair_in_Goa_University_(cropped).jpg'),
+    // Official portrait supplied by the client, served from /public rather
+    // than Wikimedia: front-facing, formal, and already 1:1 so the circular
+    // crops on login and in the header need no object-position offset.
+    // Local also means the login page does not depend on Wikipedia loading.
+    src: '/cm-portrait.jpg',
     alt: 'Dr. Pramod Sawant — Chief Minister of Goa',
     caption: 'Chief Minister · Goa',
   },
