@@ -85,6 +85,7 @@ const PublicWebArticles = () => {
   const [searchParams] = useSearchParams();
   const [dbSearch, setDbSearch] = useState(() => searchParams.get('search') || '');
   const [dbStance, setDbStance] = useState(() => searchParams.get('stance') || 'all');
+  const [dbSource, setDbSource] = useState(() => searchParams.get('source') || 'all');
   const [dbCategory, setDbCategory] = useState(() => searchParams.get('category') || 'all');
   const [dbDistrict, setDbDistrict] = useState('all');
   const [dbLanguage, setDbLanguage] = useState('all');
@@ -139,6 +140,7 @@ const PublicWebArticles = () => {
           district: dbDistrict !== 'all' ? dbDistrict : undefined,
           category: dbCategory !== 'all' ? dbCategory : undefined,
           stance: dbStance !== 'all' ? dbStance : undefined,
+          source: dbSource !== 'all' ? dbSource : undefined,
           language: dbLanguage !== 'all' ? dbLanguage : undefined,
           startDate: dbDateRange.start || undefined,
           endDate: dbDateRange.end || undefined,
@@ -154,7 +156,7 @@ const PublicWebArticles = () => {
       setIsDbLoading(false);
       setIsDbLoadingMore(false);
     }
-  }, [dbSearch, dbStance, dbCategory, dbDistrict, dbLanguage, dbDateRange]);
+  }, [dbSearch, dbStance, dbSource, dbCategory, dbDistrict, dbLanguage, dbDateRange]);
 
   // ── Live news search API ──
   const runLiveSearch = useCallback(async (overrideQuery) => {
@@ -190,7 +192,7 @@ const PublicWebArticles = () => {
       runLiveSearch(SUGGESTED_QUERIES[0]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, dbSearch, dbStance, dbCategory, dbDistrict, dbLanguage, dbDateRange, fetchDbArticles]);
+  }, [activeTab, dbSearch, dbStance, dbSource, dbCategory, dbDistrict, dbLanguage, dbDateRange, fetchDbArticles]);
 
   const liveSources = useMemo(() => {
     const items = liveArticles.map((article) => article.source);
