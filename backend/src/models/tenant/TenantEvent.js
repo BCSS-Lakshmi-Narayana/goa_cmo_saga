@@ -97,6 +97,15 @@ const tenantEventSchema = new mongoose.Schema({
     },
     sources: { type: [sourceSchema], default: [] },
 
+    // Background refresh: X every x_minutes, YouTube every youtube_hours
+    // (its search quota is small), each fetching only what is new.
+    auto_refresh: {
+        enabled: { type: Boolean, default: false },
+        x_minutes: { type: Number, default: 60 },
+        youtube_hours: { type: Number, default: 6 },
+        last_x_at: { type: Date, default: null },
+        last_youtube_at: { type: Date, default: null },
+    },
     last_collected_at: { type: Date, default: null },
     last_collection_summary: { type: mongoose.Schema.Types.Mixed, default: null },
     created_by: { type: String, default: null },

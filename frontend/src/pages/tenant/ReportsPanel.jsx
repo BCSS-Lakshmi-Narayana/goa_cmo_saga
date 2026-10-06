@@ -78,9 +78,10 @@ const ReportsPanel = ({ event, workspace }) => {
     }
   };
 
-  // Opens the print-ready brief, which prints itself; choose "Save as PDF".
-  const downloadPdf = (r) => {
-    const w = window.open(`/workspace/print/${r.id}?autoprint=1`, '_blank');
+  // Opens the print-ready brief (optionally with every post appended), which
+  // prints itself; choose "Save as PDF".
+  const downloadPdf = (r, withPosts = false) => {
+    const w = window.open(`/workspace/print/${r.id}?autoprint=1${withPosts ? '&posts=1' : ''}`, '_blank');
     if (!w) toast.error('Allow pop-ups for this site to download the PDF');
   };
 
@@ -121,7 +122,7 @@ const ReportsPanel = ({ event, workspace }) => {
             {pending ? 'Generating…' : 'Generate report'}
           </Button>
         </div>
-        <p className="text-xs text-slate-500 mt-2">Dates are Indian Standard Time. The report covers posts published in the period; positive, negative and neutral posts are broken down separately, and the Excel download has one sheet for each. PDF opens the print view — choose “Save as PDF”.</p>
+        <p className="text-xs text-slate-500 mt-2">Dates are Indian Standard Time. The report covers posts published in the period; positive, negative and neutral posts are broken down separately, and the Excel download has one sheet for each. “PDF” is the brief alone; “PDF + posts” adds every post in the period, grouped positive, negative and neutral, with post and footage links. Both open the print view — choose “Save as PDF”.</p>
       </div>
 
       {reports.length > 0 && (
@@ -141,8 +142,11 @@ const ReportsPanel = ({ event, workspace }) => {
                     {r.status === 'ready' && (
                       <div className="flex justify-end gap-1">
                         <Button variant="ghost" size="sm" onClick={() => openReport(r.id)}><Eye className="h-4 w-4 mr-1" />View</Button>
-                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r)}>
+                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r)} title="The brief without the post list">
                           <Download className="h-4 w-4 mr-1" />PDF
+                        </Button>
+                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r, true)} title="The brief plus every post in the period, grouped by tone">
+                          <Download className="h-4 w-4 mr-1" />PDF + posts
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => downloadExcel(r)} disabled={busy[`xls${r.id}`]}>
                           {busy[`xls${r.id}`] ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <FileSpreadsheet className="h-4 w-4 mr-1" />}Excel

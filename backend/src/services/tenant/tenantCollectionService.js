@@ -141,8 +141,12 @@ const readSearchPage = (data) => {
 
 const X_LATEST_PAGES = 3;
 
-/** Top results via the shared searchTweets, plus up to `latestPages` pages of Latest. */
-const collectX = async (queries, since, latestPages = X_LATEST_PAGES) => {
+/**
+ * Top results via the shared searchTweets, plus up to `latestPages` pages of
+ * Latest. With `stopBefore`, paging stops at the first page whose tweets are
+ * all older than it — an incremental refresh then costs a page or two.
+ */
+const collectX = async (queries, since, latestPages = X_LATEST_PAGES, stopBefore = null) => {
     const sinceStr = since ? new Date(since).toISOString().slice(0, 10) : null;
     const out = [];
     for (const q of queries) {
@@ -157,9 +161,11 @@ const collectX = async (queries, since, latestPages = X_LATEST_PAGES) => {
                 if (cursor) params.cursor = cursor;
                 const res = readSearchPage(await xService.rapidGet('search', params));
                 res.tweets.forEach((t) => out.push({ query: q, post: fromTweet(t) }));
-                // Stop at the end of results, or after two pages that add nothing.
+                // Stop at the end of results, after two pages that add nothing,
+                // or once a whole page predates the incremental cut-off.
                 empty = res.tweets.length ? 0 : empty + 1;
                 if (!res.cursor || res.cursor === cursor || empty >= 2) break;
+                if (stopBefore && res.tweets.length && res.tweets.every((t) => t.created_at && new Date(t.created_at) < stopBefore)) break;
                 cursor = res.cursor;
             } catch (err) {
                 console.warn(`[tenantCollect] X Latest page ${page + 1} failed for "${q}": ${err.message}`);
@@ -331,7 +337,7 @@ const ytVideoPost = (v) => {
 // Top comments by relevance per video (default): enough to read the reaction without flooding the sample.
 const COMMENTS_PER_VIDEO = 40;
 
-const collectYouTube = async (queries, since, commentVideos, mentionsEvent, { searchPages = 1, commentsPerVideo = COMMENTS_PER_VIDEO } = {}) => {
+const collectYouTube = async (queries, since, commentVideos, mentionsEvent, { searchPages = 1, commentsPerVideo = COMMENTS_PER_VIDEO, publishedAfter = null } = {}) => {
     const out = [];
     const videos = new Map();
     for (const q of queries) {
@@ -340,7 +346,7 @@ const collectYouTube = async (queries, since, commentVideos, mentionsEvent, { se
             try {
                 const search = await ytGet('search', {
                     part: 'snippet', q, type: 'video', maxResults: 50, order: 'relevance', pageToken,
-                    publishedAfter: since ? new Date(since).toISOString() : undefined,
+                    publishedAfter: (publishedAfter || since) ? new Date(publishedAfter || since).toISOString() : undefined,
                 });
                 const ids = (search.items || []).map((i) => i.id?.videoId).filter(Boolean).filter((id) => !videos.has(id));
                 for (let i = 0; i < ids.length; i += 50) {
@@ -505,28 +511,31 @@ const buildMentionMatcher = (event) => {
     };
 };
 
-/**
- * Collect for one event. Returns a per-platform summary; never throws for a
- * single provider failure — that platform is reported as failed instead.
- */
 const ALL_PLATFORMS = ['x', 'youtube', 'facebook', 'instagram', 'reddit', 'telegram'];
 
-const collectForEvent = async (event, { platforms = ALL_PLATFORMS } = {}) => {
+/**
+ * Collect for one event. With `incrementalSince`, X paging stops at posts
+ * older than that time and YouTube searches only videos published after it
+ * (comments on the top videos are still re-read, since they keep arriving).
+ * Returns a per-platform summary; a failing provider is reported, not thrown.
+ */
+const collectForEvent = async (event, { platforms = ALL_PLATFORMS, incrementalSince = null } = {}) => {
     const plan = event.collection_plan || {};
     const since = plan.since || event.start_date || null;
     const summary = { started_at: new Date(), platforms: {} };
     const mentionsEvent = buildMentionMatcher(event);
 
     const runners = {
-        x: () => collectX(plan.x_queries || [], since, plan.x_latest_pages || X_LATEST_PAGES),
+        x: () => collectX(plan.x_queries || [], since, plan.x_latest_pages || X_LATEST_PAGES, incrementalSince),
         facebook: async () => [
             ...(await collectFacebook(plan.facebook_queries || [])),
             ...(await collectFacebookPages(plan.facebook_pages || [], since, mentionsEvent)),
         ],
         instagram: () => collectInstagram(plan.instagram_accounts || [], since, mentionsEvent),
         youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent, {
-            searchPages: plan.youtube_search_pages || 1,
+            searchPages: incrementalSince ? 1 : (plan.youtube_search_pages || 1),
             commentsPerVideo: plan.youtube_comments_per_video || COMMENTS_PER_VIDEO,
+            publishedAfter: incrementalSince,
         }),
         reddit: () => collectReddit(plan.reddit_queries || []),
         telegram: () => collectTelegram(plan.telegram_queries || [], since),

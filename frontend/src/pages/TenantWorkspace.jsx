@@ -87,6 +87,9 @@ const PostsView = ({ eventId, narratives }) => {
                 {p.post_type !== 'original' && <Badge variant="outline" className="text-[10px]">{p.post_type}{p.original_author_handle ? ` of @${p.original_author_handle}` : ''}</Badge>}
                 {p.language && <span>lang: {p.language}</span>}
                 {p.url && <a href={p.url} target="_blank" rel="noreferrer" className="ml-auto text-blue-700 inline-flex items-center gap-1">open <ExternalLink className="h-3 w-3" /></a>}
+                {(p.platform === 'youtube' ? [] : (p.media || [])).filter((m) => m.url).slice(0, 4).map((m, i) => (
+                  <a key={i} href={m.url} target="_blank" rel="noreferrer" className="text-rose-700 hover:underline">{/video|gif/.test(m.kind || '') ? '▶ video' : 'image'}</a>
+                ))}
               </div>
               {p.parent_title && <div className="mt-1 text-xs text-slate-500">Comment on: {p.parent_title}</div>}
               <p className="mt-1 whitespace-pre-wrap text-slate-800">{p.text}</p>

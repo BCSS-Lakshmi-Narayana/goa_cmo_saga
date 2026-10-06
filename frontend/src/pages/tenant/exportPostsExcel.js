@@ -10,6 +10,7 @@ const row = (p) => ({
   Platform: PLATFORM[p.platform] || p.platform,
   Type: p.post_type,
   Account: p.account || '',
+  'Public account': p.public_account ? 'yes' : 'no',
   Handle: p.handle || '',
   'Post text': String(p.text || '').slice(0, 32000),
   Summary: p.summary || '',
@@ -26,11 +27,13 @@ const row = (p) => ({
   Views: p.views ?? '',
   Language: p.language || '',
   Link: p.url || '',
+  'Footage type': [...new Set((p.footage || []).map((f) => f.kind))].join(', '),
+  'Footage links': (p.footage || []).map((f) => f.url).join(' \n'),
 });
 
 const sheet = (rows) => {
   const ws = XLSX.utils.json_to_sheet(rows);
-  ws['!cols'] = [18, 10, 9, 22, 18, 80, 50, 9, 14, 14, 20, 22, 30, 9, 8, 9, 8, 10, 8, 45].map((wch) => ({ wch }));
+  ws['!cols'] = [18, 10, 9, 22, 8, 18, 80, 50, 9, 14, 14, 20, 22, 30, 9, 8, 9, 8, 10, 8, 45, 12, 60].map((wch) => ({ wch }));
   return ws;
 };
 

@@ -725,7 +725,12 @@
           "url": "https://www.uniindia.com/west-india/politics-mum-dipke-briefly-detained/200019",
           "published_at": "2026-10-01"
         }
-      ]
+      ],
+      "auto_refresh": {
+        "enabled": true,
+        "x_minutes": 60,
+        "youtube_hours": 6
+      }
     }
   ]
 }

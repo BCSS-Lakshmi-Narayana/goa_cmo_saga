@@ -11,7 +11,7 @@ const TenantReport = require('../models/tenant/TenantReport');
 const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
-const { completeReport } = require('../services/tenant/tenantReportService');
+const { completeReport, footageOf, isPublicAccount } = require('../services/tenant/tenantReportService');
 
 const requireTenant = (req, res, next) => {
     if (!isTenantUser(req.user)) {
@@ -156,7 +156,7 @@ const exportPosts = async (req, res) => {
         if (to) filter.published_at.$lte = to;
     }
     const posts = await TenantPost.find(filter)
-        .select('platform post_type url author_name author_handle published_at text hashtags metrics engagement_total language analysis.sentiment analysis.stance_toward_subject analysis.stance_toward_protest analysis.category analysis.narratives analysis.risk_band analysis.review.risk_band analysis.summary analysis.target')
+        .select('platform post_type url media author_name author_handle author_followers analysis.account_type published_at text hashtags metrics engagement_total language analysis.sentiment analysis.stance_toward_subject analysis.stance_toward_protest analysis.category analysis.narratives analysis.risk_band analysis.review.risk_band analysis.summary analysis.target')
         .sort({ published_at: -1 })
         .limit(50000)
         .lean();
@@ -183,6 +183,8 @@ const exportPosts = async (req, res) => {
             risk_band: p.analysis?.review?.risk_band || p.analysis?.risk_band,
             summary: p.analysis?.summary,
             language: p.language,
+            footage: footageOf(p),
+            public_account: isPublicAccount(p),
         })),
     });
 };

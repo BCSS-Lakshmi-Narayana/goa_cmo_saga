@@ -37,6 +37,17 @@ const tone = (p) => ({ positive: 'positive', negative: 'negative', mixed: 'negat
 /** likes + 2×comments + 3×shares + views/10 */
 const engagementScore = (m = {}) => Math.round((m.likes || 0) + 2 * (m.comments || 0) + 3 * (m.shares || 0) + (m.views || 0) / 10);
 
+/**
+ * Links to the footage itself: the video for a YouTube post, otherwise the
+ * attached videos (direct file links for X) and images.
+ */
+const footageOf = (p) => {
+    if (p.platform === 'youtube' && p.post_type !== 'comment' && p.url) return [{ kind: 'video', url: p.url }];
+    return (p.media || []).filter((m) => m && m.url)
+        .map((m) => ({ kind: /video|gif/.test(m.kind || '') ? 'video' : 'image', url: m.url }))
+        .slice(0, 4);
+};
+
 const postRef = (p, { maskPrivate = true } = {}) => ({
     id: String(p._id),
     platform: p.platform,
@@ -55,6 +66,7 @@ const postRef = (p, { maskPrivate = true } = {}) => ({
     risk_band: riskBand(p),
     risk_reason: p.analysis?.review?.note || p.analysis?.risk_reason || null,
     reviewed: Boolean(p.analysis?.review?.reviewed_at),
+    footage: footageOf(p),
 });
 
 /** First `n` posts with distinct authors, keeping the input order. */
@@ -300,6 +312,15 @@ const computeStats = (event, all) => {
         .filter((c) => c.kind === 'call_to_action').map((c) => ({ text: c.text, engagement: p.engagement_total || 0 })))
         .sort((a, b) => b.engagement - a.engagement);
 
+    // Footage: the most-engaged posts that carry video (or, failing that, images).
+    const withVideo = originals.filter((p) => footageOf(p).some((f) => f.kind === 'video'));
+    const withImage = originals.filter((p) => footageOf(p).some((f) => f.kind === 'image'));
+    const footage = {
+        videos: withVideo.length,
+        images: withImage.length,
+        top: distinctAuthors(topBy(withVideo.length >= 10 ? withVideo : [...withVideo, ...withImage], 80), 20).map((p) => postRef(p)),
+    };
+
     // Positive / negative / neutral, each broken down on its own.
     const toneSections = ['positive', 'negative', 'neutral'].map((key) => {
         const rows = relevant.filter((p) => tone(p) === key);
@@ -320,6 +341,7 @@ const computeStats = (event, all) => {
     });
 
     return {
+        footage,
         tone_sections: toneSections,
         totals,
         by_platform: byPlatform,
@@ -641,4 +663,4 @@ const completeReport = async (event, reportId, { from = null, to = null } = {}) 
     }
 };
 
-module.exports = { generateReport, completeReport, buildReportData, computeStats, templateProse, engagementScore };
+module.exports = { generateReport, completeReport, buildReportData, computeStats, templateProse, engagementScore, footageOf, isPublicAccount };

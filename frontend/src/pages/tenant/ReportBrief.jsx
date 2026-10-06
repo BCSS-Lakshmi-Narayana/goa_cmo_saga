@@ -138,6 +138,17 @@ const Link = ({ href, children }) => (href
   ? <a href={href} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline inline-flex items-center gap-0.5">{children}<ExternalLink className="h-3 w-3 print:hidden" /></a>
   : <span>{children}</span>);
 
+/** "▶ video" / "image" links to a post's footage. */
+export const Footage = ({ items }) => (items && items.length ? (
+  <span className="inline-flex flex-wrap gap-x-1.5 ml-1">
+    {items.map((f, i) => (
+      <a key={`${f.url}${i}`} href={f.url} target="_blank" rel="noreferrer" className="text-[11px] text-rose-700 hover:underline whitespace-nowrap">
+        {f.kind === 'video' ? '▶ video' : 'image'}{items.length > 1 ? ` ${i + 1}` : ''}
+      </a>
+    ))}
+  </span>
+) : null);
+
 const Sources = ({ urls }) => (
   <span className="inline-flex flex-wrap gap-x-2">
     {(urls || []).map((u) => <a key={u} href={u} target="_blank" rel="noreferrer" className="text-[11px] text-blue-700 hover:underline">{hostOf(u)}</a>)}
@@ -322,7 +333,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
               head={['When', 'Platform', 'Account', 'What it says', 'Engagement']}
               rows={(ts.top_public.length >= 5 ? ts.top_public : ts.top_all).slice(0, 10).map((p) => [
                 fmtDate(p.published_at), PLATFORM_LABEL[p.platform], p.author,
-                <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>open</Link>}</span>, fmt(p.engagement),
+                <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>open</Link>}<Footage items={p.footage} /></span>, fmt(p.engagement),
               ])}
             />
           </div>
@@ -343,7 +354,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
           rows={s.risk.rows.map((r) => [
             <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${BAND_STYLE[r.risk_band]}`}>{r.risk_band}</span>,
             fmtDate(r.published_at), PLATFORM_LABEL[r.platform], r.author,
-            <span>{r.summary || r.excerpt} {r.url && <Link href={r.url}>open</Link>}</span>,
+            <span>{r.summary || r.excerpt} {r.url && <Link href={r.url}>open</Link>}<Footage items={r.footage} /></span>,
             <span>{r.risk_reason}{r.reviewed ? <em className="text-slate-500"> (reviewed)</em> : null}</span>,
           ])}
         /></div>
@@ -352,7 +363,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         <div className="font-semibold text-[13px] mt-4 mb-1 break-after-avoid">Medium band — highest engagement</div>
         <Table
           head={['When', 'Platform', 'Account', 'What it says', 'Why']}
-          rows={s.risk.medium_rows.slice(0, 6).map((r) => [fmtDate(r.published_at), PLATFORM_LABEL[r.platform], r.author, <span>{r.summary || r.excerpt} {r.url && <Link href={r.url}>open</Link>}</span>, r.risk_reason])}
+          rows={s.risk.medium_rows.slice(0, 6).map((r) => [fmtDate(r.published_at), PLATFORM_LABEL[r.platform], r.author, <span>{r.summary || r.excerpt} {r.url && <Link href={r.url}>open</Link>}<Footage items={r.footage} /></span>, r.risk_reason])}
         />
       </>}
 
@@ -391,10 +402,25 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       <H2 n="08">Evidence register (media sample)</H2>
       <Table
         head={['When', 'Platform', 'Outlet / account', 'Summary']}
-        rows={s.evidence.map((p) => [<b>{fmtDate(p.published_at)}</b>, PLATFORM_LABEL[p.platform], p.author, <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>source</Link>}</span>])}
+        rows={s.evidence.map((p) => [<b>{fmtDate(p.published_at)}</b>, PLATFORM_LABEL[p.platform], p.author, <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>source</Link>}<Footage items={p.footage} /></span>])}
       />
 
-      <H2 n="09">Key narratives</H2>
+            {s.footage && s.footage.top.length > 0 && <>
+        <H2 n="09">Footage</H2>
+        <p className="text-[12px] text-slate-600 mb-2">
+          {fmt(s.footage.videos)} relevant posts carry video and {fmt(s.footage.images)} carry images. The most-engaged, one per account; ▶ links open the video itself (direct file for X, the video page for YouTube).
+        </p>
+        <Table
+          head={['When', 'Platform', 'Account', 'What it shows', 'Footage', 'Engagement']}
+          rows={s.footage.top.map((p) => [
+            fmtDate(p.published_at), PLATFORM_LABEL[p.platform], p.author,
+            <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>post</Link>}</span>,
+            <Footage items={p.footage} />, fmt(p.engagement),
+          ])}
+        />
+      </>}
+
+      <H2 n="10">Key narratives</H2>
       <div className="space-y-3">
         {s.narratives.map((n) => (
           <div key={n.key} className="border rounded p-3 break-inside-avoid">
@@ -405,14 +431,14 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
             <p className="text-[13px] text-slate-700 mt-1">{d.narrative_summaries?.[n.key] || n.description}</p>
             {n.examples.length > 0 && (
               <ul className="mt-1 text-[12px] text-slate-600 space-y-0.5">
-                {n.examples.map((e) => <li key={e.id}>— {e.author}: {e.summary || e.excerpt} {e.url && <Link href={e.url}>open</Link>}</li>)}
+                {n.examples.map((e) => <li key={e.id}>— {e.author}: {e.summary || e.excerpt} {e.url && <Link href={e.url}>open</Link>}<Footage items={e.footage} /></li>)}
               </ul>
             )}
           </div>
         ))}
       </div>
 
-      <H2 n="10">Verified facts and claims</H2>
+      <H2 n="11">Verified facts and claims</H2>
       <p className="text-[12px] text-slate-600 mb-2">From published reporting. Verified = two or more independent outlets. Social-media allegations are listed separately and are not verified by this brief.</p>
       <ul className="space-y-1.5">
         {(ev.facts || []).map((f, i) => (
@@ -435,7 +461,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         </ul>
       </>}
 
-      <H2 n="11">Recommended considerations</H2>
+      <H2 n="12">Recommended considerations</H2>
       <p className="text-[12px] text-slate-500 mb-2">Neutral, information-focused considerations for the office. Not messaging or persuasion advice.</p>
       <div className="grid md:grid-cols-2 gap-4">
         {[['Fact-check against official records', rec.fact_check], ['Questions a factual clarification could answer', rec.clarifications], ['Communication considerations', rec.communication],

@@ -817,6 +817,9 @@ const startServer = async () => {
       .then(() => warmProfilesCache())
       .then(() => console.log('[Server] Cache warm-up complete.'))
       .catch((err) => console.warn('[Server] Cache warm-up failed (non-fatal):', err.message));
+
+    // Keep tenant workspaces' monitored events up to date.
+    require('./services/tenant/tenantScheduler').startTenantScheduler();
   });
 };
 
