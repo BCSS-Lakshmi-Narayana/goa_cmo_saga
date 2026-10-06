@@ -14,20 +14,92 @@ const DEFAULT_GATEWAY_BASE = 'https://blugate.blurasaga.com/api/gateway';
 
 const GATEWAY_BASE = String(process.env.BLUGATE_BASE_URL || DEFAULT_GATEWAY_BASE).trim().replace(/\/+$/, '');
 
-const hasCredentials = () => !!(process.env.BLUGATE_API_KEY && process.env.BLUGATE_CLIENT_CODE);
+/**
+ * SOCIAL_API_MODE picks where social calls go:
+ *   'blugate'  (default) — the BluGate gateway, authenticated with BLUGATE_*.
+ *   'rapidapi' — straight to each RapidAPI provider BluGate fronts. Paths and
+ *                params are the same, so only base URL and headers change.
+ *
+ * Direct-mode config (keys may be comma-separated; they are used round-robin):
+ *   X:         RAPIDAPI_X_HOST | RAPIDAPI_HOST (twitter241.p.rapidapi.com),  RAPIDAPI_X_KEY | RAPIDAPI_KEY
+ *   Facebook:  RAPIDAPI_FACEBOOK_HOST (facebook-scraper3.p.rapidapi.com),    RAPIDAPI_FACEBOOK_KEY | RAPIDAPI_KEY
+ *   Instagram: RAPIDAPI_INSTAGRAM_HOST (instagram120.p.rapidapi.com),        RAPIDAPI_INSTAGRAM_KEYS | RAPIDAPI_KEY
+ *   YouTube:   RAPIDAPI_YOUTUBE_HOST + RAPIDAPI_YOUTUBE_KEY | RAPIDAPI_KEY, or, when no host is set,
+ *              Google's YouTube Data API v3 directly with YOUTUBE_API_KEY.
+ */
+const MODE = String(process.env.SOCIAL_API_MODE || 'blugate').trim().toLowerCase() === 'rapidapi' ? 'rapidapi' : 'blugate';
 
-const getHeaders = () => {
-    const apiKey = process.env.BLUGATE_API_KEY;
-    const clientCode = process.env.BLUGATE_CLIENT_CODE;
+const env = (...names) => names.map((n) => process.env[n]).find((v) => v && String(v).trim()) || '';
 
-    if (!apiKey || !clientCode) {
-        throw new Error('BLUGATE_API_KEY / BLUGATE_CLIENT_CODE is not configured');
+const splitKeys = (raw) => String(raw || '').split(',').map((k) => k.trim()).filter(Boolean);
+
+const RAPIDAPI_PROVIDERS = {
+    twitter: () => ({ host: env('RAPIDAPI_X_HOST', 'RAPIDAPI_HOST') || 'twitter241.p.rapidapi.com', keys: splitKeys(env('RAPIDAPI_X_KEY', 'RAPIDAPI_KEY')) }),
+    facebook: () => ({ host: env('RAPIDAPI_FACEBOOK_HOST') || 'facebook-scraper3.p.rapidapi.com', keys: splitKeys(env('RAPIDAPI_FACEBOOK_KEY', 'RAPIDAPI_KEY')) }),
+    instagram: () => ({ host: env('RAPIDAPI_INSTAGRAM_HOST') || 'instagram120.p.rapidapi.com', keys: splitKeys(env('RAPIDAPI_INSTAGRAM_KEYS', 'RAPIDAPI_INSTAGRAM_KEY', 'RAPIDAPI_KEY')) }),
+    youtube: () => ({ host: env('RAPIDAPI_YOUTUBE_HOST'), keys: splitKeys(env('RAPIDAPI_YOUTUBE_KEY', 'RAPIDAPI_KEY')) }),
+};
+
+const GOOGLE_YOUTUBE_BASE = 'https://www.googleapis.com/youtube/v3';
+
+/** YouTube in direct mode without a RapidAPI host goes to Google with an API key. */
+const youtubeViaGoogle = () => MODE === 'rapidapi' && !RAPIDAPI_PROVIDERS.youtube().host;
+
+const keyCursor = {};
+const nextKey = (platform, keys) => {
+    keyCursor[platform] = ((keyCursor[platform] ?? -1) + 1) % keys.length;
+    return keys[keyCursor[platform]];
+};
+
+/** Base URL for a platform's provider routes, without a trailing slash. */
+const baseFor = (platform) => {
+    if (MODE === 'blugate') return `${GATEWAY_BASE}/${platform}`;
+    if (platform === 'youtube' && youtubeViaGoogle()) return GOOGLE_YOUTUBE_BASE;
+    const provider = RAPIDAPI_PROVIDERS[platform];
+    if (!provider) throw new Error(`No direct RapidAPI provider configured for '${platform}'`);
+    return `https://${provider().host}`;
+};
+
+const hasCredentials = (platform) => {
+    if (MODE === 'blugate') return !!(process.env.BLUGATE_API_KEY && process.env.BLUGATE_CLIENT_CODE);
+    if (!platform) return Object.keys(RAPIDAPI_PROVIDERS).some((p) => hasCredentials(p));
+    if (platform === 'youtube' && youtubeViaGoogle()) return !!env('YOUTUBE_API_KEY');
+    const provider = RAPIDAPI_PROVIDERS[platform];
+    return !!(provider && provider().keys.length);
+};
+
+/**
+ * Auth headers for a platform. BluGate uses one credential for every platform;
+ * direct RapidAPI needs the platform to pick the provider host and key.
+ */
+const getHeaders = (platform) => {
+    if (MODE === 'blugate') {
+        const apiKey = process.env.BLUGATE_API_KEY;
+        const clientCode = process.env.BLUGATE_CLIENT_CODE;
+        if (!apiKey || !clientCode) {
+            throw new Error('BLUGATE_API_KEY / BLUGATE_CLIENT_CODE is not configured');
+        }
+        return {
+            Authorization: `Bearer ${apiKey}`,
+            'x-client-id': clientCode
+        };
     }
 
-    return {
-        Authorization: `Bearer ${apiKey}`,
-        'x-client-id': clientCode
-    };
+    if (!platform) throw new Error('getHeaders(platform) needs a platform in rapidapi mode');
+    if (platform === 'youtube' && youtubeViaGoogle()) return {};
+    const { host, keys } = RAPIDAPI_PROVIDERS[platform]();
+    if (!keys.length) throw new Error(`RapidAPI key for ${platform} is not configured`);
+    return { 'x-rapidapi-key': nextKey(platform, keys), 'x-rapidapi-host': host };
+};
+
+/** Extra query params a platform needs for auth (Google's YouTube API takes `key`). */
+const authParams = (platform) => {
+    if (platform === 'youtube' && youtubeViaGoogle()) {
+        const key = env('YOUTUBE_API_KEY');
+        if (!key) throw new Error('YOUTUBE_API_KEY is not configured');
+        return { key };
+    }
+    return {};
 };
 
 /**
@@ -126,13 +198,13 @@ const request = async (platform, { method = 'get', path = '', params, data, head
     const cleanPath = String(path || '').replace(/^\/+/, '');
     return withRateLimitRetry(() => axios({
         method,
-        url: `${GATEWAY_BASE}/${platform}/${cleanPath}`,
-        params: cleanParams(params),
+        url: `${baseFor(platform)}/${cleanPath}`,
+        params: cleanParams({ ...params, ...authParams(platform) }),
         data,
         timeout,
-        headers: { ...getHeaders(), ...headers },
+        headers: { ...getHeaders(platform), ...headers },
         ...responseOptions(),
-    }), { label: `BluGate ${platform}` });
+    }), { label: `${MODE === 'blugate' ? 'BluGate' : 'RapidAPI'} ${platform}` });
 };
 
 const get = (platform, path, params, opts = {}) => request(platform, { method: 'get', path, params, ...opts });
@@ -145,6 +217,9 @@ module.exports = {
     responseOptions,
     decodeBody,
     GATEWAY_BASE,
+    MODE,
+    baseFor,
+    authParams,
     hasCredentials,
     getHeaders,
     cleanParams,

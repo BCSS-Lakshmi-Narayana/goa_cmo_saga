@@ -18,7 +18,7 @@ const claimSchema = new mongoose.Schema({
  */
 const tenantPostSchema = new mongoose.Schema({
     event_id: { type: String, required: true, index: true },
-    platform: { type: String, enum: ['x', 'facebook', 'instagram'], required: true },
+    platform: { type: String, enum: ['x', 'facebook', 'instagram', 'youtube', 'reddit', 'telegram'], required: true },
     platform_post_id: { type: String, required: true },
     url: { type: String, default: null },
 
@@ -35,8 +35,11 @@ const tenantPostSchema = new mongoose.Schema({
     language: { type: String, default: null },
     location: { type: String, default: null },
 
-    // 'original' | 'repost' (retweet/share of someone else's post) | 'quote' | 'reply'
-    post_type: { type: String, enum: ['original', 'repost', 'quote', 'reply'], default: 'original' },
+    // 'original' | 'repost' (retweet/share of someone else's post) | 'quote' | 'reply' | 'comment' (e.g. on a YouTube video)
+    post_type: { type: String, enum: ['original', 'repost', 'quote', 'reply', 'comment'], default: 'original' },
+    // For comments: the post/video they were left on.
+    parent_post_id: { type: String, default: null },
+    parent_title: { type: String, default: null },
     original_post_id: { type: String, default: null },
     original_author_handle: { type: String, default: null },
 
@@ -72,6 +75,40 @@ const tenantPostSchema = new mongoose.Schema({
         entities: { type: [String], default: [] },
         claims: { type: [claimSchema], default: [] },
         media_description: { type: String, default: null },
+        // One-line neutral summary of what the post says (used in the evidence register).
+        summary: { type: String, default: null },
+        // What kind of account posted: lets the report list only outlets, public
+        // figures and organisations, never private individuals.
+        account_type: {
+            type: String,
+            enum: ['news_media', 'journalist', 'public_figure', 'political_party', 'organisation', 'government', 'individual', 'unknown', null],
+            default: null,
+        },
+        // What the post is mainly about, as a class (for the entity table).
+        target_type: {
+            type: String,
+            enum: ['subject', 'election_commission', 'protest_organisers', 'police', 'political_leader', 'government', 'judiciary', 'media', 'organisation', 'other', null],
+            default: null,
+        },
+        places: { type: [String], default: [] },
+        // Offline activity the post reports or announces.
+        activity: {
+            type: { type: String, enum: ['protest', 'rally_march', 'meeting', 'press_conference', 'detention_arrest', 'legal_action', 'announcement', 'none', null], default: null },
+            place: { type: String, default: null },
+            date_text: { type: String, default: null },
+        },
+        // Risk band. 'critical' and 'high' are reserved for threats of violence,
+        // incitement, doxxing, impersonation and manipulated media — ordinary
+        // criticism or calls for resignation are lawful speech and stay 'low'.
+        risk_band: { type: String, enum: ['critical', 'high', 'medium', 'low', null], default: null },
+        risk_reason: { type: String, default: null },
+        // Set when a human analyst reviewed the model's risk band.
+        review: {
+            risk_band: { type: String, enum: ['critical', 'high', 'medium', 'low', null], default: null },
+            note: { type: String, default: null },
+            reviewed_by: { type: String, default: null },
+            reviewed_at: { type: Date, default: null },
+        },
         rationale: { type: String, default: null },
         model: { type: String, default: null },
         analysed_at: { type: Date, default: null },

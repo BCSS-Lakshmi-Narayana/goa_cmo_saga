@@ -820,7 +820,7 @@ const scanNow = async (req, res) => {
     }
 
     // Guard: Instagram requires BluGate credentials.
-    if (source.platform === 'instagram' && !blugateClient.hasCredentials()) {
+    if (source.platform === 'instagram' && !blugateClient.hasCredentials('instagram')) {
       return res.status(400).json({
         message: 'BluGate credentials are not configured. Please set BLUGATE_API_KEY and BLUGATE_CLIENT_CODE in .env.'
       });
@@ -863,7 +863,7 @@ const scanAllSources = async (req, res) => {
     const query = { is_active: true };
     if (platform) query.platform = platform;
 
-    if (platform === 'instagram' && !blugateClient.hasCredentials()) {
+    if (platform === 'instagram' && !blugateClient.hasCredentials('instagram')) {
       return res.status(400).json({
         message: 'BluGate credentials are not configured. Please set BLUGATE_API_KEY and BLUGATE_CLIENT_CODE in .env.'
       });
@@ -1041,7 +1041,7 @@ const resolveIdentity = async (req, res) => {
     }
 
     if (platform === 'youtube') {
-      if (!blugateClient.hasCredentials()) return res.json({ platformUserId: '', note: 'YouTube lookup unavailable' });
+      if (!blugateClient.hasCredentials('youtube')) return res.json({ platformUserId: '', note: 'YouTube lookup unavailable' });
       // Channel id, channel URL, @handle or /user/ URL: resolved without search.list.
       const ch = await require('../services/youtubeChannelService').resolveChannel(identifier);
       if (!ch || !ch.id) return res.status(404).json({ message: `No YouTube channel found for ${identifier}` });

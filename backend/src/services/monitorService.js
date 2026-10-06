@@ -260,7 +260,7 @@ const extractAndFetchUrlContent = async (text) => {
 
 const monitorYoutubeSource = async (source) => {
   try {
-    if (!blugateClient.hasCredentials()) {
+    if (!blugateClient.hasCredentials('youtube')) {
       console.warn('[YouTube Monitor] ⚠️ BluGate credentials not configured. Skipping scan.');
       await Source.findOneAndUpdate({ id: source.id }, { last_checked: new Date() });
       return [];
@@ -403,7 +403,7 @@ const { scrapeProfile, getHealthyAccount } = require('./scraperService');
 const monitorXSource = async (source, options = {}) => {
   try {
     let tweets = [];
-    const useRapidApi = blugateClient.hasCredentials();
+    const useRapidApi = blugateClient.hasCredentials('twitter');
     const useOfficialApi = !!process.env.X_BEARER_TOKEN;
 
     let userData = null;
@@ -660,7 +660,7 @@ const monitorXSource = async (source, options = {}) => {
 
 const monitorInstagramSource = async (source, accessToken) => {
   try {
-    if (!blugateClient.hasCredentials()) {
+    if (!blugateClient.hasCredentials('instagram')) {
       console.warn('[Instagram Monitor] ⚠️ BluGate credentials not configured. Skipping scan.');
       await Source.findOneAndUpdate({ id: source.id }, { last_checked: new Date() });
       return [];

@@ -55,12 +55,25 @@ const tenantEventSchema = new mongoose.Schema({
         x_queries: { type: [String], default: [] },
         facebook_queries: { type: [String], default: [] },
         instagram_accounts: { type: [String], default: [] },
+        facebook_pages: { type: [String], default: [] },
+        youtube_queries: { type: [String], default: [] },
+        youtube_comment_videos: { type: Number, default: 15 },
+        reddit_queries: { type: [String], default: [] },
+        telegram_queries: { type: [String], default: [] },
         since: { type: Date, default: null },
     },
     // Narratives the classifier tags posts with; 'other' is always available.
     narratives: { type: [narrativeSchema], default: [] },
 
     facts: { type: [factSchema], default: [] },
+    // Written by a human analyst after reading the flagged posts; carried into every report.
+    analyst_review: {
+        bottom_line: { type: String, default: null },
+        risk_assessment: { type: String, default: null },
+        notes: { type: [String], default: [] },
+        reviewed_by: { type: String, default: null },
+        reviewed_at: { type: Date, default: null },
+    },
     // Announced or expected offline activity to watch (e.g. a declared next protest).
     watch_items: {
         type: [new mongoose.Schema({
