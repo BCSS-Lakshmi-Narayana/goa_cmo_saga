@@ -20,6 +20,9 @@ const PUBLIC_ACCOUNT_TYPES = new Set(['news_media', 'journalist', 'public_figure
 const PUBLIC_FOLLOWER_FLOOR = 50000;
 
 const istDay = (d) => new Date(new Date(d).getTime() + IST_OFFSET_MS).toISOString().slice(0, 10);
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+/** "2026-10-06" → "6 October" */
+const dayLabel = (iso) => { const [, m, d] = String(iso).split('-'); return `${Number(d)} ${MONTH_NAMES[Number(m) - 1]}`; };
 const pct = (n, total) => (total ? Math.round((n / total) * 1000) / 10 : 0);
 const countBy = (items, keyFn) => {
     const m = new Map();
@@ -151,6 +154,13 @@ const computeStats = (event, all) => {
         const row = { day, total: rows.length, engagement: rows.reduce((a, p) => a + (p.engagement_total || 0), 0) };
         PLATFORMS.forEach((pl) => { row[pl] = rows.filter((p) => p.platform === pl).length; });
         row.negative = rows.filter((p) => tone(p) === 'negative').length;
+        row.positive = rows.filter((p) => tone(p) === 'positive').length;
+        row.neutral = rows.length - row.negative - row.positive;
+        row.negative_pct = pct(row.negative, rows.length);
+        row.critical_of_subject = rows.filter((p) => p.analysis.stance_toward_subject === 'critical').length;
+        row.high_risk = rows.filter((p) => ['critical', 'high'].includes(riskBand(p))).length;
+        row.top_narrative = countBy(rows, (p) => (p.analysis.narratives || []).filter((k) => k !== 'other'))[0]?.[0] || null;
+        row.top_place = countBy(rows, (p) => [...new Set((p.analysis.places || []).map(titleCase))])[0]?.[0] || null;
         return row;
     });
     const peak = timeline.reduce((m, d) => (d.total > (m?.total || 0) ? d : m), null);
@@ -207,6 +217,24 @@ const computeStats = (event, all) => {
         });
     });
     const places = [...placeCounts.values()].sort((a, b) => b.posts - a.posts);
+
+    // Location trends: daily posts for the most-named places.
+    const trendPlaces = places.slice(0, 8).map((r) => r.place);
+    const locationTrends = {
+        days,
+        places: trendPlaces.map((place) => {
+            const rows = dated.filter((p) => (p.analysis.places || []).some((x) => titleCase(x) === place));
+            const byDay = days.map((day) => rows.filter((p) => istDay(p.published_at) === day).length);
+            const peakIdx = byDay.indexOf(Math.max(...byDay));
+            return {
+                place,
+                total: rows.length,
+                negative_pct: pct(rows.filter((p) => tone(p) === 'negative').length, rows.length),
+                by_day: byDay,
+                peak_day: days[peakIdx] || null,
+            };
+        }),
+    };
 
     // Target type × tone.
     const targetTable = countBy(relevant, (p) => p.analysis.target_type || 'other').map(([type, n]) => {
@@ -312,6 +340,81 @@ const computeStats = (event, all) => {
         .filter((c) => c.kind === 'call_to_action').map((c) => ({ text: c.text, engagement: p.engagement_total || 0 })))
         .sort((a, b) => b.engagement - a.engagement);
 
+    // ── Key intelligence: each point computed from the posts ──
+    const NARR = (k) => ((event.narratives || []).find((n) => n.key === k) || {}).label || k;
+    const keyIntel = [];
+    if (timeline.length >= 2 && peak) {
+        const others = timeline.filter((d) => d.day !== peak.day).map((d) => d.total).sort((a, b) => a - b);
+        const median = others.length ? others[Math.floor(others.length / 2)] : 0;
+        keyIntel.push({
+            key: 'volume_spike',
+            title: `Public conversation peaked on ${dayLabel(peak.day)}`,
+            detail: `${peak.total.toLocaleString('en-IN')} relevant posts that day${median ? `, about ${(peak.total / median).toFixed(1)}× the median day (${median.toLocaleString('en-IN')})` : ''}; ${peak.negative_pct}% negative in tone.`,
+            caveat: 'X search returns the newest posts first, so the most recent days are over-represented; read late peaks as directional.',
+        });
+    }
+    const criticalOfSubject = relevant.filter((p) => p.analysis.stance_toward_subject === 'critical');
+    if (criticalOfSubject.length) {
+        const linked = criticalOfSubject.filter((p) => (p.analysis.narratives || []).some((k) => ['resignation_demand', 'sir_voter_roll'].includes(k))).length;
+        const topNarr = countBy(criticalOfSubject, (p) => (p.analysis.narratives || []).filter((k) => k !== 'other')).slice(0, 3);
+        const share = pct(linked, criticalOfSubject.length);
+        keyIntel.push({
+            key: 'criticism_drivers',
+            title: `Criticism of ${event.subject?.name || 'the subject'} is ${share >= 60 ? 'predominantly' : 'partly'} linked to the resignation and SIR narratives`,
+            detail: `${share}% of the ${criticalOfSubject.length.toLocaleString('en-IN')} posts critical of ${event.subject?.name || 'the subject'} carry the resignation-demand or SIR/voter-roll narrative. Most common: ${topNarr.map(([k, c]) => `${NARR(k)} (${pct(c, criticalOfSubject.length)}%)`).join(', ')}.`,
+        });
+    }
+    {
+        const aboutSubject = relevant.filter((p) => p.analysis.target_type === 'subject').length;
+        const topTargets = countBy(relevant, (p) => p.analysis.target_type || 'other').slice(0, 4);
+        const TL = { subject: event.subject?.name || 'the subject', election_commission: 'the Election Commission', protest_organisers: 'the protest organisers', police: 'the police', political_leader: 'political leaders', government: 'the government', judiciary: 'the judiciary', media: 'the media', organisation: 'organisations', other: 'other subjects' };
+        keyIntel.push({
+            key: 'broader_than_subject',
+            title: pct(criticalOfSubject.length, relevant.length) < 60
+                ? `Protest conversation is broader than criticism of ${event.subject?.name || 'the subject'}`
+                : `Most protest conversation is criticism of ${event.subject?.name || 'the subject'}`,
+            detail: `${pct(criticalOfSubject.length, relevant.length)}% of relevant posts are critical of ${event.subject?.name || 'the subject'}, and ${pct(aboutSubject, relevant.length)}% are mainly about ${event.subject?.name || 'the subject'}. By what they are about: ${topTargets.map(([k, c]) => `${TL[k] || k} ${pct(c, relevant.length)}%`).join(', ')}.`,
+        });
+    }
+    {
+        const threats = relevant.filter((p) => ['critical', 'high'].includes(riskBand(p)));
+        const crit = threats.filter((p) => riskBand(p) === 'critical');
+        const atSubject = crit.filter((p) => ['subject', 'election_commission'].includes(p.analysis.target_type)).length;
+        const atOrganisers = crit.filter((p) => p.analysis.target_type === 'protest_organisers').length;
+        const maxReach = crit.reduce((m, p) => Math.max(m, p.engagement_total || 0), 0);
+        keyIntel.push({
+            key: 'threats',
+            title: pct(crit.length, relevant.length) < 2
+                ? 'Explicit threats are limited in volume but need separate monitoring'
+                : 'Explicit threats are a notable share of the conversation',
+            detail: `${crit.length.toLocaleString('en-IN')} posts (${pct(crit.length, relevant.length)}%) contain explicit calls for violence and ${(threats.length - crit.length).toLocaleString('en-IN')} more are high-risk (communal or gendered abuse, misattributed media). Of the explicit calls, ${atSubject} target ${event.subject?.name || 'the subject'} or the Commission and ${atOrganisers} target the protest organisers; the most-engaged reached ${maxReach.toLocaleString('en-IN')} engagements.`,
+        });
+    }
+    {
+        const misattributed = relevant.filter((p) => (p.analysis.narratives || []).includes('misattributed_content')
+            || /misattribut|fabricat|manipulat|ai-generated|edited|unverif/i.test(`${p.analysis.review?.note || ''} ${p.analysis.risk_reason || ''}`));
+        const allegationPosts = relevant.filter((p) => (p.analysis.claims || []).some((c) => c.kind === 'allegation')).length;
+        keyIntel.push({
+            key: 'information_risk',
+            title: 'Misattributed media and unverified claims are recurring information risks',
+            detail: `${misattributed.length.toLocaleString('en-IN')} posts involve misattributed, edited or unverifiable media or claims, and ${allegationPosts.toLocaleString('en-IN')} posts make allegations stated as fact. Examples: ${topBy(misattributed, 3).map((p) => p.analysis.review?.note || p.analysis.summary).filter(Boolean).map((t) => t.replace(/\.$/, '')).join('; ')}.`,
+        });
+    }
+    {
+        const lastDay = times.length ? new Date(Math.max(...times)) : new Date();
+        const next = (event.watch_items || []).filter((w) => w.date && new Date(w.date) >= new Date(lastDay.getTime() - DAY_MS))
+            .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
+        if (next) {
+            const mobil = relevant.filter((p) => (p.analysis.narratives || []).includes('oct10_mobilisation'));
+            const recent = mobil.filter((p) => p.published_at && lastDay - new Date(p.published_at) < 2 * DAY_MS).length;
+            keyIntel.push({
+                key: 'next_point',
+                title: `Next significant monitoring point: ${dayLabel(istDay(next.date))}`,
+                detail: `${next.description} ${mobil.length.toLocaleString('en-IN')} posts carry mobilisation for it, ${recent.toLocaleString('en-IN')} of them in the last two days of the period.`,
+            });
+        }
+    }
+
     // Footage: the most-engaged posts that carry video (or, failing that, images).
     const withVideo = originals.filter((p) => footageOf(p).some((f) => f.kind === 'video'));
     const withImage = originals.filter((p) => footageOf(p).some((f) => f.kind === 'image'));
@@ -341,6 +444,8 @@ const computeStats = (event, all) => {
     });
 
     return {
+        key_intelligence: keyIntel,
+        location_trends: locationTrends,
         footage,
         tone_sections: toneSections,
         totals,
@@ -484,7 +589,7 @@ const templateProse = (event, s) => {
     }
     attention.push({
         title: 'Volume in the latest 24 hours',
-        detail: `${num(s.volume_change.last_24h)} posts in the last 24 hours of the period against ${num(s.volume_change.previous_24h)} in the 24 hours before; the busiest day was ${dayText(s.volume_change.peak_day)} (${num(s.volume_change.peak_posts)} posts).`,
+        detail: `${num(s.volume_change.last_24h)} posts in the last 24 hours of the period against ${num(s.volume_change.previous_24h)} in the 24 hours before; the busiest day was ${dayText(s.volume_change.peak_day)} (${num(s.volume_change.peak_posts)} posts). X search favours the newest posts, so part of a late rise is a sampling effect.`,
         severity: s.volume_change.last_24h > s.volume_change.previous_24h * 1.5 ? 'medium' : 'low',
     });
     if (negTarget && negTarget.negative) {

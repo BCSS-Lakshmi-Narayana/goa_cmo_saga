@@ -97,20 +97,83 @@ const ToneBar = ({ tone }) => {
   );
 };
 
-const Timeline = ({ rows }) => {
+/**
+ * Daily stacked tone bars (SVG, print-safe) with each day's negativity % above
+ * the bar and a red dot under days that carry high/critical-risk posts.
+ */
+const DailyToneChart = ({ rows }) => {
+  if (!rows.length) return null;
+  const W = 860; const H = 230; const padL = 36; const padB = 34; const padT = 26;
   const max = Math.max(1, ...rows.map((r) => r.total));
+  const slot = (W - padL) / rows.length;
+  const bw = Math.min(46, slot * 0.7);
+  const y = (v) => padT + (H - padT - padB) * (1 - v / max);
+  const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => Math.round(max * f));
   return (
-    <div className="flex items-end gap-1 h-44 border-b border-l border-slate-300 px-1 pt-2">
-      {rows.map((r) => (
-        <div key={r.day} className="flex-1 flex flex-col items-center justify-end h-full min-w-0" title={`${r.day}: ${r.total} posts (${r.negative} negative)`}>
-          <span className="text-[9px] text-slate-600 tabular-nums">{r.total}</span>
-          <div className="w-full flex flex-col justify-end" style={{ height: `${(r.total / max) * 85}%` }}>
-            <div className="w-full bg-rose-500" style={{ height: `${r.total ? (r.negative / r.total) * 100 : 0}%` }} />
-            <div className="w-full bg-indigo-500 flex-1" />
-          </div>
-          <span className="text-[9px] text-slate-500 mt-1">{shortDay(r.day)}</span>
-        </div>
+    <svg viewBox={`0 0 ${W} ${H}`} className="w-full h-auto" role="img" aria-label="Daily posts by tone">
+      {ticks.map((t) => (
+        <g key={t}>
+          <line x1={padL} x2={W} y1={y(t)} y2={y(t)} stroke="#e2e8f0" />
+          <text x={padL - 4} y={y(t) + 3} fontSize="9" textAnchor="end" fill="#64748b">{t.toLocaleString('en-IN')}</text>
+        </g>
       ))}
+      {rows.map((r, i) => {
+        const x = padL + i * slot + (slot - bw) / 2;
+        const segs = [['negative', TONE_COLOR.negative], ['neutral', TONE_COLOR.neutral], ['positive', TONE_COLOR.positive]];
+        let top = r.total;
+        return (
+          <g key={r.day}>
+            {segs.map(([k, color]) => {
+              const v = r[k] || 0;
+              const rect = <rect key={k} x={x} y={y(top)} width={bw} height={Math.max(0, y(top - v) - y(top))} fill={color} />;
+              top -= v;
+              return rect;
+            })}
+            <text x={x + bw / 2} y={y(r.total) - 12} fontSize="9" textAnchor="middle" fill="#334155" fontWeight="600">{r.total.toLocaleString('en-IN')}</text>
+            <text x={x + bw / 2} y={y(r.total) - 3} fontSize="8" textAnchor="middle" fill={r.negative_pct >= 50 ? '#b91c1c' : '#64748b'}>{r.negative_pct}% neg</text>
+            <text x={x + bw / 2} y={H - padB + 12} fontSize="9" textAnchor="middle" fill="#475569">{shortDay(r.day)}</text>
+            {r.high_risk > 0 && <circle cx={x + bw / 2} cy={H - padB + 22} r={Math.min(6, 2 + Math.log2(r.high_risk + 1))} fill="#b91c1c" />}
+          </g>
+        );
+      })}
+      <line x1={padL} x2={W} y1={H - padB} y2={H - padB} stroke="#94a3b8" />
+    </svg>
+  );
+};
+
+/** Places × days heat grid: darker cell = more posts naming that place that day. */
+const LocationHeat = ({ trends }) => {
+  if (!trends?.places?.length) return null;
+  const max = Math.max(1, ...trends.places.flatMap((p) => p.by_day));
+  return (
+    <div className="overflow-x-auto">
+      <table className="text-[10px] border-collapse w-full">
+        <thead>
+          <tr>
+            <th className="text-left px-1.5 py-1 font-semibold text-slate-600">Place</th>
+            {trends.days.map((d) => <th key={d} className="px-0.5 py-1 font-normal text-slate-500 text-center">{shortDay(d)}</th>)}
+            <th className="px-1.5 py-1 text-right font-semibold text-slate-600">Total</th>
+            <th className="px-1.5 py-1 text-right font-semibold text-slate-600">% neg</th>
+          </tr>
+        </thead>
+        <tbody>
+          {trends.places.map((p) => (
+            <tr key={p.place} className="border-t border-slate-100">
+              <td className="px-1.5 py-1 font-medium whitespace-nowrap">{p.place}</td>
+              {p.by_day.map((v, i) => {
+                const a = v ? 0.12 + 0.88 * (v / max) : 0;
+                return (
+                  <td key={i} className="text-center tabular-nums" style={{ background: v ? `rgba(30,58,95,${a.toFixed(2)})` : 'transparent', color: a > 0.55 ? '#fff' : '#334155', minWidth: 26 }}>
+                    {v || ''}
+                  </td>
+                );
+              })}
+              <td className="px-1.5 py-1 text-right tabular-nums font-semibold">{fmt(p.total)}</td>
+              <td className="px-1.5 py-1 text-right tabular-nums" style={{ color: p.negative_pct >= 50 ? '#b91c1c' : '#334155' }}>{p.negative_pct}%</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 };
@@ -220,6 +283,19 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         {d.analyst_review && <p className="text-[11px] text-slate-500 mt-2">Reviewed by analyst on {fmtDay(d.analyst_review.reviewed_at)}.</p>}
       </div>
 
+      {(s.key_intelligence || []).length > 0 && <>
+        <H2>Key intelligence</H2>
+        <div className="grid md:grid-cols-2 gap-2">
+          {s.key_intelligence.map((k) => (
+            <div key={k.key} className="border rounded p-3 bg-white break-inside-avoid" style={{ borderLeft: '4px solid #1e3a5f' }}>
+              <div className="font-semibold text-[13px] text-[#1e3a5f]">{k.title}</div>
+              <p className="text-[12px] text-slate-700 mt-1">{k.detail}</p>
+              {k.caveat && <p className="text-[11px] italic text-slate-500 mt-1">{k.caveat}</p>}
+            </div>
+          ))}
+        </div>
+      </>}
+
       <H2>What requires attention</H2>
       <div className="space-y-2">
         {(d.attention || []).map((a, i) => (
@@ -251,13 +327,29 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         <HBars rows={s.share_of_voice.slice(0, 10).map((k) => ({ label: k.term, value: k.count }))} />
       </>}
 
-      <H2>Mentions timeline</H2>
+      <H2>Posts and negativity by day</H2>
       <p className="text-[12px] text-slate-600 mb-2">
-        Daily relevant posts by publication date (IST), {s.timeline[0] ? shortDay(s.timeline[0].day) : ''} to {s.timeline.length ? shortDay(s.timeline[s.timeline.length - 1].day) : ''}.
-        Peak day: {fmt(s.volume_change.peak_posts)} posts on {s.volume_change.peak_day ? fmtDay(s.volume_change.peak_day) : '—'}.
-        Latest 24 hours: {fmt(s.volume_change.last_24h)} posts vs {fmt(s.volume_change.previous_24h)} in the 24 hours before. <span className="inline-block w-2 h-2 bg-rose-500 align-middle" /> negative share of each day.
+        Relevant posts per day by publication date (IST), split by tone: <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.negative }} /> negative,{' '}
+        <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.neutral }} /> neutral,{' '}
+        <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.positive }} /> positive. The figure above each bar is that day's share of negative posts;
+        a red dot marks days with critical or high-risk posts. Peak: {fmt(s.volume_change.peak_posts)} posts on {s.volume_change.peak_day ? fmtDay(s.volume_change.peak_day) : '—'}.
       </p>
-      <Timeline rows={s.timeline} />
+      <DailyToneChart rows={s.timeline} />
+      <div className="mt-3"><Table
+        head={['Day', 'Posts', '% negative', `Critical of ${ev.subject?.name || 'subject'}`, 'High-risk', 'Leading narrative', 'Most-named place']}
+        rows={s.timeline.map((d) => [
+          <b>{fmtDay(d.day)}</b>, fmt(d.total),
+          <span style={{ color: d.negative_pct >= 50 ? '#b91c1c' : undefined, fontWeight: d.negative_pct >= 50 ? 600 : 400 }}>{d.negative_pct ?? '—'}%</span>,
+          fmt(d.critical_of_subject), d.high_risk ? <span className="text-red-700 font-semibold">{fmt(d.high_risk)}</span> : '0',
+          (ev.narratives || []).find((n) => n.key === d.top_narrative)?.label || '—', d.top_place || '—',
+        ])}
+      /></div>
+
+      {s.location_trends?.places?.length > 0 && <>
+        <H2>Location trends</H2>
+        <p className="text-[12px] text-slate-600 mb-2">Daily posts naming each of the most-mentioned places (darker = more posts), with each place's share of negative posts. A place counts only when a post names it.</p>
+        <LocationHeat trends={s.location_trends} />
+      </>}
 
       <H2>Executive summary</H2>
       <div className="space-y-1.5 text-[13px] leading-relaxed">
