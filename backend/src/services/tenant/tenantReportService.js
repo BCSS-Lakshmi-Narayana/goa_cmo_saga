@@ -441,8 +441,9 @@ const computeStats = (event, all) => {
             targets: countBy(rows, (p) => p.analysis.target_type || 'other').slice(0, 5).map(([k, count]) => ({ key: k, count })),
             narratives: countBy(rows, (p) => p.analysis.narratives || []).slice(0, 5).map(([k, count]) => ({ key: k, count })),
             hashtags: countBy(rows, (p) => p.hashtags || []).slice(0, 6).map(([tag, count]) => ({ tag, count })),
-            top_public: distinctAuthors(topBy(publicRows, 40), 10).map((p) => postRef(p)),
-            top_all: topBy(rows.filter((p) => p.post_type !== 'repost'), 10).map((p) => postRef(p)),
+            // Ranked by the engagement figure the table shows.
+            top_public: distinctAuthors(topBy(publicRows, 40, (p) => p.engagement_total || 0), 10).map((p) => postRef(p)),
+            top_all: topBy(rows.filter((p) => p.post_type !== 'repost'), 10, (p) => p.engagement_total || 0).map((p) => postRef(p)),
         };
     });
 

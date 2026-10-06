@@ -35,6 +35,13 @@ const ACCOUNT_LABEL = {
 };
 
 const fmt = (n) => (n === null || n === undefined ? '—' : Number(n).toLocaleString('en-IN'));
+/** Big numbers for tiles: 1.03 crore / 57.3 lakh. */
+const fmtBig = (n) => {
+  const v = Number(n || 0);
+  if (v >= 1e7) return `${(v / 1e7).toFixed(2)} crore`;
+  if (v >= 1e5) return `${(v / 1e5).toFixed(1)} lakh`;
+  return v.toLocaleString('en-IN');
+};
 const fmtDate = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) : '—');
 const fmtDay = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric' }) : '—');
 const shortDay = (iso) => { const [, m, d] = iso.split('-'); return `${d}/${m}`; };
@@ -262,7 +269,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
           [s.lead_platform ? PLATFORM_LABEL[s.lead_platform.platform] : '—', `Lead platform${s.lead_platform ? ` (${s.lead_platform.share}%)` : ''}`],
           [fmt(s.places.count), 'Places named'],
           [fmt(toneOf('negative').count), 'Negative posts'],
-          [fmt(t.engagement), 'Engagement'],
+          [fmtBig(t.engagement), 'Engagement'],
         ]} />
         <Tiles items={[
           [`${toneOf('positive').pct}%`, 'Positive'],
@@ -359,7 +366,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       </div>
 
       <H2 n="01">Activity analysis</H2>
-      <Tiles items={[[fmt(s.activity.posts), 'Activity posts'], [fmt(t.relevant), 'Posts in window'], [s.lead_platform ? PLATFORM_LABEL[s.lead_platform.platform] : '—', 'Lead platform'], [fmt(t.engagement), 'Engagement']]} />
+      <Tiles items={[[fmt(s.activity.posts), 'Activity posts'], [fmt(t.relevant), 'Posts in window'], [s.lead_platform ? PLATFORM_LABEL[s.lead_platform.platform] : '—', 'Lead platform'], [fmtBig(t.engagement), 'Engagement']]} />
       <p className="text-[13px] mt-3 mb-2">Protests, marches, meetings, detentions and legal steps named in the posts.</p>
       <ul className="list-disc pl-5 space-y-1 text-[13px] mb-3">
         {s.activity.groups.filter((g) => g.place !== 'Unspecified').slice(0, 6).map((g) => (
@@ -477,7 +484,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       </p>
 
       <H2 n="07">Influencer ecosystem</H2>
-      <Tiles items={[[fmt(s.influencer_totals.accounts), 'Public accounts'], [PLATFORM_LABEL[s.influencer_totals.top_platform] || '—', 'Top platform'], [fmt(s.influencer_totals.top_score), 'Top engagement score'], [fmt(s.influencer_totals.likes), 'Likes']]} />
+      <Tiles items={[[fmt(s.influencer_totals.accounts), 'Public accounts'], [PLATFORM_LABEL[s.influencer_totals.top_platform] || '—', 'Top platform'], [fmtBig(s.influencer_totals.top_score), 'Top engagement score'], [fmtBig(s.influencer_totals.likes), 'Likes']]} />
       <p className="text-[12px] italic text-slate-500 mt-2 mb-2">
         Engagement score = likes + 2×comments + 3×shares + views/10. {fmt(s.influencer_totals.shares)} shares · {fmt(s.influencer_totals.comments)} comments.
         Only news outlets, journalists, public figures, parties and organisations are listed. Ranking reflects measurable reach, not intent.
