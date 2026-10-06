@@ -57,6 +57,17 @@ const postRef = (p, { maskPrivate = true } = {}) => ({
     reviewed: Boolean(p.analysis?.review?.reviewed_at),
 });
 
+/** First `n` posts with distinct authors, keeping the input order. */
+const distinctAuthors = (posts, n) => {
+    const seen = new Set();
+    return posts.filter((p) => {
+        const k = `${p.platform}:${String(p.author_handle || p.author_name || '').toLowerCase()}`;
+        if (seen.has(k)) return false;
+        seen.add(k);
+        return true;
+    }).slice(0, n);
+};
+
 const topBy = (posts, n, score = (p) => engagementScore(p.metrics)) => [...posts].sort((a, b) => score(b) - score(a)).slice(0, n);
 
 // ── Computation ──────────────────────────────────────────────────────
@@ -145,7 +156,8 @@ const computeStats = (event, all) => {
         const a = p.analysis.activity;
         const place = a.place ? titleCase(a.place) : 'Unspecified';
         const key = `${a.type}|${place}`;
-        const g = activityGroups.get(key) || { type: a.type, place, posts: 0, news: 0, critical_of_subject: 0, supportive_of_subject: 0, dates: new Map(), top: null };
+        const g = activityGroups.get(key) || { type: a.type, place, posts: 0, news: 0, critical_of_subject: 0, supportive_of_subject: 0, dates: new Map(), days: new Map(), top: null };
+        if (p.published_at) { const day = istDay(p.published_at); g.days.set(day, (g.days.get(day) || 0) + 1); }
         g.posts += 1;
         if (['news_media_coverage', 'neutral_reporting', 'direct_protest_coverage'].includes(p.analysis.category)) g.news += 1;
         if (p.analysis.stance_toward_subject === 'critical') g.critical_of_subject += 1;
@@ -155,7 +167,19 @@ const computeStats = (event, all) => {
         activityGroups.set(key, g);
     });
     const activities = [...activityGroups.values()]
-        .map((g) => ({ ...g, dates: [...g.dates.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([d]) => d), top: g.top }))
+        .map((g) => {
+            const days = [...g.days.keys()].sort();
+            const peakDay = [...g.days.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+            return {
+                ...g,
+                dates: [...g.dates.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([d]) => d),
+                days: undefined,
+                first_day: days[0] || null,
+                last_day: days[days.length - 1] || null,
+                peak_day: peakDay,
+                top: g.top,
+            };
+        })
         .sort((a, b) => b.posts - a.posts)
         .slice(0, 12);
 
@@ -211,7 +235,8 @@ const computeStats = (event, all) => {
             platforms: countBy(rows, (p) => p.platform).map(([k, c]) => ({ platform: k, count: c })),
             negative: rows.filter((p) => tone(p) === 'negative').length,
             trend,
-            examples: topBy(rows.filter((p) => p.post_type !== 'repost' && isPublicAccount(p)), 3).map((p) => postRef(p)),
+            examples: distinctAuthors(topBy(rows.filter((p) => p.post_type !== 'repost' && isPublicAccount(p)
+                && (n.key !== 'questioning_cjp' || p.analysis.stance_toward_protest === 'critical')), 30), 3).map((p) => postRef(p)),
         };
     }).filter((n) => n.count > 0).sort((a, b) => b.count - a.count);
 
@@ -251,7 +276,8 @@ const computeStats = (event, all) => {
     // Evidence register: what news outlets and journalists reported, by reach;
     // topped up from other public accounts only if outlets are too few.
     const MEDIA_TYPES = new Set(['news_media', 'journalist']);
-    const mediaPosts = publicOriginals.filter((p) => MEDIA_TYPES.has(p.analysis.account_type) && p.post_type !== 'comment');
+    const COVERAGE = new Set(['news_media_coverage', 'direct_protest_coverage', 'neutral_reporting']);
+    const mediaPosts = publicOriginals.filter((p) => MEDIA_TYPES.has(p.analysis.account_type) && p.post_type !== 'comment' && COVERAGE.has(p.analysis.category));
     const evidencePool = mediaPosts.length >= 10 ? mediaPosts : publicOriginals;
     const evidence = topBy(evidencePool, 15).map((p) => postRef(p))
         .sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));

@@ -38,6 +38,14 @@ const fmt = (n) => (n === null || n === undefined ? '—' : Number(n).toLocaleSt
 const fmtDate = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) : '—');
 const fmtDay = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric' }) : '—');
 const shortDay = (iso) => { const [, m, d] = iso.split('-'); return `${d}/${m}`; };
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const dayLabel = (iso) => { const [, m, d] = iso.split('-'); return `${Number(d)} ${MONTHS[Number(m) - 1]}`; };
+/** "2 Oct" or "1–3 Oct (peak 2 Oct)" from an activity group's publication days. */
+const activityWhen = (g) => {
+  if (!g.first_day) return '—';
+  if (g.first_day === g.last_day) return dayLabel(g.first_day);
+  return `${dayLabel(g.first_day)} – ${dayLabel(g.last_day)}${g.peak_day ? ` (peak ${dayLabel(g.peak_day)})` : ''}`;
+};
 const hostOf = (url) => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; } };
 
 /* ── building blocks ── */
@@ -49,7 +57,7 @@ const H2 = ({ n, children }) => (
 );
 
 const Tiles = ({ items }) => (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-0 border-t-4 border-indigo-500 bg-slate-50 rounded-b">
+  <div className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-0 border-t-4 border-indigo-500 bg-slate-50 rounded-b">
     {items.map(([value, label], i) => (
       <div key={i} className="px-3 py-3 border-r last:border-r-0 border-white">
         <div className="text-[22px] leading-tight font-bold text-[#1e3a5f] truncate">{value}</div>
@@ -246,15 +254,15 @@ const ReportBrief = ({ report, workspace }) => {
       <Tiles items={[[fmt(s.activity.posts), 'Activity posts'], [fmt(t.relevant), 'Posts in window'], [s.lead_platform ? PLATFORM_LABEL[s.lead_platform.platform] : '—', 'Lead platform'], [fmt(t.engagement), 'Engagement']]} />
       <p className="text-[13px] mt-3 mb-2">Protests, marches, meetings, detentions and legal steps named in the posts.</p>
       <ul className="list-disc pl-5 space-y-1 text-[13px] mb-3">
-        {s.activity.groups.slice(0, 6).map((g) => (
+        {s.activity.groups.filter((g) => g.place !== 'Unspecified').slice(0, 6).map((g) => (
           <li key={`${g.type}|${g.place}`}><b>{ACTIVITY_LABEL[g.type] || g.type} — {g.place}</b>: {fmt(g.posts)} posts ({fmt(g.news)} news/reporting, {fmt(g.critical_of_subject)} critical of the subject). {d.activity_notes?.[`${g.type}|${g.place}`] || ''}</li>
         ))}
       </ul>
       <Table
-        head={['Event', 'When', 'Place', 'What posts report']}
-        rows={s.activity.groups.slice(0, 8).map((g) => [
+        head={['Event', 'Posts dated', 'Place', 'What posts report']}
+        rows={s.activity.groups.filter((g) => g.place !== 'Unspecified').slice(0, 8).map((g) => [
           <b>{ACTIVITY_LABEL[g.type] || g.type}</b>,
-          g.dates.join(', ') || '—',
+          activityWhen(g),
           g.place,
           <span>{d.activity_notes?.[`${g.type}|${g.place}`] || g.top?.summary || g.top?.excerpt} {g.top?.url && <Link href={g.top.url}>source</Link>}</span>,
         ])}
@@ -301,7 +309,7 @@ const ReportBrief = ({ report, workspace }) => {
         /></div>
       ) : <p className="text-[13px] text-emerald-700 mt-2 font-medium">No post remains in the critical or high band after review.</p>}
       {s.risk.medium_rows.length > 0 && <>
-        <div className="font-semibold text-[13px] mt-4 mb-1">Medium band — highest engagement</div>
+        <div className="font-semibold text-[13px] mt-4 mb-1 break-after-avoid">Medium band — highest engagement</div>
         <Table
           head={['When', 'Platform', 'Account', 'What it says', 'Why']}
           rows={s.risk.medium_rows.slice(0, 6).map((r) => [fmtDate(r.published_at), PLATFORM_LABEL[r.platform], r.author, <span>{r.summary || r.excerpt} {r.url && <Link href={r.url}>open</Link>}</span>, r.risk_reason])}
