@@ -391,13 +391,16 @@ const computeStats = (event, all) => {
         });
     }
     {
+        // Media problems only — not every unverified allegation (those are counted separately below).
+        const MEDIA_RX = /misattribut|fabricat|manipulat|ai[- ]generated|deepfake|morphed|edited (clip|video|image)|old (video|clip)|leaked image|falsely captioned|presented as real/i;
         const misattributed = relevant.filter((p) => (p.analysis.narratives || []).includes('misattributed_content')
-            || /misattribut|fabricat|manipulat|ai-generated|edited|unverif/i.test(`${p.analysis.review?.note || ''} ${p.analysis.risk_reason || ''}`));
+            || MEDIA_RX.test(`${p.analysis.review?.note || ''} ${p.analysis.risk_reason || ''}`));
+        const reviewedFirst = (a, b) => (Boolean(b.analysis.review?.note) - Boolean(a.analysis.review?.note)) || ((b.engagement_total || 0) - (a.engagement_total || 0));
         const allegationPosts = relevant.filter((p) => (p.analysis.claims || []).some((c) => c.kind === 'allegation')).length;
         keyIntel.push({
             key: 'information_risk',
             title: 'Misattributed media and unverified claims are recurring information risks',
-            detail: `${misattributed.length.toLocaleString('en-IN')} posts involve misattributed, edited or unverifiable media or claims, and ${allegationPosts.toLocaleString('en-IN')} posts make allegations stated as fact. Examples: ${topBy(misattributed, 3).map((p) => p.analysis.review?.note || p.analysis.summary).filter(Boolean).map((t) => t.replace(/\.$/, '')).join('; ')}.`,
+            detail: `${misattributed.length.toLocaleString('en-IN')} posts share or dispute misattributed, edited, fabricated or AI-generated media, and ${allegationPosts.toLocaleString('en-IN')} posts state allegations as fact. Examples: ${[...misattributed].sort(reviewedFirst).slice(0, 3).map((p) => p.analysis.review?.note || p.analysis.summary).filter(Boolean).map((t) => t.replace(/\.$/, '')).join('; ')}.`,
         });
     }
     {
