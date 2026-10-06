@@ -16,6 +16,5 @@ router.post('/events/:id/reports', c.createReport);
 router.get('/events/:id/reports/latest', c.getLatestReport);
 router.post('/events/:id/refresh', c.refreshEvent);
 router.get('/reports/:reportId', c.getReport);
-router.get('/reports/:reportId/pdf', c.downloadReportPdf);
 
 module.exports = router;

@@ -93,8 +93,7 @@ function App() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/login" element={<Login />} />
-                  {/* Opened by the server's PDF renderer with a short-lived token; no session needed. */}
-                  <Route path="/workspace/print/:reportId" element={<PrintReport />} />
+                  <Route path="/workspace/print/:reportId" element={<ProtectedRoute tenantWorkspace><PrintReport /></ProtectedRoute>} />
                   <Route
                     path="/workspace"
                     element={

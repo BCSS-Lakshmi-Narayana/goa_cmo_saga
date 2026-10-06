@@ -12,7 +12,6 @@ const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
 const { completeReport } = require('../services/tenant/tenantReportService');
-const { ensureReportPdf } = require('../services/tenant/tenantPdfService');
 
 const requireTenant = (req, res, next) => {
     if (!isTenantUser(req.user)) {
@@ -93,14 +92,14 @@ const getLatestReport = async (req, res) => {
     if (!event) return res.status(404).json({ message: 'Event not found' });
     // Latest whole-event report (date-range reports are opened from the list).
     const report = await TenantReport.findOne({ tenant_id: req.tenantId, event_id: event.id, status: 'ready', range_from: null, range_to: null })
-        .select('-_id -tenant_id -__v -pdf_path').sort({ created_at: -1 }).lean();
+        .select('-_id -tenant_id -__v').sort({ created_at: -1 }).lean();
     if (!report) return res.status(404).json({ message: 'No report generated yet' });
     res.json({ report });
 };
 
 const getReport = async (req, res) => {
     const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId })
-        .select('-_id -tenant_id -__v -pdf_path').lean();
+        .select('-_id -tenant_id -__v').lean();
     if (!report) return res.status(404).json({ message: 'Report not found' });
     res.json({ report });
 };
@@ -141,18 +140,6 @@ const createReport = async (req, res) => {
         .finally(() => generating.delete(req.tenantId));
     await createAuditLog(req.user, 'create_report', 'tenant_report', report.id, { from, to });
     res.status(202).json({ report: { id: report.id, status: report.status, range_from: from, range_to: to } });
-};
-
-/** GET /reports/:reportId/pdf — the brief as a PDF (rendered once, then cached). */
-const downloadReportPdf = async (req, res) => {
-    const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId }).select('id status title range_from range_to period_start period_end').lean();
-    if (!report) return res.status(404).json({ message: 'Report not found' });
-    if (report.status !== 'ready') return res.status(409).json({ message: 'Report is not ready yet' });
-    const baseUrl = process.env.TENANT_PDF_BASE_URL || `${req.protocol}://${req.get('host')}`;
-    const file = await ensureReportPdf({ tenantId: req.tenantId, reportId: report.id, userId: req.user.id, baseUrl });
-    const day = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : 'all');
-    const name = `${(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}_${day(report.range_from || report.period_start)}_to_${day(report.range_to || report.period_end)}.pdf`;
-    res.download(file, name);
 };
 
 /** GET /events/:id/posts/export?from&to — relevant posts in a period, for the spreadsheet download. */
@@ -229,6 +216,5 @@ module.exports = {
     getReport: wrap(getReport),
     refreshEvent: wrap(refreshEvent),
     createReport: wrap(createReport),
-    downloadReportPdf: wrap(downloadReportPdf),
     exportPosts: wrap(exportPosts),
 };

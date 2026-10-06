@@ -440,7 +440,7 @@ const templateProse = (event, s) => {
     const to = dayText(t.last_post_at);
 
     const bottom = [
-        `Between ${from} and ${to}, ${num(t.relevant)} relevant public posts (${platforms}) discussed ${event.short_name || event.name}, drawing about ${compact(t.engagement)} engagements${t.views ? ` and ${compact(t.views)} views` : ''}.`,
+        `${from === to ? `On ${from}` : `Between ${from} and ${to}`}, ${num(t.relevant)} relevant public posts (${platforms}) discussed ${event.short_name || event.name}, drawing about ${compact(t.engagement)} engagements${t.views ? ` and ${compact(t.views)} views` : ''}.`,
         `Tone was ${tone('positive').pct}% positive, ${tone('neutral').pct}% neutral and ${tone('negative').pct}% negative.`,
         `Where posts take a position on ${subject}, ${num(st('stance_toward_subject', 'critical').count)} are critical and ${num(st('stance_toward_subject', 'supportive').count)} supportive; ${st('stance_toward_protest', 'supportive').pct}% support the protest and ${st('stance_toward_protest', 'critical').pct}% criticise it.`,
         topNarr.length ? `The leading narratives are ${topNarr.map((n) => `${n.label} (${n.pct}%)`).join(', ')}.` : '',

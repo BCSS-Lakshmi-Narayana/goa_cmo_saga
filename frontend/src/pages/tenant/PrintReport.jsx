@@ -1,34 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import axios from 'axios';
-import { BACKEND_URL } from '../../lib/api';
+import api from '../../lib/api';
 import ReportBrief from './ReportBrief';
 
 /**
- * Bare page the server's PDF renderer opens: /workspace/print/:reportId#token=…
- * The short-lived token comes in the URL fragment (never sent to a server) and
- * is used only for these two requests — nothing is stored. Sets
- * window.__REPORT_READY__ once the brief has rendered.
+ * Print-ready brief at /workspace/print/:reportId. With ?autoprint=1 it opens
+ * the browser's print dialog once rendered, so "Save as PDF" gives the file;
+ * the document title becomes the suggested file name.
  */
 const PrintReport = () => {
   const { reportId } = useParams();
   const [state, setState] = useState({ report: null, workspace: null, error: null });
 
   useEffect(() => {
-    const token = new URLSearchParams(window.location.hash.slice(1)).get('token');
-    const client = axios.create({ baseURL: `${BACKEND_URL}/api`, headers: { Authorization: `Bearer ${token}` } });
-    Promise.all([client.get(`/tenant/reports/${reportId}`), client.get('/tenant/workspace')])
+    Promise.all([api.get(`/tenant/reports/${reportId}`), api.get('/tenant/workspace')])
       .then(([r, w]) => setState({ report: r.data.report, workspace: w.data.workspace, error: null }))
-      .catch((err) => {
-        window.__REPORT_ERROR__ = err.response?.status ? `HTTP ${err.response.status}` : err.message;
-        setState({ report: null, workspace: null, error: window.__REPORT_ERROR__ });
-      });
+      .catch((err) => setState({ report: null, workspace: null, error: err.response?.status ? `HTTP ${err.response.status}` : err.message }));
   }, [reportId]);
 
   useEffect(() => {
-    if (state.report) {
-      // Let the browser lay out the brief before signalling.
-      requestAnimationFrame(() => requestAnimationFrame(() => { window.__REPORT_READY__ = true; }));
+    if (!state.report) return;
+    const r = state.report;
+    const day = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : 'all');
+    document.title = `${(r.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}_${day(r.range_from || r.period_start)}_to_${day(r.range_to || r.period_end)}`;
+    // Let the browser lay out the brief before printing.
+    if (new URLSearchParams(window.location.search).get('autoprint') === '1') {
+      requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => window.print(), 300)));
     }
   }, [state.report]);
 

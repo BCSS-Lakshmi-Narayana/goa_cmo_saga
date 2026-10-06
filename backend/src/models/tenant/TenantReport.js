@@ -12,8 +12,6 @@ const tenantReportSchema = new mongoose.Schema({
     // The period the user asked for (null = whole event); period_* is the span of posts actually found.
     range_from: { type: Date, default: null },
     range_to: { type: Date, default: null },
-    // Rendered PDF on disk, created on first download.
-    pdf_path: { type: String, default: null },
     period_start: { type: Date, default: null },
     period_end: { type: Date, default: null },
     post_count: { type: Number, default: 0 },
