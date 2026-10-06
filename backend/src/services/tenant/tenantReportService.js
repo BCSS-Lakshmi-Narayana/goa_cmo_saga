@@ -599,7 +599,7 @@ const templateProse = (event, s) => {
     if (band('critical') + band('high')) {
         attention.push({
             title: `${band('critical') + band('high')} posts in the critical or high risk band`,
-            detail: `${band('critical')} critical (threats, incitement, doxxing, impersonation) and ${band('high')} high (communal or gendered abuse, misattributed media, calls to disrupt). The most-engaged reached ${num(maxRiskReach)} engagements. See section 04.`,
+            detail: `${band('critical')} critical (threats, incitement, doxxing, impersonation) and ${band('high')} high (communal or gendered abuse, misattributed media, calls to disrupt). The most-engaged reached ${num(maxRiskReach)} engagements. Details are in the risk-band section.`,
             severity: band('critical') ? 'high' : 'medium',
         });
     }

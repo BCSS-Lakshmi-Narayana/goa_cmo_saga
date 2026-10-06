@@ -34,6 +34,10 @@ const ACCOUNT_LABEL = {
   organisation: 'Organisation', government: 'Government', individual: 'Account', unknown: 'Account',
 };
 
+/** Search terms as shown to readers: no short forms. */
+const TERM_LABEL = { SIR: 'Special Intensive Revision', 'CEC resignation': 'Chief Election Commissioner resignation', CJP: 'Cockroach Janta Party', CEC: 'Chief Election Commissioner' };
+const termLabel = (t) => TERM_LABEL[t] || t;
+
 const fmt = (n) => (n === null || n === undefined ? '—' : Number(n).toLocaleString('en-IN'));
 /** Big numbers for tiles: 1.03 crore / 57.3 lakh. */
 const fmtBig = (n) => {
@@ -294,7 +298,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       </div>
       <p className="mt-2 text-[12px] italic text-slate-500">
         Platforms: {s.by_platform.filter((p) => p.relevant).map((p) => `${PLATFORM_LABEL[p.platform]} ${fmt(p.relevant)}`).join(' · ')}.
-        {' '}{fmt(t.collected)} posts collected, {fmt(t.excluded_unrelated)} judged unrelated and excluded. Keywords: {[...(ev.keywords || []).slice(0, 8), ...(ev.hashtags || []).slice(0, 4)].join(', ')}.
+        {' '}{fmt(t.collected)} posts collected, {fmt(t.excluded_unrelated)} judged unrelated and excluded.
       </p>
 
       <H2>Executive summary</H2>
@@ -353,7 +357,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       {s.share_of_voice.length > 0 && <>
         <H2>Share of voice by keyword</H2>
         <p className="text-[12px] italic text-slate-500 mb-2">Relevant posts mentioning each tracked term. A post can mention several.</p>
-        <HBars rows={s.share_of_voice.slice(0, 10).map((k) => ({ label: k.term, value: k.count }))} />
+        <HBars rows={s.share_of_voice.slice(0, 10).map((k) => ({ label: termLabel(k.term), value: k.count }))} />
       </>}
 
       <H2>Posts and negativity by day</H2>
