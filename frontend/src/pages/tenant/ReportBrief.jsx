@@ -90,7 +90,7 @@ const ToneBar = ({ tone }) => {
     <div className="flex h-8 w-full overflow-hidden rounded text-[11px] font-semibold text-white">
       {tone.filter((t) => t.count).map((t) => (
         <div key={t.key} className="flex items-center justify-center whitespace-nowrap overflow-hidden" style={{ width: `${(t.count / total) * 100}%`, background: TONE_COLOR[t.key] }}>
-          {t.count / total > 0.08 ? `${t.key[0].toUpperCase()}${t.key.slice(1)} ${fmt(t.count)} (${t.pct}%)` : ''}
+          {t.count / total > 0.2 ? `${t.key[0].toUpperCase()}${t.key.slice(1)} ${fmt(t.count)} (${t.pct}%)` : t.count / total > 0.05 ? `${t.pct}%` : ''}
         </div>
       ))}
     </div>
@@ -280,7 +280,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       {/* Bottom line + attention */}
       <div className="mt-6 rounded border-l-4 border-[#1e3a5f] bg-slate-50 p-4">
         <p className="text-[14px] leading-relaxed"><span className="font-bold text-[#1e3a5f]">Bottom line. </span>{d.bottom_line}</p>
-        {d.analyst_review && <p className="text-[11px] text-slate-500 mt-2">Reviewed by analyst on {fmtDay(d.analyst_review.reviewed_at)}.</p>}
+        {d.bottom_line_source === 'analyst' && d.analyst_review && <p className="text-[11px] text-slate-500 mt-2">Written by analyst on {fmtDay(d.analyst_review.reviewed_at)}.</p>}
       </div>
 
       {(s.key_intelligence || []).length > 0 && <>

@@ -683,10 +683,11 @@ const buildReportData = async (event, { from = null, to = null } = {}) => {
         QUALITATIVE_SUMMARY_KEYS.forEach((k) => { if (analyst.executive_summary[k]) prose.executive_summary[k] = analyst.executive_summary[k]; });
     }
     let bottomLine = prose.bottom_line;
+    let bottomLineSource = 'generated';
     if (snapshotMatches) {
         if (analyst.attention) prose.attention = analyst.attention;
         if (analyst.executive_summary?.social_discussion) prose.executive_summary.social_discussion = analyst.executive_summary.social_discussion;
-        if (review.bottom_line) bottomLine = review.bottom_line;
+        if (review.bottom_line) { bottomLine = review.bottom_line; bottomLineSource = 'analyst'; }
     }
     if (review.prose) source += '+analyst';
 
@@ -714,6 +715,7 @@ const buildReportData = async (event, { from = null, to = null } = {}) => {
                 watch_items: event.watch_items || [],
             },
             bottom_line: bottomLine,
+            bottom_line_source: bottomLineSource,
             // Risk assessment and notes are qualitative; figures in them are only shown for the snapshot they describe.
             analyst_review: review.reviewed_at ? {
                 reviewed_at: review.reviewed_at,
