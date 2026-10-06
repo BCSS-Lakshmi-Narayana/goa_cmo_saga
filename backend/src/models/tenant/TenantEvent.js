@@ -73,6 +73,9 @@ const tenantEventSchema = new mongoose.Schema({
         bottom_line: { type: String, default: null },
         risk_assessment: { type: String, default: null },
         notes: { type: [String], default: [] },
+        // Analyst-written replacements for any generated prose section
+        // (attention, executive_summary, narrative_summaries, recommendations, ...).
+        prose: { type: mongoose.Schema.Types.Mixed, default: null },
         reviewed_by: { type: String, default: null },
         reviewed_at: { type: Date, default: null },
     },

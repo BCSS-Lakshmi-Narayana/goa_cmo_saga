@@ -415,8 +415,10 @@ const METHODOLOGY = [
 const generateReport = async (event, { generatedBy = null } = {}) => {
     const posts = await TenantPost.find({ tenant_id: event.tenant_id, event_id: event.id }).lean();
     const stats = computeStats(event, posts);
-    const prose = await writeProse(event, stats);
     const review = event.analyst_review || {};
+    const generated = await writeProse(event, stats);
+    // Analyst-written sections replace generated ones, key by key.
+    const prose = review.prose ? { ...generated, ...review.prose, _source: `${generated._source}+analyst` } : generated;
 
     const data = {
         version: 2,
