@@ -150,7 +150,7 @@ const Bullets = ({ items }) => (items && items.length
 
 /* ── the brief ── */
 
-const ReportBrief = ({ report, workspace }) => {
+const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
   const d = report.data;
   const s = d.stats;
   const ev = d.event;
@@ -164,7 +164,7 @@ const ReportBrief = ({ report, workspace }) => {
   return (
     <article className="max-w-[900px] mx-auto text-slate-900 print:max-w-none print:text-[12px]">
       <div className="flex justify-end print:hidden mb-2">
-        <Button variant="outline" size="sm" onClick={() => window.print()}><Printer className="h-4 w-4 mr-1" />Print / Save PDF</Button>
+        <Button variant="outline" size="sm" onClick={onDownloadPdf || (() => window.print())}><Printer className="h-4 w-4 mr-1" />{onDownloadPdf ? 'Download PDF' : 'Print / Save PDF'}</Button>
       </div>
 
       {/* Cover */}
@@ -173,8 +173,13 @@ const ReportBrief = ({ report, workspace }) => {
       <p className="text-slate-600 text-sm">India · Aggregate monitoring of public posts by media, organisations, public figures and the public</p>
 
       <div className="mt-4"><Table
-        head={['Monitoring window', 'Generated', 'Posts analysed', 'Platforms']}
-        rows={[[`${fmtDay(report.period_start)} – ${fmtDay(report.period_end)}`, fmtDay(report.created_at), fmt(t.relevant), s.by_platform.filter((p) => p.relevant).map((p) => PLATFORM_LABEL[p.platform]).join(', ')]]}
+        head={['Report period', 'Generated', 'Posts analysed', 'Platforms']}
+        rows={[[
+          report.range_from || report.range_to
+            ? `${report.range_from ? fmtDay(report.range_from) : 'Start'} – ${report.range_to ? fmtDay(report.range_to) : 'latest'}`
+            : `${fmtDay(report.period_start)} – ${fmtDay(report.period_end)} (whole event)`,
+          fmtDay(report.created_at), fmt(t.relevant), s.by_platform.filter((p) => p.relevant).map((p) => PLATFORM_LABEL[p.platform]).join(', '),
+        ]]}
       /></div>
 
       <div className="mt-5 space-y-3">
@@ -289,7 +294,42 @@ const ReportBrief = ({ report, workspace }) => {
         ))}
       </div>
 
-      <H2 n="04">Risk-band tracking</H2>
+            {s.tone_sections && <>
+        <H2 n="04">Positive, negative and neutral posts</H2>
+        <p className="text-[12px] text-slate-600 mb-3">Each post's overall tone, separated. Tone is not the same as stance: a negative post can be negative about the protest rather than about {ev.subject?.name || 'the subject'} — the stance line under each tone shows which.</p>
+        <div className="grid md:grid-cols-3 gap-3">
+          {s.tone_sections.map((ts) => (
+            <div key={ts.key} className="border rounded p-3 break-inside-avoid" style={{ borderTop: `4px solid ${TONE_COLOR[ts.key]}` }}>
+              <div className="flex items-baseline justify-between">
+                <span className="font-bold text-[15px] capitalize" style={{ color: TONE_COLOR[ts.key] === '#94a3b8' ? '#475569' : TONE_COLOR[ts.key] }}>{ts.key}</span>
+                <span className="text-[13px] font-semibold">{fmt(ts.count)} · {ts.pct}%</span>
+              </div>
+              <div className="text-[11px] text-slate-600 mt-1 space-y-0.5">
+                <div><b>Platforms:</b> {ts.by_platform.map((p) => `${PLATFORM_LABEL[p.platform]} ${fmt(p.count)}`).join(' · ') || '—'}</div>
+                <div><b>Toward {ev.subject?.name || 'subject'}:</b> {ts.stance_toward_subject.slice(0, 3).map((x) => `${x.key} ${fmt(x.count)}`).join(' · ')}</div>
+                <div><b>Mostly about:</b> {ts.targets.slice(0, 3).map((x) => `${TARGET_LABEL[x.key] || x.key} ${fmt(x.count)}`).join(' · ')}</div>
+                <div><b>Narratives:</b> {ts.narratives.slice(0, 3).map((x) => `${(ev.narratives || []).find((n) => n.key === x.key)?.label || x.key} (${fmt(x.count)})`).join('; ') || '—'}</div>
+                {ts.hashtags.length > 0 && <div><b>Hashtags:</b> {ts.hashtags.slice(0, 4).map((h) => h.tag).join(' ')}</div>}
+                <div><b>Engagement:</b> {fmt(ts.engagement)}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {s.tone_sections.filter((ts) => ts.key !== 'neutral').map((ts) => (
+          <div key={ts.key} className="mt-4">
+            <div className="font-semibold text-[13px] mb-1 break-after-avoid capitalize" style={{ color: TONE_COLOR[ts.key] }}>{ts.key} posts — highest engagement</div>
+            <Table
+              head={['When', 'Platform', 'Account', 'What it says', 'Engagement']}
+              rows={(ts.top_public.length >= 5 ? ts.top_public : ts.top_all).slice(0, 10).map((p) => [
+                fmtDate(p.published_at), PLATFORM_LABEL[p.platform], p.author,
+                <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>open</Link>}</span>, fmt(p.engagement),
+              ])}
+            />
+          </div>
+        ))}
+      </>}
+
+      <H2 n="05">Risk-band tracking</H2>
       <Tiles items={['critical', 'high', 'medium', 'low'].map((k) => [fmt(band(k).count), `${k} (${band(k).pct}%)`])} />
       <p className="text-[13px] mt-3">
         Read critical and high rows first. Criticism of a public official, satire and calls for resignation are lawful political speech and are tracked as sentiment only.
@@ -316,7 +356,7 @@ const ReportBrief = ({ report, workspace }) => {
         />
       </>}
 
-      <H2 n="05">Who and what is being discussed</H2>
+      <H2 n="06">Who and what is being discussed</H2>
       <div className="space-y-1.5 mb-3">
         {s.target_table.map((r) => (
           <div key={r.type} className="flex items-center gap-2 text-xs">
@@ -333,7 +373,7 @@ const ReportBrief = ({ report, workspace }) => {
         Most named people and organisations: {s.entities.slice(0, 10).map((e) => `${e.name} (${fmt(e.count)})`).join(', ')}.
       </p>
 
-      <H2 n="06">Influencer ecosystem</H2>
+      <H2 n="07">Influencer ecosystem</H2>
       <Tiles items={[[fmt(s.influencer_totals.accounts), 'Public accounts'], [PLATFORM_LABEL[s.influencer_totals.top_platform] || '—', 'Top platform'], [fmt(s.influencer_totals.top_score), 'Top engagement score'], [fmt(s.influencer_totals.likes), 'Likes']]} />
       <p className="text-[12px] italic text-slate-500 mt-2 mb-2">
         Engagement score = likes + 2×comments + 3×shares + views/10. {fmt(s.influencer_totals.shares)} shares · {fmt(s.influencer_totals.comments)} comments.
@@ -348,13 +388,13 @@ const ReportBrief = ({ report, workspace }) => {
         ])}
       /></div>
 
-      <H2 n="07">Evidence register (media sample)</H2>
+      <H2 n="08">Evidence register (media sample)</H2>
       <Table
         head={['When', 'Platform', 'Outlet / account', 'Summary']}
         rows={s.evidence.map((p) => [<b>{fmtDate(p.published_at)}</b>, PLATFORM_LABEL[p.platform], p.author, <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>source</Link>}</span>])}
       />
 
-      <H2 n="08">Key narratives</H2>
+      <H2 n="09">Key narratives</H2>
       <div className="space-y-3">
         {s.narratives.map((n) => (
           <div key={n.key} className="border rounded p-3 break-inside-avoid">
@@ -372,7 +412,7 @@ const ReportBrief = ({ report, workspace }) => {
         ))}
       </div>
 
-      <H2 n="09">Verified facts and claims</H2>
+      <H2 n="10">Verified facts and claims</H2>
       <p className="text-[12px] text-slate-600 mb-2">From published reporting. Verified = two or more independent outlets. Social-media allegations are listed separately and are not verified by this brief.</p>
       <ul className="space-y-1.5">
         {(ev.facts || []).map((f, i) => (
@@ -395,7 +435,7 @@ const ReportBrief = ({ report, workspace }) => {
         </ul>
       </>}
 
-      <H2 n="10">Recommended considerations</H2>
+      <H2 n="11">Recommended considerations</H2>
       <p className="text-[12px] text-slate-500 mb-2">Neutral, information-focused considerations for the office. Not messaging or persuasion advice.</p>
       <div className="grid md:grid-cols-2 gap-4">
         {[['Fact-check against official records', rec.fact_check], ['Questions a factual clarification could answer', rec.clarifications], ['Communication considerations', rec.communication],

@@ -141,8 +141,8 @@ const readSearchPage = (data) => {
 
 const X_LATEST_PAGES = 3;
 
-/** Top results via the shared searchTweets, plus up to X_LATEST_PAGES pages of Latest. */
-const collectX = async (queries, since) => {
+/** Top results via the shared searchTweets, plus up to `latestPages` pages of Latest. */
+const collectX = async (queries, since, latestPages = X_LATEST_PAGES) => {
     const sinceStr = since ? new Date(since).toISOString().slice(0, 10) : null;
     const out = [];
     for (const q of queries) {
@@ -150,13 +150,16 @@ const collectX = async (queries, since) => {
         top.forEach((t) => out.push({ query: q, post: fromTweet(t) }));
 
         let cursor = null;
-        for (let page = 0; page < X_LATEST_PAGES; page++) {
+        let empty = 0;
+        for (let page = 0; page < latestPages; page++) {
             try {
                 const params = { query: sinceStr ? `${q} since:${sinceStr}` : q, type: 'Latest', count: 40 };
                 if (cursor) params.cursor = cursor;
                 const res = readSearchPage(await xService.rapidGet('search', params));
                 res.tweets.forEach((t) => out.push({ query: q, post: fromTweet(t) }));
-                if (!res.cursor || !res.tweets.length || res.cursor === cursor) break;
+                // Stop at the end of results, or after two pages that add nothing.
+                empty = res.tweets.length ? 0 : empty + 1;
+                if (!res.cursor || res.cursor === cursor || empty >= 2) break;
                 cursor = res.cursor;
             } catch (err) {
                 console.warn(`[tenantCollect] X Latest page ${page + 1} failed for "${q}": ${err.message}`);
@@ -325,29 +328,35 @@ const ytVideoPost = (v) => {
     };
 };
 
-// Top comments by relevance per video: enough to read the reaction without flooding the sample.
+// Top comments by relevance per video (default): enough to read the reaction without flooding the sample.
 const COMMENTS_PER_VIDEO = 40;
 
-const collectYouTube = async (queries, since, commentVideos, mentionsEvent) => {
+const collectYouTube = async (queries, since, commentVideos, mentionsEvent, { searchPages = 1, commentsPerVideo = COMMENTS_PER_VIDEO } = {}) => {
     const out = [];
     const videos = new Map();
     for (const q of queries) {
-        try {
-            const search = await ytGet('search', {
-                part: 'snippet', q, type: 'video', maxResults: 50, order: 'relevance',
-                publishedAfter: since ? new Date(since).toISOString() : undefined,
-            });
-            const ids = (search.items || []).map((i) => i.id?.videoId).filter(Boolean).filter((id) => !videos.has(id));
-            for (let i = 0; i < ids.length; i += 50) {
-                const details = await ytGet('videos', { part: 'snippet,statistics', id: ids.slice(i, i + 50).join(',') });
-                (details.items || []).forEach((v) => {
-                    const post = ytVideoPost(v);
-                    videos.set(v.id, post);
-                    out.push({ query: q, post });
+        let pageToken;
+        for (let page = 0; page < searchPages; page++) {
+            try {
+                const search = await ytGet('search', {
+                    part: 'snippet', q, type: 'video', maxResults: 50, order: 'relevance', pageToken,
+                    publishedAfter: since ? new Date(since).toISOString() : undefined,
                 });
+                const ids = (search.items || []).map((i) => i.id?.videoId).filter(Boolean).filter((id) => !videos.has(id));
+                for (let i = 0; i < ids.length; i += 50) {
+                    const details = await ytGet('videos', { part: 'snippet,statistics', id: ids.slice(i, i + 50).join(',') });
+                    (details.items || []).forEach((v) => {
+                        const post = ytVideoPost(v);
+                        videos.set(v.id, post);
+                        out.push({ query: q, post });
+                    });
+                }
+                pageToken = search.nextPageToken;
+                if (!pageToken) break;
+            } catch (err) {
+                console.warn(`[tenantCollect] YouTube search failed for "${q}": ${err.message}`);
+                break;
             }
-        } catch (err) {
-            console.warn(`[tenantCollect] YouTube search failed for "${q}": ${err.message}`);
         }
     }
 
@@ -358,10 +367,18 @@ const collectYouTube = async (queries, since, commentVideos, mentionsEvent) => {
         .slice(0, commentVideos);
     for (const video of top) {
         try {
-            const res = await ytGet('commentThreads', {
-                part: 'snippet', videoId: video.platform_post_id, maxResults: COMMENTS_PER_VIDEO, order: 'relevance', textFormat: 'plainText',
-            });
-            (res.items || []).forEach((item) => {
+            const items = [];
+            let pageToken;
+            while (items.length < commentsPerVideo) {
+                const res = await ytGet('commentThreads', {
+                    part: 'snippet', videoId: video.platform_post_id, maxResults: Math.min(100, commentsPerVideo - items.length),
+                    order: 'relevance', textFormat: 'plainText', pageToken,
+                });
+                items.push(...(res.items || []));
+                pageToken = res.nextPageToken;
+                if (!pageToken) break;
+            }
+            items.forEach((item) => {
                 const c = item.snippet?.topLevelComment?.snippet;
                 if (!c) return;
                 out.push({
@@ -501,13 +518,16 @@ const collectForEvent = async (event, { platforms = ALL_PLATFORMS } = {}) => {
     const mentionsEvent = buildMentionMatcher(event);
 
     const runners = {
-        x: () => collectX(plan.x_queries || [], since),
+        x: () => collectX(plan.x_queries || [], since, plan.x_latest_pages || X_LATEST_PAGES),
         facebook: async () => [
             ...(await collectFacebook(plan.facebook_queries || [])),
             ...(await collectFacebookPages(plan.facebook_pages || [], since, mentionsEvent)),
         ],
         instagram: () => collectInstagram(plan.instagram_accounts || [], since, mentionsEvent),
-        youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent),
+        youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent, {
+            searchPages: plan.youtube_search_pages || 1,
+            commentsPerVideo: plan.youtube_comments_per_video || COMMENTS_PER_VIDEO,
+        }),
         reddit: () => collectReddit(plan.reddit_queries || []),
         telegram: () => collectTelegram(plan.telegram_queries || [], since),
     };

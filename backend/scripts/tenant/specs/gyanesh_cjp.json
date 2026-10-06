@@ -202,7 +202,7 @@
         "#ChaloDelhi"
       ],
       "collection_plan": {
-        "since": "2026-09-29T00:00:00.000Z",
+        "since": "2026-09-23T00:00:00.000Z",
         "x_queries": [
           "from:Cockroachisback OR from:abhijeet_dipke",
           "\"Cockroach Janta Party\" OR \"Cockroach Janata Party\"",
@@ -215,7 +215,18 @@
           "(Gyanesh OR CJP OR Dipke) (FIR OR NHRC)",
           "\"कॉकरोच जनता पार्टी\" OR \"कॉकरोच पार्टी\"",
           "\"ज्ञानेश कुमार\" (इस्तीफा OR इस्तीफ़ा OR CJP OR दिपके OR प्रदर्शन)",
-          "\"Gyanu\" (CEC OR resign OR Dipke)"
+          "\"Gyanu\" (CEC OR resign OR Dipke)",
+          "#GyaneshKumarMustResign OR #GyaneshMustGo OR #GyaneshKumarResign OR #GoGyanuGo",
+          "#VoteChori (Gyanesh OR CEC OR CJP)",
+          "\"Jantar Mantar 2.0\" OR (\"Chalo Delhi\" CJP) OR (\"10 October\" Dipke)",
+          "@Cockroachisback",
+          "@abhijeet_dipke",
+          "\"Saurav Das\" OR \"Ashutosh Ranka\" OR \"Ratna Singh\" CJP",
+          "\"Election Commission\" (CJP OR cockroach OR Dipke)",
+          "\"Gen Z\" (Gyanesh OR CEC) protest",
+          "वोट चोरी ज्ञानेश",
+          "कॉकरोच पार्टी (ज्ञानेश OR जंतर OR मुंबई)",
+          "शिवाजी पार्क (CJP OR दिपके OR आंदोलन)"
         ],
         "facebook_queries": [
           "Cockroach Janta Party Gyanesh",
@@ -245,9 +256,14 @@
           "Jantar Mantar CJP",
           "कॉकरोच जनता पार्टी",
           "ज्ञानेश कुमार इस्तीफा",
-          "Go Gyanu Go"
+          "Go Gyanu Go",
+          "CJP Jantar Mantar October 10",
+          "Gyanesh Kumar resignation",
+          "Abhijeet Dipke speech",
+          "वोट चोरी ज्ञानेश कुमार",
+          "CEC Gyanesh Kumar protest Mumbai"
         ],
-        "youtube_comment_videos": 15,
+        "youtube_comment_videos": 40,
         "reddit_queries": [
           "Cockroach Janta Party",
           "Gyanesh Kumar",
@@ -281,7 +297,10 @@
           "https://www.facebook.com/cnnnews18",
           "https://www.facebook.com/SaamTVNews",
           "https://www.facebook.com/LokmatNews"
-        ]
+        ],
+        "x_latest_pages": 25,
+        "youtube_search_pages": 3,
+        "youtube_comments_per_video": 150
       },
       "narratives": [
         {

@@ -11,6 +11,8 @@ const TenantReport = require('../models/tenant/TenantReport');
 const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
+const { completeReport } = require('../services/tenant/tenantReportService');
+const { ensureReportPdf } = require('../services/tenant/tenantPdfService');
 
 const requireTenant = (req, res, next) => {
     if (!isTenantUser(req.user)) {
@@ -80,7 +82,7 @@ const listReports = async (req, res) => {
     const event = await findEvent(req);
     if (!event) return res.status(404).json({ message: 'Event not found' });
     const reports = await TenantReport.find({ tenant_id: req.tenantId, event_id: event.id })
-        .select('-_id id title period_start period_end post_count created_at')
+        .select('-_id id title status error range_from range_to period_start period_end post_count created_at')
         .sort({ created_at: -1 })
         .lean();
     res.json({ reports });
@@ -89,17 +91,113 @@ const listReports = async (req, res) => {
 const getLatestReport = async (req, res) => {
     const event = await findEvent(req);
     if (!event) return res.status(404).json({ message: 'Event not found' });
-    const report = await TenantReport.findOne({ tenant_id: req.tenantId, event_id: event.id })
-        .select('-_id -tenant_id -__v').sort({ created_at: -1 }).lean();
+    // Latest whole-event report (date-range reports are opened from the list).
+    const report = await TenantReport.findOne({ tenant_id: req.tenantId, event_id: event.id, status: 'ready', range_from: null, range_to: null })
+        .select('-_id -tenant_id -__v -pdf_path').sort({ created_at: -1 }).lean();
     if (!report) return res.status(404).json({ message: 'No report generated yet' });
     res.json({ report });
 };
 
 const getReport = async (req, res) => {
     const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId })
-        .select('-_id -tenant_id -__v').lean();
+        .select('-_id -tenant_id -__v -pdf_path').lean();
     if (!report) return res.status(404).json({ message: 'Report not found' });
     res.json({ report });
+};
+
+const parseDay = (value, endOfDay) => {
+    if (!value) return null;
+    // Plain dates are IST calendar days.
+    const d = /^\d{4}-\d{2}-\d{2}$/.test(value)
+        ? new Date(`${value}T${endOfDay ? '23:59:59.999' : '00:00:00.000'}+05:30`)
+        : new Date(value);
+    return Number.isNaN(d.getTime()) ? undefined : d;
+};
+
+const generating = new Set(); // tenant ids with a report in progress
+
+/** POST /events/:id/reports {from?, to?} — build a report for a period, in the background. */
+const createReport = async (req, res) => {
+    const event = await findEvent(req);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    const from = parseDay(req.body?.from, false);
+    const to = parseDay(req.body?.to, true);
+    if (from === undefined || to === undefined) return res.status(400).json({ message: 'Invalid date' });
+    if (from && to && from > to) return res.status(400).json({ message: '"From" must be before "To"' });
+    if (generating.has(req.tenantId)) return res.status(409).json({ message: 'A report is already being generated' });
+
+    const report = await TenantReport.create({
+        tenant_id: req.tenantId,
+        event_id: event.id,
+        title: event.short_name || event.name,
+        status: 'generating',
+        range_from: from,
+        range_to: to,
+        generated_by: req.user.id,
+    });
+    generating.add(req.tenantId);
+    completeReport(event, report.id, { from, to })
+        .catch((err) => console.error('[tenant] report failed:', err.message))
+        .finally(() => generating.delete(req.tenantId));
+    await createAuditLog(req.user, 'create_report', 'tenant_report', report.id, { from, to });
+    res.status(202).json({ report: { id: report.id, status: report.status, range_from: from, range_to: to } });
+};
+
+/** GET /reports/:reportId/pdf — the brief as a PDF (rendered once, then cached). */
+const downloadReportPdf = async (req, res) => {
+    const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId }).select('id status title range_from range_to period_start period_end').lean();
+    if (!report) return res.status(404).json({ message: 'Report not found' });
+    if (report.status !== 'ready') return res.status(409).json({ message: 'Report is not ready yet' });
+    const baseUrl = process.env.TENANT_PDF_BASE_URL || `${req.protocol}://${req.get('host')}`;
+    const file = await ensureReportPdf({ tenantId: req.tenantId, reportId: report.id, userId: req.user.id, baseUrl });
+    const day = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : 'all');
+    const name = `${(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}_${day(report.range_from || report.period_start)}_to_${day(report.range_to || report.period_end)}.pdf`;
+    res.download(file, name);
+};
+
+/** GET /events/:id/posts/export?from&to — relevant posts in a period, for the spreadsheet download. */
+const exportPosts = async (req, res) => {
+    const event = await findEvent(req);
+    if (!event) return res.status(404).json({ message: 'Event not found' });
+    const from = parseDay(req.query.from, false);
+    const to = parseDay(req.query.to, true);
+    if (from === undefined || to === undefined) return res.status(400).json({ message: 'Invalid date' });
+    const filter = { tenant_id: req.tenantId, event_id: event.id, 'analysis.is_relevant': true };
+    if (from || to) {
+        filter.published_at = {};
+        if (from) filter.published_at.$gte = from;
+        if (to) filter.published_at.$lte = to;
+    }
+    const posts = await TenantPost.find(filter)
+        .select('platform post_type url author_name author_handle published_at text hashtags metrics engagement_total language analysis.sentiment analysis.stance_toward_subject analysis.stance_toward_protest analysis.category analysis.narratives analysis.risk_band analysis.review.risk_band analysis.summary analysis.target')
+        .sort({ published_at: -1 })
+        .limit(50000)
+        .lean();
+    res.json({
+        posts: posts.map((p) => ({
+            published_at: p.published_at,
+            platform: p.platform,
+            post_type: p.post_type,
+            account: p.author_name,
+            handle: p.author_handle,
+            text: p.text,
+            url: p.url,
+            likes: p.metrics?.likes ?? null,
+            comments: p.metrics?.comments ?? null,
+            shares: p.metrics?.shares ?? null,
+            views: p.metrics?.views ?? null,
+            tone: { positive: 'positive', negative: 'negative', mixed: 'negative' }[p.analysis?.sentiment] || 'neutral',
+            sentiment: p.analysis?.sentiment,
+            stance_toward_subject: p.analysis?.stance_toward_subject,
+            stance_toward_protest: p.analysis?.stance_toward_protest,
+            category: p.analysis?.category,
+            narratives: (p.analysis?.narratives || []).join(', '),
+            target: p.analysis?.target,
+            risk_band: p.analysis?.review?.risk_band || p.analysis?.risk_band,
+            summary: p.analysis?.summary,
+            language: p.language,
+        })),
+    });
 };
 
 /** Collect → classify → report, in the background. Poll GET /events/:id for progress. */
@@ -130,4 +228,7 @@ module.exports = {
     getLatestReport: wrap(getLatestReport),
     getReport: wrap(getReport),
     refreshEvent: wrap(refreshEvent),
+    createReport: wrap(createReport),
+    downloadReportPdf: wrap(downloadReportPdf),
+    exportPosts: wrap(exportPosts),
 };

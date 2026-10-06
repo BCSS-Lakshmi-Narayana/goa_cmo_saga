@@ -50,9 +50,11 @@ const main = async () => {
     }
 
     if (input.analyst_review) {
+        // Figure-bearing text is tied to the data it was written against.
+        const relevant = await TenantPost.countDocuments({ tenant_id: tenantId, event_id: eventId, 'analysis.is_relevant': true });
         await TenantEvent.updateOne(
             { tenant_id: tenantId, id: eventId },
-            { $set: { analyst_review: { ...input.analyst_review, reviewed_by: reviewer, reviewed_at: new Date() } } },
+            { $set: { analyst_review: { ...input.analyst_review, basis_relevant_posts: relevant, reviewed_by: reviewer, reviewed_at: new Date() } } },
         );
     }
     console.log(`applied ${applied} post decision(s)${input.analyst_review ? ' and the event analyst review' : ''}`);

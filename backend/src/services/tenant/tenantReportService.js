@@ -300,7 +300,27 @@ const computeStats = (event, all) => {
         .filter((c) => c.kind === 'call_to_action').map((c) => ({ text: c.text, engagement: p.engagement_total || 0 })))
         .sort((a, b) => b.engagement - a.engagement);
 
+    // Positive / negative / neutral, each broken down on its own.
+    const toneSections = ['positive', 'negative', 'neutral'].map((key) => {
+        const rows = relevant.filter((p) => tone(p) === key);
+        const publicRows = rows.filter((p) => isPublicAccount(p) && p.post_type !== 'repost');
+        return {
+            key,
+            count: rows.length,
+            pct: pct(rows.length, relevant.length),
+            engagement: rows.reduce((a, p) => a + (p.engagement_total || 0), 0),
+            by_platform: countBy(rows, (p) => p.platform).map(([platform, count]) => ({ platform, count })),
+            stance_toward_subject: countBy(rows, (p) => p.analysis.stance_toward_subject || 'unclear').map(([k, count]) => ({ key: k, count })),
+            targets: countBy(rows, (p) => p.analysis.target_type || 'other').slice(0, 5).map(([k, count]) => ({ key: k, count })),
+            narratives: countBy(rows, (p) => p.analysis.narratives || []).slice(0, 5).map(([k, count]) => ({ key: k, count })),
+            hashtags: countBy(rows, (p) => p.hashtags || []).slice(0, 6).map(([tag, count]) => ({ tag, count })),
+            top_public: distinctAuthors(topBy(publicRows, 40), 10).map((p) => postRef(p)),
+            top_all: topBy(rows.filter((p) => p.post_type !== 'repost'), 10).map((p) => postRef(p)),
+        };
+    });
+
     return {
+        tone_sections: toneSections,
         totals,
         by_platform: byPlatform,
         lead_platform: leadPlatform ? { platform: leadPlatform.platform, share: pct(leadPlatform.relevant, relevant.length) } : null,
@@ -394,22 +414,74 @@ Write JSON:
 Give 4-6 attention items, most important first.`;
 };
 
-const fallbackProse = (event, s) => {
+const PLATFORM_NAME = { x: 'X', youtube: 'YouTube', facebook: 'Facebook', instagram: 'Instagram', reddit: 'Reddit', telegram: 'Telegram' };
+const NARRATIVE_LABEL = (event, key) => ((event.narratives || []).find((n) => n.key === key) || {}).label || 'Other';
+const num = (n) => Number(n || 0).toLocaleString('en-IN');
+const dayText = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long' }) : '');
+const compact = (n) => (n >= 1e7 ? `${(n / 1e7).toFixed(1)} crore` : n >= 1e5 ? `${(n / 1e5).toFixed(1)} lakh` : num(n));
+
+/**
+ * Text written straight from the computed figures, so a report for any date
+ * range reads correctly without an LLM call. Qualitative analyst text is
+ * merged over this by the caller.
+ */
+const templateProse = (event, s) => {
     const t = s.totals;
-    const neg = s.tone.find((x) => x.key === 'negative');
-    const hi = s.risk.bands.filter((b) => ['critical', 'high'].includes(b.key)).reduce((a, b) => a + b.count, 0);
+    const subject = event.subject?.name || 'the subject';
+    const platforms = s.by_platform.filter((p) => p.relevant).map((p) => `${PLATFORM_NAME[p.platform]} ${num(p.relevant)}`).join(', ');
+    const tone = (k) => s.tone.find((x) => x.key === k) || { count: 0, pct: 0 };
+    const st = (field, k) => (s[field].find((x) => x.key === k) || { count: 0, pct: 0 });
+    const band = (k) => (s.risk.bands.find((x) => x.key === k) || { count: 0 }).count;
+    const topNarr = s.narratives.filter((n) => n.key !== 'other').slice(0, 3);
+    const negTarget = [...s.target_table].sort((a, b) => b.negative - a.negative)[0];
+    const riskRows = s.risk.rows || [];
+    const maxRiskReach = riskRows.reduce((m, r) => Math.max(m, r.engagement || 0), 0);
+    const from = dayText(t.first_post_at);
+    const to = dayText(t.last_post_at);
+
+    const bottom = [
+        `Between ${from} and ${to}, ${num(t.relevant)} relevant public posts (${platforms}) discussed ${event.short_name || event.name}, drawing about ${compact(t.engagement)} engagements${t.views ? ` and ${compact(t.views)} views` : ''}.`,
+        `Tone was ${tone('positive').pct}% positive, ${tone('neutral').pct}% neutral and ${tone('negative').pct}% negative.`,
+        `Where posts take a position on ${subject}, ${num(st('stance_toward_subject', 'critical').count)} are critical and ${num(st('stance_toward_subject', 'supportive').count)} supportive; ${st('stance_toward_protest', 'supportive').pct}% support the protest and ${st('stance_toward_protest', 'critical').pct}% criticise it.`,
+        topNarr.length ? `The leading narratives are ${topNarr.map((n) => `${n.label} (${n.pct}%)`).join(', ')}.` : '',
+        `${band('critical')} posts are in the critical risk band and ${band('high')} in the high band${riskRows.length ? `; the most-engaged of them reached ${num(maxRiskReach)} engagements` : ''}.`,
+    ].filter(Boolean).join(' ');
+
+    const attention = [];
+    const upcoming = (event.watch_items || []).filter((w) => w.date && new Date(w.date) >= new Date(t.last_post_at || Date.now()) - 86400000);
+    upcoming.forEach((w) => attention.push({ title: `Upcoming: ${dayText(w.date)}`, detail: w.description, severity: 'high' }));
+    if (band('critical') + band('high')) {
+        attention.push({
+            title: `${band('critical') + band('high')} posts in the critical or high risk band`,
+            detail: `${band('critical')} critical (threats, incitement, doxxing, impersonation) and ${band('high')} high (communal or gendered abuse, misattributed media, calls to disrupt). The most-engaged reached ${num(maxRiskReach)} engagements. See section 04.`,
+            severity: band('critical') ? 'high' : 'medium',
+        });
+    }
+    if (topNarr[0]) {
+        attention.push({ title: `Leading narrative: ${topNarr[0].label}`, detail: `${num(topNarr[0].count)} posts (${topNarr[0].pct}%), trend ${topNarr[0].trend}, mostly on ${topNarr[0].platforms.map((p) => PLATFORM_NAME[p.platform]).slice(0, 2).join(' and ')}.`, severity: 'medium' });
+    }
+    attention.push({
+        title: 'Volume in the latest 24 hours',
+        detail: `${num(s.volume_change.last_24h)} posts in the last 24 hours of the period against ${num(s.volume_change.previous_24h)} in the 24 hours before; the busiest day was ${dayText(s.volume_change.peak_day)} (${num(s.volume_change.peak_posts)} posts).`,
+        severity: s.volume_change.last_24h > s.volume_change.previous_24h * 1.5 ? 'medium' : 'low',
+    });
+    if (negTarget && negTarget.negative) {
+        const TARGET_TEXT = {
+            subject: subject, election_commission: 'the Election Commission', protest_organisers: 'the protest organisers', police: 'the police',
+            political_leader: 'political leaders', government: 'the government', judiciary: 'the judiciary', media: 'the media', organisation: 'organisations', other: 'other subjects',
+        };
+        attention.push({ title: 'Where negativity is concentrated', detail: `The largest number of negative posts is about ${TARGET_TEXT[negTarget.type] || negTarget.type} (${num(negTarget.negative)} of ${num(negTarget.posts)} posts about them).`, severity: 'low' });
+    }
+
     return {
-        bottom_line: `${t.relevant} relevant posts were analysed. ${neg?.pct || 0}% carry a negative tone. ${hi} posts fall in the high or critical risk bands.`,
-        attention: [
-            { title: 'Discussion volume', detail: `${s.volume_change.last_24h} posts in the latest 24 hours vs ${s.volume_change.previous_24h} in the 24 hours before; peak on ${s.volume_change.peak_day}.`, severity: 'medium' },
-            { title: 'Risk bands', detail: `${hi} high/critical-band posts.`, severity: hi ? 'high' : 'low' },
-        ],
+        bottom_line: bottom,
+        attention: attention.slice(0, 6),
         executive_summary: {
             what_happened: event.description,
-            when_where: `${event.location}, from ${istDay(event.start_date)}.`,
+            when_where: `${event.location}, from ${dayText(event.start_date)}.`,
             who_involved: (event.organisers || []).map((e) => e.name).join(', '),
-            why_attention: 'See the event overview.',
-            social_discussion: `${t.relevant} relevant posts across ${s.by_platform.filter((p) => p.relevant).map((p) => p.platform).join(', ')}.`,
+            why_attention: '',
+            social_discussion: `${num(t.relevant)} relevant posts (${platforms}) with about ${compact(t.engagement)} engagements. On ${subject}, ${num(st('stance_toward_subject', 'critical').count)} posts are critical and ${num(st('stance_toward_subject', 'supportive').count)} supportive; on the protest, ${st('stance_toward_protest', 'supportive').pct}% are supportive and ${st('stance_toward_protest', 'critical').pct}% critical.${topNarr.length ? ` Leading narratives: ${topNarr.map((n) => `${n.label} (${n.pct}%)`).join(', ')}.` : ''}`,
         },
         activity_notes: {},
         place_context: {},
@@ -418,6 +490,8 @@ const fallbackProse = (event, s) => {
         recommendations: { fact_check: [], clarifications: [], communication: [], information_gaps: [], monitoring: [], safety: [] },
     };
 };
+
+const fallbackProse = templateProse;
 
 const writeProse = async (event, s) => {
     try {
@@ -443,57 +517,128 @@ const METHODOLOGY = [
     'X "Latest" search returns the newest posts first, so the most recent day in the window is over-represented relative to earlier days; treat day-on-day changes near the end of the window with caution.',
 ];
 
-const generateReport = async (event, { generatedBy = null } = {}) => {
-    const posts = await TenantPost.find({ tenant_id: event.tenant_id, event_id: event.id }).lean();
+// Analyst sections that hold no figures, so they apply to a report for any period.
+const QUALITATIVE_KEYS = ['narrative_summaries', 'allegation_themes', 'activity_notes', 'place_context', 'recommendations'];
+const QUALITATIVE_SUMMARY_KEYS = ['what_happened', 'when_where', 'who_involved', 'why_attention'];
+
+/**
+ * Build the report document for an event, optionally limited to posts
+ * published in [from, to]. Figure-bearing analyst text (bottom line,
+ * attention) is used only for the full-period report and only while the data
+ * still matches the snapshot it was written against.
+ */
+const buildReportData = async (event, { from = null, to = null } = {}) => {
+    const filter = { tenant_id: event.tenant_id, event_id: event.id };
+    if (from || to) {
+        filter.published_at = {};
+        if (from) filter.published_at.$gte = new Date(from);
+        if (to) filter.published_at.$lte = new Date(to);
+    }
+    const posts = await TenantPost.find(filter).lean();
     const stats = computeStats(event, posts);
     const review = event.analyst_review || {};
-    const generated = await writeProse(event, stats);
-    // Analyst-written sections replace generated ones, key by key.
-    const prose = review.prose ? { ...generated, ...review.prose, _source: `${generated._source}+analyst` } : generated;
+    const analyst = review.prose || {};
+    const ranged = Boolean(from || to);
+    const snapshotMatches = !ranged && review.basis_relevant_posts === stats.totals.relevant;
 
-    const data = {
-        version: 2,
-        generated_at: new Date(),
-        prose_source: prose._source,
-        event: {
-            name: event.name,
-            short_name: event.short_name || event.name,
-            description: event.description,
-            start_date: event.start_date,
-            location: event.location,
-            subject: event.subject,
-            organisers: event.organisers,
-            related_figures: event.related_figures,
-            keywords: event.keywords,
-            hashtags: event.hashtags,
-            facts: event.facts,
-            sources: event.sources,
-            watch_items: event.watch_items || [],
-        },
-        bottom_line: review.bottom_line || prose.bottom_line,
-        analyst_review: review.reviewed_at ? review : null,
-        attention: prose.attention,
-        executive_summary: prose.executive_summary,
-        activity_notes: prose.activity_notes || {},
-        place_context: prose.place_context || {},
-        narrative_summaries: prose.narrative_summaries || {},
-        allegation_themes: prose.allegation_themes || [],
-        recommendations: prose.recommendations,
+    let prose = templateProse(event, stats);
+    let source = 'template';
+    if (!ranged && !review.prose && process.env.TENANT_REPORT_LLM_PROSE !== 'off') {
+        prose = await writeProse(event, stats);
+        source = prose._source;
+    }
+    QUALITATIVE_KEYS.forEach((k) => { if (analyst[k]) prose[k] = analyst[k]; });
+    if (analyst.executive_summary) {
+        prose.executive_summary = { ...prose.executive_summary };
+        QUALITATIVE_SUMMARY_KEYS.forEach((k) => { if (analyst.executive_summary[k]) prose.executive_summary[k] = analyst.executive_summary[k]; });
+    }
+    let bottomLine = prose.bottom_line;
+    if (snapshotMatches) {
+        if (analyst.attention) prose.attention = analyst.attention;
+        if (analyst.executive_summary?.social_discussion) prose.executive_summary.social_discussion = analyst.executive_summary.social_discussion;
+        if (review.bottom_line) bottomLine = review.bottom_line;
+    }
+    if (review.prose) source += '+analyst';
+
+    return {
         stats,
-        methodology: METHODOLOGY,
-        collection: { last_collected_at: event.last_collected_at, last_summary: event.last_collection_summary },
+        data: {
+            version: 2,
+            generated_at: new Date(),
+            prose_source: source,
+            range: { from: from ? new Date(from) : null, to: to ? new Date(to) : null },
+            event: {
+                name: event.name,
+                short_name: event.short_name || event.name,
+                description: event.description,
+                start_date: event.start_date,
+                location: event.location,
+                subject: event.subject,
+                organisers: event.organisers,
+                related_figures: event.related_figures,
+                keywords: event.keywords,
+                hashtags: event.hashtags,
+                narratives: event.narratives,
+                facts: event.facts,
+                sources: event.sources,
+                watch_items: event.watch_items || [],
+            },
+            bottom_line: bottomLine,
+            // Risk assessment and notes are qualitative; figures in them are only shown for the snapshot they describe.
+            analyst_review: review.reviewed_at ? {
+                reviewed_at: review.reviewed_at,
+                reviewed_by: review.reviewed_by,
+                risk_assessment: snapshotMatches ? review.risk_assessment : null,
+                notes: snapshotMatches ? review.notes : [],
+            } : null,
+            attention: prose.attention,
+            executive_summary: prose.executive_summary,
+            activity_notes: prose.activity_notes || {},
+            place_context: prose.place_context || {},
+            narrative_summaries: prose.narrative_summaries || {},
+            allegation_themes: prose.allegation_themes || [],
+            recommendations: prose.recommendations,
+            stats,
+            methodology: METHODOLOGY,
+            collection: { last_collected_at: event.last_collected_at, last_summary: event.last_collection_summary },
+        },
     };
+};
 
+const reportFields = (event, stats, data, range) => ({
+    title: event.short_name || event.name,
+    range_from: range.from ? new Date(range.from) : null,
+    range_to: range.to ? new Date(range.to) : null,
+    period_start: stats.totals.first_post_at,
+    period_end: stats.totals.last_post_at,
+    post_count: stats.totals.relevant,
+    data,
+});
+
+/** Generate and store a report in one step (pipeline / CLI). */
+const generateReport = async (event, { generatedBy = null, from = null, to = null } = {}) => {
+    const { stats, data } = await buildReportData(event, { from, to });
     return TenantReport.create({
         tenant_id: event.tenant_id,
         event_id: event.id,
-        title: event.short_name || event.name,
-        period_start: stats.totals.first_post_at,
-        period_end: stats.totals.last_post_at,
-        post_count: stats.totals.relevant,
-        data,
+        status: 'ready',
         generated_by: generatedBy,
+        ...reportFields(event, stats, data, { from, to }),
     });
 };
 
-module.exports = { generateReport, computeStats, engagementScore };
+/** Fill in a report row created earlier with status 'generating' (API, async). */
+const completeReport = async (event, reportId, { from = null, to = null } = {}) => {
+    try {
+        const { stats, data } = await buildReportData(event, { from, to });
+        await TenantReport.updateOne(
+            { tenant_id: event.tenant_id, id: reportId },
+            { $set: { status: 'ready', error: null, ...reportFields(event, stats, data, { from, to }) } },
+        );
+    } catch (err) {
+        await TenantReport.updateOne({ tenant_id: event.tenant_id, id: reportId }, { $set: { status: 'failed', error: err.message } });
+        throw err;
+    }
+};
+
+module.exports = { generateReport, completeReport, buildReportData, computeStats, templateProse, engagementScore };

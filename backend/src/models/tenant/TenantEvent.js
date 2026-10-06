@@ -60,6 +60,9 @@ const tenantEventSchema = new mongoose.Schema({
         facebook_pages: { type: [String], default: [] },
         youtube_queries: { type: [String], default: [] },
         youtube_comment_videos: { type: Number, default: 15 },
+        youtube_search_pages: { type: Number, default: 1 },
+        youtube_comments_per_video: { type: Number, default: 40 },
+        x_latest_pages: { type: Number, default: 3 },
         reddit_queries: { type: [String], default: [] },
         telegram_queries: { type: [String], default: [] },
         since: { type: Date, default: null },
@@ -76,6 +79,9 @@ const tenantEventSchema = new mongoose.Schema({
         // Analyst-written replacements for any generated prose section
         // (attention, executive_summary, narrative_summaries, recommendations, ...).
         prose: { type: mongoose.Schema.Types.Mixed, default: null },
+        // Relevant-post count the figure-bearing text was written against; when
+        // the data changes, reports fall back to text generated from the figures.
+        basis_relevant_posts: { type: Number, default: null },
         reviewed_by: { type: String, default: null },
         reviewed_at: { type: Date, default: null },
     },

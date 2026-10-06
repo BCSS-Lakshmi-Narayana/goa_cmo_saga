@@ -12,6 +12,7 @@ import { BRAND, LOCAL_LOGO } from './config/partyMedia';
 // Lazy load heavy pages
 const Dashboard = lazy(() => import('./pages/DashboardNew'));
 const TenantWorkspace = lazy(() => import('./pages/TenantWorkspace'));
+const PrintReport = lazy(() => import('./pages/tenant/PrintReport'));
 const CMDashboard = lazy(() => import('./pages/CMDashboard'));
 const Sources = lazy(() => import('./pages/Sources'));
 const ContentFeed = lazy(() => import('./pages/ContentFeed'));
@@ -92,6 +93,8 @@ function App() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/login" element={<Login />} />
+                  {/* Opened by the server's PDF renderer with a short-lived token; no session needed. */}
+                  <Route path="/workspace/print/:reportId" element={<PrintReport />} />
                   <Route
                     path="/workspace"
                     element={
