@@ -76,7 +76,7 @@ const main = async () => {
         console.log(`user       ${email}: updated${process.argv.includes('--reset-password') ? ' (password reset)' : ''}`);
     }
 
-    // Events (matched on name within the tenant)
+    // Events: matched on `id` when the spec pins one (so renaming an event updates it), else on name.
     for (const ev of spec.events || []) {
         const doc = {
             ...ev,
@@ -86,7 +86,7 @@ const main = async () => {
             end_date: ev.end_date ? new Date(ev.end_date) : null,
             collection_plan: { ...ev.collection_plan, since: ev.collection_plan?.since ? new Date(ev.collection_plan.since) : null },
         };
-        const existing = await TenantEvent.findOne({ tenant_id: tenantId, name: ev.name });
+        const existing = await TenantEvent.findOne(ev.id ? { tenant_id: tenantId, id: ev.id } : { tenant_id: tenantId, name: ev.name });
         if (existing) {
             existing.set(doc);
             await existing.save();
