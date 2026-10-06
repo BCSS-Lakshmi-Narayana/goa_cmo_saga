@@ -1,5 +1,6 @@
 const PagePermission = require('../models/PagePermission');
 const User = require('../models/User');
+const { goaUserFilter } = require('../config/tenancy');
 const { ALL_PAGES, PAGE_FEATURES } = require('../config/rbacConfig');
 const { resolveScopeAssignment } = require('../middleware/scopeMiddleware');
 const { normalizeRole } = require('../utils/authIdentity');
@@ -177,7 +178,7 @@ const getAllPages = async (req, res) => {
 // @access  Private (superadmin only)
 const getAllUsers = async (req, res) => {
   try {
-    const users = await User.find({})
+    const users = await User.find(goaUserFilter())
       .select('id email full_name role is_active is_scoped assigned_constituency assigned_lok_sabha extra_constituencies')
       .sort({ full_name: 1 });
     res.json(users);
@@ -193,7 +194,7 @@ const getUserPermissions = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId, ...goaUserFilter() });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -242,7 +243,7 @@ const updateUserPermissions = async (req, res) => {
       return res.status(400).json({ message: 'permissions must be an object' });
     }
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId, ...goaUserFilter() });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -338,7 +339,7 @@ const updateUser = async (req, res) => {
     const { userId } = req.params;
     const { full_name, email, role, password } = req.body;
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId, ...goaUserFilter() });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -405,7 +406,7 @@ const deleteUser = async (req, res) => {
   try {
     const { userId } = req.params;
 
-    const user = await User.findOne({ id: userId });
+    const user = await User.findOne({ id: userId, ...goaUserFilter() });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }

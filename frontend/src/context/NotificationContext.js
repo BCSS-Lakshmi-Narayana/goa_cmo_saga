@@ -11,7 +11,8 @@ export const NotificationProvider = ({ children }) => {
     const [lastAlertId, setLastAlertId] = useState(null);
 
     const fetchUnreadCount = async (silent = false) => {
-        if (!user) return;
+        // Tenant workspaces have no Goa alert feed.
+        if (!user || user.is_tenant_user) return;
         try {
             const res = await api.get('/alerts/unread');
             const { count, latest_alert } = res.data;
@@ -40,7 +41,7 @@ export const NotificationProvider = ({ children }) => {
 
     // Poll every 30 seconds
     useEffect(() => {
-        if (user) {
+        if (user && !user.is_tenant_user) {
             fetchUnreadCount(true); // Initial fetch silent
             const interval = setInterval(() => fetchUnreadCount(), 30000);
             return () => clearInterval(interval);

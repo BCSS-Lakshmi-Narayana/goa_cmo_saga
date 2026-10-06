@@ -11,6 +11,7 @@ import { BRAND, LOCAL_LOGO } from './config/partyMedia';
 
 // Lazy load heavy pages
 const Dashboard = lazy(() => import('./pages/DashboardNew'));
+const TenantWorkspace = lazy(() => import('./pages/TenantWorkspace'));
 const CMDashboard = lazy(() => import('./pages/CMDashboard'));
 const Sources = lazy(() => import('./pages/Sources'));
 const ContentFeed = lazy(() => import('./pages/ContentFeed'));
@@ -91,6 +92,14 @@ function App() {
               <Suspense fallback={<PageLoader />}>
                 <Routes>
                   <Route path="/login" element={<Login />} />
+                  <Route
+                    path="/workspace"
+                    element={
+                      <ProtectedRoute tenantWorkspace>
+                        <TenantWorkspace />
+                      </ProtectedRoute>
+                    }
+                  />
                   <Route
                     path=""
                     element={

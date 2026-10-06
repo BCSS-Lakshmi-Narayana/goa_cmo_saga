@@ -1,0 +1,143 @@
+{
+  "tenant_id": "gyanesh",
+  "workspace": {
+    "name": "Gyanesh — Public Discussion Monitor",
+    "client_description": "Monitoring of public discussion concerning the Chief Election Commissioner of India"
+  },
+  "user": {
+    "email": "gyanesh@blurasaga.com",
+    "full_name": "Gyanesh"
+  },
+  "events": [
+    {
+      "name": "CJP 'Jail Bharo' protest against CEC Gyanesh Kumar — Shivaji Park, Mumbai",
+      "description": "The Cockroach Janta Party (CJP), led by founder-convenor Abhijeet Dipke, held a 'Jail Bharo Andolan' at Shivaji Park, Dadar, Mumbai on 2 October 2026 (Gandhi Jayanti) demanding the resignation of Chief Election Commissioner Gyanesh Kumar and a halt to the Special Intensive Revision (SIR) of electoral rolls. Mumbai Police had refused permission. CJP has announced a further protest at Jantar Mantar, Delhi on 10 October if the CEC does not resign.",
+      "start_date": "2026-10-02T10:30:00.000Z",
+      "end_date": null,
+      "location": "Shivaji Park, Dadar, Mumbai, Maharashtra",
+      "status": "active",
+      "subject": {
+        "name": "Gyanesh Kumar",
+        "type": "person",
+        "role": "Chief Election Commissioner of India",
+        "aliases": ["Gyanesh", "CEC", "Gyanu", "Chief Election Commissioner"]
+      },
+      "organisers": [
+        { "name": "Cockroach Janta Party (CJP)", "type": "organisation", "role": "Organiser; satirical youth movement founded 16 May 2026, not registered with ECI", "aliases": ["CJP", "Cockroach Janata Party", "@Cockroachisback", "@cockroachjantaparty"] },
+        { "name": "Abhijeet Dipke", "type": "person", "role": "CJP founder and convenor", "aliases": ["Dipke", "@abhijeet_dipke", "@abhijeetdipke"] },
+        { "name": "Saurav Das", "type": "person", "role": "CJP spokesperson", "aliases": [] },
+        { "name": "Ashutosh Ranka", "type": "person", "role": "CJP spokesperson", "aliases": [] },
+        { "name": "Ratna Singh", "type": "person", "role": "CJP spokesperson", "aliases": ["@whattalawyer"] }
+      ],
+      "related_figures": [
+        { "name": "Election Commission of India", "type": "institution", "role": "Body headed by the CEC", "aliases": ["ECI", "EC"] },
+        { "name": "Sukhbir Singh Sandhu", "type": "person", "role": "Election Commissioner", "aliases": [] },
+        { "name": "Vivek Joshi", "type": "person", "role": "Election Commissioner", "aliases": [] },
+        { "name": "Devendra Fadnavis", "type": "person", "role": "Chief Minister of Maharashtra (BJP); criticised the protest", "aliases": [] },
+        { "name": "Pravin Darekar", "type": "person", "role": "BJP MLC; criticised the protest", "aliases": [] },
+        { "name": "Rahul Gandhi", "type": "person", "role": "Leader of Opposition (Congress); voiced support", "aliases": [] },
+        { "name": "Mamata Banerjee", "type": "person", "role": "West Bengal CM (TMC); voiced support", "aliases": [] },
+        { "name": "Aaditya Thackeray", "type": "person", "role": "Shiv Sena (UBT) MLA; reported present (single source)", "aliases": [] },
+        { "name": "Naseeruddin Shah", "type": "person", "role": "Actor; attended", "aliases": [] },
+        { "name": "Shabana Azmi", "type": "person", "role": "Actor; attended", "aliases": [] },
+        { "name": "Vishal Dadlani", "type": "person", "role": "Singer-composer; attended", "aliases": [] },
+        { "name": "Vishal Bhardwaj", "type": "person", "role": "Filmmaker; attended", "aliases": [] },
+        { "name": "Tushar Gandhi", "type": "person", "role": "Author, great-grandson of Mahatma Gandhi; attended", "aliases": [] },
+        { "name": "Prakash Raj", "type": "person", "role": "Actor; sent a video message", "aliases": [] },
+        { "name": "Gen Next Mumbai", "type": "organisation", "role": "Held a counter-protest on 2 October", "aliases": [] },
+        { "name": "Mumbai Police", "type": "institution", "role": "Refused permission; FIR registered 3 October", "aliases": [] }
+      ],
+      "keywords": [
+        "Cockroach Janta Party", "Cockroach Janata Party", "Abhijeet Dipke", "Dipke", "Gyanesh Kumar", "Gyanesh", "Gyanu",
+        "CEC resignation", "Jail Bharo", "Shivaji Park", "Jantar Mantar", "Special Intensive Revision", "SIR", "cockroach"
+      ],
+      "hashtags": ["#GoGyanuGo", "#GyaneshKumarIsteefaDo", "#JailBharo", "#CockroachJantaParty", "#JantarMantar2", "#ChaloDelhi"],
+      "collection_plan": {
+        "since": "2026-09-29T00:00:00.000Z",
+        "x_queries": [
+          "from:Cockroachisback OR from:abhijeet_dipke",
+          "\"Cockroach Janta Party\" OR \"Cockroach Janata Party\"",
+          "Dipke (Gyanesh OR CEC OR \"Shivaji Park\" OR \"Jantar Mantar\")",
+          "\"Go Gyanu Go\" OR GoGyanuGo OR \"Gyanu Must Go\" OR \"Gyanesh Kumar Isteefa\"",
+          "CJP (Gyanesh OR \"Jail Bharo\" OR \"Shivaji Park\" OR Dipke) -Setalvad",
+          "\"Gyanesh Kumar\" (resign OR resignation OR protest)",
+          "\"Jantar Mantar\" (CJP OR cockroach) (\"October 10\" OR \"Oct 10\" OR \"10 October\")",
+          "\"Gen Next Mumbai\" OR (CJP leaked)",
+          "(Gyanesh OR CJP OR Dipke) (FIR OR NHRC)"
+        ],
+        "facebook_queries": [
+          "Cockroach Janta Party Gyanesh",
+          "Cockroach Janata Party Jantar Mantar",
+          "Abhijeet Dipke",
+          "Go Gyanu Go",
+          "Jail Bharo Shivaji Park CJP",
+          "Gyanesh Kumar resignation protest"
+        ],
+        "instagram_accounts": [
+          "cockroachjantaparty", "abhijeetdipke",
+          "theprintindia", "freepressjournal", "thequint", "brut.india", "wionews", "aljazeeraenglish", "outlookindia"
+        ]
+      },
+      "narratives": [
+        { "key": "resignation_demand", "label": "Demand for the CEC's resignation", "description": "Calls for Gyanesh Kumar to resign or face action; slogans such as 'Go Gyanu Go'." },
+        { "key": "sir_voter_roll", "label": "SIR and voter-roll deletion allegations", "description": "Claims that the Special Intensive Revision removed eligible voters ('vote theft'), and defences of SIR." },
+        { "key": "ec_internal_dissent", "label": "Election Commissioners' objections and ECI response", "description": "The reported objections by ECs Sandhu and Joshi, and ECI's statement that decisions were unanimous." },
+        { "key": "policing_legal", "label": "Permission denial, policing and legal action", "description": "Refused permission, police deployment, detentions, the FIR, the NHRC notice, police notices to activists." },
+        { "key": "celebrity_opposition_support", "label": "Celebrity and opposition support", "description": "Attendance or endorsement by actors, artists and opposition politicians." },
+        { "key": "questioning_cjp", "label": "Criticism of CJP and its motives", "description": "Counter-narratives: 'political drama', the purported leaked meeting recording, foreign-funding claims, counter-protest." },
+        { "key": "oct10_mobilisation", "label": "Mobilisation for 10 October Delhi protest", "description": "Calls to join Jantar Mantar on 10 October ('Chalo Delhi')." },
+        { "key": "free_speech_media", "label": "Free speech, platform restrictions and journalists", "description": "Withheld or restricted X posts/handles; journalists' harassment complaints in Delhi." },
+        { "key": "satire_memes", "label": "Satire, memes and slogans", "description": "Humour and meme content about the CEC or the protest." },
+        { "key": "misattributed_content", "label": "Misattributed or manipulated content", "description": "Old or wrongly-captioned videos, AI-generated images, and fact-checks of them." }
+      ],
+      "facts": [
+        { "statement": "CJP held a 'Jail Bharo Andolan' at Shivaji Park, Dadar, Mumbai on Friday 2 October 2026 (Gandhi Jayanti), called for 4 pm and led by founder-convenor Abhijeet Dipke.", "status": "verified", "sources": ["https://www.india.com/news/india/cockroach-janta-party-cjp-protest-live-shivaji-park-mumbai-election-commission-ec-commissioner-gyanesh-kumar-dadar-devendra-fadnavis-8532146/", "https://english.lokshahi.com/maharashtra/cjp-protest-at-mumbai-shivaji-park-against-chief-election-commissioner-gyanesh-kumar-12616276", "https://theprint.in/india/barricades-wont-be-enough-says-cjps-dipke-at-mumbai-protest-to-demand-cecs-resignation/3060543/"] },
+        { "statement": "CJP's reported demands: resignation of the CEC (and proceedings against him); a freeze on SIR and restoration of the January 2025 electoral roll; an independent inquiry into SIR decision-making; and repeal of the 2023 law on appointing Election Commissioners. Wording differs between outlets.", "status": "verified", "sources": ["https://theprint.in/feature/cjps-dipke-says-nationwide-protest-if-cec-gyanesh-kumar-doesnt-resign-in-24-hours/3052008/", "https://www.thequint.com/amp/story/news/politics/gyanesh-kumar-resignation-protest-cjp-delh-jantar-mantar-aisa-neha-bora", "https://thefederal.com/category/news/cjp-dipke-demands-cec-gyanesh-kumar-resignation-warns-countrywide-protests-258254"] },
+        { "statement": "The campaign followed a 23 September Indian Express report that Election Commissioners Sukhbir Singh Sandhu and Vivek Joshi raised objections at least 14 times over 10 months on SIR and roll decisions.", "status": "verified", "sources": ["https://www.aljazeera.com/news/2026/9/25/indias-cockroach-movement-demands-election-chiefs-resignation", "https://theprint.in/india/cjp-threatens-jantar-mantar-2-0-if-cec-gyanesh-kumar-does-not-resign/3052213/"] },
+        { "statement": "On 26 September the full Commission issued a press note stating the June 2025 SIR order was unanimous, extending SIR deadlines in Delhi and Maharashtra, and committing to circulate meeting agendas and minutes. ECI has described differing views as a normal part of deliberation.", "status": "verified", "sources": ["https://www.socialnews.xyz/2026/09/26/cec-gyanesh-kumar-ecs-sandhu-joshi-meet-form-6-sir-decisions-clarified-lead/", "https://www.latestly.com/india/news/gyanesh-kumar-election-commissioner-sandhu-joshi-meet-form-6-sir-decisions-clarified-7621853.html", "https://www.aljazeera.com/news/2026/9/25/indias-cockroach-movement-demands-election-chiefs-resignation"] },
+        { "statement": "Mumbai Police refused permission for the Shivaji Park protest, citing a 2013 Bombay High Court order, the park's silence-zone status, and noise, traffic and hospital access.", "status": "verified", "sources": ["https://www.freepressjournal.in/mumbai/cjp-protest-at-shivaji-park-mumbai-live-updates-abhijeet-dipke-jail-bharo-andolan-cec-gyanesh-kumar-resignation-sir-row", "https://www.thequint.com/amp/story/news/politics/gyanesh-kumar-resignation-protest-cjp-delh-jantar-mantar-aisa-neha-bora"] },
+        { "statement": "About 500 police personnel were deployed with barricades; railway police tightened security at Dadar station.", "status": "verified", "sources": ["https://english.lokshahi.com/maharashtra/cjp-protest-at-mumbai-shivaji-park-against-chief-election-commissioner-gyanesh-kumar-12616276", "https://theprint.in/india/ahead-of-cjps-anti-cec-protest-at-shivaji-park-railways-strengthen-security-at-dadar-station/3059468/"] },
+        { "statement": "Media described the turnout as 'thousands'.", "status": "verified", "sources": ["https://www.freepressjournal.in/mumbai/go-gyanu-go-thousands-join-cjp-protest-at-mumbais-shivaji-park-demand-cec-gyanesh-kumars-resignation", "https://telanganatoday.com/memes-slogans-and-celebrity-support-mark-cjp-protest-at-mumbais-shivaji-park"] },
+        { "statement": "A crowd of 9,000–10,000 was attributed to the Mumbai Police Special Branch.", "status": "single_source", "sources": ["https://indiawest.com/cjp-draws-thousands-in-mumbai-calling-for-gyanesh-kumar-to-step-down/"] },
+        { "statement": "Actors Naseeruddin Shah and Shabana Azmi and singer Vishal Dadlani attended; filmmaker Vishal Bhardwaj and Tushar Gandhi were also reported present. Prakash Raj sent a video message.", "status": "verified", "sources": ["https://www.wionews.com/entertainment/bollywood/voting-is-our-right-shabana-azmi-naseeruddin-shah-other-celebritues-back-cjp-protest-at-mumbai-s-shivaji-park-1790955448618", "https://telanganatoday.com/memes-slogans-and-celebrity-support-mark-cjp-protest-at-mumbais-shivaji-park"] },
+        { "statement": "Placards and slogans included 'Go Gyanu Go', 'Gaddar Gyanu Must Go' and 'Gyanu, It's Done Bro'.", "status": "verified", "sources": ["https://www.freepressjournal.in/mumbai/go-gyanu-go-thousands-join-cjp-protest-at-mumbais-shivaji-park-demand-cec-gyanesh-kumars-resignation", "https://telanganatoday.com/memes-slogans-and-celebrity-support-mark-cjp-protest-at-mumbais-shivaji-park"] },
+        { "statement": "A group called 'Gen Next Mumbai' held a counter-protest the same day, accusing Dipke of 'dismantling the Constitution'.", "status": "verified", "sources": ["https://www.republicworld.com/india/gen-next-mumbai-counter-protest-held-against-cockroach-janata-party-in-mumbai-2026-10-02-138154", "https://www.karmactive.com/cjp-gen-next-mumbai-shivaji-park-protest-october-2-2026/"] },
+        { "statement": "Abhijeet Dipke was briefly detained at Marine Drive on 2 October and released.", "status": "single_source", "sources": ["https://www.freepressjournal.in/mumbai/cjp-protest-at-shivaji-park-mumbai-live-updates-abhijeet-dipke-jail-bharo-andolan-cec-gyanesh-kumar-resignation-sir-row"] },
+        { "statement": "On 3 October an FIR was registered at Shivaji Park police station against the organisers, including Dipke, and 400–500 unidentified persons for unlawful assembly and disobeying orders; police said no one had been arrested.", "status": "verified", "sources": ["https://theprint.in/india/cjp-protest-at-shivaji-park-fir-registered-against-organisers-400-500-unidentified-persons/3061091/", "https://www.uniindia.com/west-india/crime-mum-cjp/202042"] },
+        { "statement": "The NHRC issued notices over alleged use of minors at the Mumbai protest, on a private complaint, seeking reports within one week.", "status": "single_source", "sources": ["https://dailypioneer.com/news/slug-lite/nhrc-seeks-reports-over-alleged-use-of-minors-at-cjp-mumbai-protest?year=2026"] },
+        { "statement": "CJP announced a protest at Jantar Mantar, Delhi on 10 October if the CEC does not resign, and stressed it would be non-violent.", "status": "verified", "sources": ["https://theprint.in/india/fresh-protest-at-jantar-mantar-on-october-10-if-cec-kumar-didnt-resign-cjp-leader-dipke/3060648/", "https://www.uniindia.com/national/politics-cjp-protest-cec-resignation/201774", "https://telanganatoday.com/cjp-threatens-delhi-protest-on-october-10-if-cec-gyanesh-kumar-refuses-to-quit"] },
+        { "statement": "CJP activists are receiving police notices and being pressured not to join the 10 October protest.", "status": "claim", "claimed_by": "Abhijeet Dipke (CJP); no police response reported", "sources": ["https://theprint.in/india/cjp-activists-getting-police-notices-being-pressured-not-to-join-oct-10-delhi-protest-dipke/3063117/", "https://www.tribuneindia.com/news/india/cjp-activists-getting-police-notices-being-pressured-not-to-join-oct-10-delhi-protest-dipke/"] },
+        { "statement": "A post by Dipke thanking Mamata Banerjee was shown as restricted in India on X.", "status": "single_source", "sources": ["https://theprint.in/india/wont-be-surprised-if-x-handle-taken-down-dipke-after-post-thanking-mamata-restricted/3060853/"] },
+        { "statement": "CM Devendra Fadnavis said the Election Commissioners' press conference had 'busted' a 'fake narrative'.", "status": "single_source", "sources": ["https://www.freepressjournal.in/mumbai/cjp-protest-at-shivaji-park-mumbai-live-updates-abhijeet-dipke-jail-bharo-andolan-cec-gyanesh-kumar-resignation-sir-row"] },
+        { "statement": "CEC Gyanesh Kumar had made no public statement on the resignation demands (as of 4 October).", "status": "single_source", "sources": ["https://www.aljazeera.com/news/2026/10/4/mass-protests-demanding-poll-chief-resignation-shake-india-for-third-day"] },
+        { "statement": "A purported 'leaked' recording of a CJP online meeting discussing protest strategy was circulated on X and reported by Organiser and Newsdrum. Its authenticity has not been independently verified and no CJP response was found.", "status": "claim", "claimed_by": "X user @BinayBharat; reported by Organiser, Newsdrum", "sources": ["https://organiser.org/2026/09/28/383139/bharat/government-will-collapse-in-30-days-leaked-recording-from-cjp-meeting-reveals-october-2-protest-strategy/", "https://www.newsdrum.in/national/from-lallantop-to-nepal-what-leaked-cjp-call-reveals-about-oct-2-protest-planning-12583299"] },
+        { "statement": "CJP is 'scripted abroad' with foreign-funding links. No documentary evidence was presented.", "status": "claim", "claimed_by": "Commentator PN Rai in a viral video, amplified by Organiser", "sources": ["https://organiser.org/2026/10/05/384508/bharat/viral-video-claims-oslo-soros-links-timeline-raise-questions-over-cjp-organic-gen-z-uprising-scripted-abroad/"] },
+        { "statement": "Fact-checkers found that viral videos claimed to show the Shivaji Park crowd were from other events (a Jantar Mantar protest and a 26 July 2026 rally).", "status": "verified", "sources": ["https://factly.in/none-of-these-viral-videos-show-the-cjp-protest-at-mumbais-shivaji-park-on-02-october-2026/", "https://newsmeter.in/fact-check/fact-check-cjp-protest-at-mumbais-shivaji-park-in-viral-videos-no-old-videos-falsely-shared-776669"] },
+        { "statement": "SIR deletion figures in circulation conflict widely between outlets; no single figure should be treated as established.", "status": "verified", "sources": ["https://www.aljazeera.com/features/2026/10/2/can-indias-cockroach-movement-oust-modis-election-chief", "https://www.deccanchronicle.com/amp/nation/current-affairs/mother-of-democracy-six-crore-voter-names-deleted-in-a-year-of-sir-1966410", "https://en.wikipedia.org/wiki/Special_Intensive_Revision"] },
+        { "statement": "A separate protest at Jantar Mantar, Delhi on 2 October (called by AISA and others, not primarily CJP) was refused permission; police detained more than 700 people.", "status": "verified", "sources": ["https://www.thequint.com/amp/story/news/politics/gyanesh-kumar-resignation-protest-cjp-delh-jantar-mantar-aisa-neha-bora", "https://www.brut.media/in/articles/india/politics/jantar-mantar-protest-why-are-people-demanding-gyanesh-kumar-s-resignation-who-was-detained-and-why-are-journalists-alleging-harassment"] },
+        { "statement": "On 6 October INDIA bloc MPs marched to the Election Commission demanding the CEC's resignation (not a CJP event).", "status": "verified", "sources": ["https://www.indiatvnews.com/news/india/india-bloc-mps-march-election-commission-gyanesh-kumar-resignation-2026-10-06-1056186", "https://www.thehansindia.com/news/cities/new-delhi/opposition-showdown-with-election-commission-india-bloc-mps-march-demand-cec-gyanesh-kumars-resignation-1129536"] }
+      ],
+      "watch_items": [
+        { "date": "2026-10-10T00:00:00.000Z", "description": "CJP's announced protest at Jantar Mantar, Delhi. No report yet of Delhi Police granting or refusing permission.", "status": "verified", "sources": ["https://theprint.in/india/fresh-protest-at-jantar-mantar-on-october-10-if-cec-kumar-didnt-resign-cjp-leader-dipke/3060648/", "https://telanganatoday.com/cjp-threatens-delhi-protest-on-october-10-if-cec-gyanesh-kumar-refuses-to-quit"] },
+        { "date": "2026-10-10T00:00:00.000Z", "description": "NHRC's one-week deadline for reports on the alleged use of minors at the Mumbai protest falls around this date.", "status": "single_source", "sources": ["https://dailypioneer.com/news/slug-lite/nhrc-seeks-reports-over-alleged-use-of-minors-at-cjp-mumbai-protest?year=2026"] }
+      ],
+      "sources": [
+        { "title": "Barricades won't be enough, says CJP's Dipke at Mumbai protest", "publisher": "ThePrint", "url": "https://theprint.in/india/barricades-wont-be-enough-says-cjps-dipke-at-mumbai-protest-to-demand-cecs-resignation/3060543/", "published_at": "2026-10-02" },
+        { "title": "'Go Gyanu Go': Thousands join CJP protest at Mumbai's Shivaji Park", "publisher": "Free Press Journal", "url": "https://www.freepressjournal.in/mumbai/go-gyanu-go-thousands-join-cjp-protest-at-mumbais-shivaji-park-demand-cec-gyanesh-kumars-resignation", "published_at": "2026-10-02" },
+        { "title": "CJP protest at Shivaji Park — live updates", "publisher": "Free Press Journal", "url": "https://www.freepressjournal.in/mumbai/cjp-protest-at-shivaji-park-mumbai-live-updates-abhijeet-dipke-jail-bharo-andolan-cec-gyanesh-kumar-resignation-sir-row", "published_at": "2026-10-02" },
+        { "title": "Memes, slogans and celebrity support mark CJP protest at Mumbai's Shivaji Park", "publisher": "Telangana Today", "url": "https://telanganatoday.com/memes-slogans-and-celebrity-support-mark-cjp-protest-at-mumbais-shivaji-park", "published_at": "2026-10-02" },
+        { "title": "Voting is our right: celebrities back CJP protest", "publisher": "WION", "url": "https://www.wionews.com/entertainment/bollywood/voting-is-our-right-shabana-azmi-naseeruddin-shah-other-celebritues-back-cjp-protest-at-mumbai-s-shivaji-park-1790955448618", "published_at": "2026-10-02" },
+        { "title": "CJP protest at Shivaji Park: FIR registered against organisers, 400-500 unidentified persons", "publisher": "ThePrint", "url": "https://theprint.in/india/cjp-protest-at-shivaji-park-fir-registered-against-organisers-400-500-unidentified-persons/3061091/", "published_at": "2026-10-03" },
+        { "title": "Fresh protest at Jantar Mantar on October 10 if CEC Kumar didn't resign", "publisher": "ThePrint", "url": "https://theprint.in/india/fresh-protest-at-jantar-mantar-on-october-10-if-cec-kumar-didnt-resign-cjp-leader-dipke/3060648/", "published_at": "2026-10-03" },
+        { "title": "CJP activists getting police notices, being pressured not to join Oct 10 Delhi protest: Dipke", "publisher": "ThePrint", "url": "https://theprint.in/india/cjp-activists-getting-police-notices-being-pressured-not-to-join-oct-10-delhi-protest-dipke/3063117/", "published_at": "2026-10-06" },
+        { "title": "India's cockroach movement demands election chief's resignation", "publisher": "Al Jazeera", "url": "https://www.aljazeera.com/news/2026/9/25/indias-cockroach-movement-demands-election-chiefs-resignation", "published_at": "2026-09-25" },
+        { "title": "Mass protests demanding poll chief resignation shake India for third day", "publisher": "Al Jazeera", "url": "https://www.aljazeera.com/news/2026/10/4/mass-protests-demanding-poll-chief-resignation-shake-india-for-third-day", "published_at": "2026-10-04" },
+        { "title": "Gyanesh Kumar resignation protest at Jantar Mantar", "publisher": "The Quint", "url": "https://www.thequint.com/amp/story/news/politics/gyanesh-kumar-resignation-protest-cjp-delh-jantar-mantar-aisa-neha-bora", "published_at": "2026-10-02" },
+        { "title": "None of these viral videos show the CJP protest at Mumbai's Shivaji Park", "publisher": "Factly", "url": "https://factly.in/none-of-these-viral-videos-show-the-cjp-protest-at-mumbais-shivaji-park-on-02-october-2026/", "published_at": "2026-10-03" },
+        { "title": "Leaked recording from CJP meeting (purported)", "publisher": "Organiser", "url": "https://organiser.org/2026/09/28/383139/bharat/government-will-collapse-in-30-days-leaked-recording-from-cjp-meeting-reveals-october-2-protest-strategy/", "published_at": "2026-09-28" },
+        { "title": "NHRC seeks reports over alleged use of minors at CJP Mumbai protest", "publisher": "The Pioneer", "url": "https://dailypioneer.com/news/slug-lite/nhrc-seeks-reports-over-alleged-use-of-minors-at-cjp-mumbai-protest?year=2026", "published_at": "2026-10-03" },
+        { "title": "Cockroach Janta Party", "publisher": "Wikipedia", "url": "https://en.wikipedia.org/wiki/Cockroach_Janta_Party" }
+      ]
+    }
+  ]
+}

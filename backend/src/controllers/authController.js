@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const { getJwtSecret } = require('../config/jwtSecret');
+const { goaUserFilter, tenantOf, isTenantUser } = require('../config/tenancy');
 const ConstituencyMaster = require('../models/ConstituencyMaster');
 const { createAuditLog } = require('../services/auditService');
 const { buildEmailLookup, normalizeEmail, normalizeRole } = require('../utils/authIdentity');
@@ -88,7 +89,9 @@ const buildUserPayload = (user) => {
     email: user.email,
     full_name: user.full_name,
     role: user.role,
-    is_super_admin: isSuperAdmin,
+    tenant_id: tenantOf(user),
+    is_tenant_user: isTenantUser(user),
+    is_super_admin: isSuperAdmin && !isTenantUser(user),
     is_scoped: isScoped,
     is_active: user.is_active !== false,
     assigned_constituency: user.assigned_constituency || null,
@@ -319,6 +322,7 @@ const listScopedUsers = async (req, res) => {
     }
     const users = await User.find({
       role: { $in: ['mla', 'mp', 'senior_leader'] },
+      ...goaUserFilter(),
     })
       .select('-password')
       .lean();
@@ -339,7 +343,7 @@ const updateScopedUser = async (req, res) => {
     const { id } = req.params;
     const { password, is_active, full_name, assigned_constituency, assigned_lok_sabha, extra_constituencies } = req.body || {};
 
-    const user = await User.findOne({ id });
+    const user = await User.findOne({ id, ...goaUserFilter() });
     if (!user) return res.status(404).json({ message: 'User not found' });
     if (!PROVISIONABLE_SCOPED_ROLES.has(normalizeRole(user.role))) {
       return res.status(400).json({ message: 'Only scoped users can be edited here' });

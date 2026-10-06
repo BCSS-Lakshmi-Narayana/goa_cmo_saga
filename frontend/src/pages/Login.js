@@ -31,7 +31,9 @@ const Login = () => {
     setLoading(true);
     try {
       const userData = await login(email, password);
-      if (userData?.role === 'dial100') {
+      if (userData?.is_tenant_user) {
+        navigate('/workspace');
+      } else if (userData?.role === 'dial100') {
         navigate('/dial-100-incident-reporting');
       } else {
         navigate('/goa-map'); // state map landing
