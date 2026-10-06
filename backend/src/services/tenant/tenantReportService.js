@@ -248,8 +248,12 @@ const computeStats = (event, all) => {
         shares: [...accounts.values()].reduce((x, a) => x + a.shares, 0),
     };
 
-    // Evidence register: highest-engagement posts from public accounts.
-    const evidence = topBy(publicOriginals, 15).map((p) => postRef(p))
+    // Evidence register: what news outlets and journalists reported, by reach;
+    // topped up from other public accounts only if outlets are too few.
+    const MEDIA_TYPES = new Set(['news_media', 'journalist']);
+    const mediaPosts = publicOriginals.filter((p) => MEDIA_TYPES.has(p.analysis.account_type) && p.post_type !== 'comment');
+    const evidencePool = mediaPosts.length >= 10 ? mediaPosts : publicOriginals;
+    const evidence = topBy(evidencePool, 15).map((p) => postRef(p))
         .sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
 
     // Risk bands (analyst review overrides the model).
@@ -410,6 +414,7 @@ const METHODOLOGY = [
     'Risk bands measure potential for harm, not disagreement. Critical: threats of violence, incitement, doxxing, impersonation. High: calls to disrupt an official\'s home or office, manipulated or misattributed media, communal abuse. Medium: serious unverified allegations stated as fact, personal abuse, mobilisation calls. Low: everything else, including criticism, satire and calls for resignation. Every critical, high and medium post was then reviewed by an analyst, whose decision overrides the model.',
     'Engagement score = likes + 2×comments + 3×shares + views/10. Reposts carry no engagement of their own, so originals are not double-counted. Only news outlets, journalists, public figures, parties and organisations (or accounts with 50,000+ followers) are named; private individuals are never listed.',
     'Times are in IST. Posts without a timestamp from the provider are counted but left out of the timeline.',
+    'X "Latest" search returns the newest posts first, so the most recent day in the window is over-represented relative to earlier days; treat day-on-day changes near the end of the window with caution.',
 ];
 
 const generateReport = async (event, { generatedBy = null } = {}) => {
