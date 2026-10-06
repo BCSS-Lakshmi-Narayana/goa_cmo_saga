@@ -427,10 +427,35 @@
           ]
         },
         {
-          "statement": "Abhijeet Dipke was briefly detained at Marine Drive on 2 October and released.",
+          "statement": "A 75-year-old man died of a heart attack during the Shivaji Park protest; a police official confirmed the death.",
           "status": "single_source",
           "sources": [
-            "https://www.freepressjournal.in/mumbai/cjp-protest-at-shivaji-park-mumbai-live-updates-abhijeet-dipke-jail-bharo-andolan-cec-gyanesh-kumar-resignation-sir-row"
+            "https://www.gulte.com/shorts/434803/75-year-old-man-dies-of-heart-attack-during-cjp-protest/amp"
+          ]
+        },
+        {
+          "statement": "Dadar residents protested against holding the CJP stir at Shivaji Park; Javed Akhtar posted a sarcastic comment backing the residents' objection.",
+          "status": "verified",
+          "sources": [
+            "https://theprint.in/india/residents-protest-against-cjp-stir-at-shivaji-park-javed-akhtar-adds-sarcasm-in-x-post/3060617/",
+            "https://www.deccanchronicle.com/nation/residents-protest-cjp-stir-at-shivaji-park-javed-akhtar-takes-sarcastic-swipe-1992630"
+          ]
+        },
+        {
+          "statement": "A small group chanting 'Jai Shri Ram' arrived at the protest, causing a brief commotion before police intervened.",
+          "status": "verified",
+          "sources": [
+            "https://www.freepressjournal.in/mumbai/go-gyanu-go-thousands-join-cjp-protest-at-mumbais-shivaji-park-demand-cec-gyanesh-kumars-resignation",
+            "https://www.thehansindia.com/mumbai/jai-shri-ram-slogans-spark-chaos-during-cjp-protest-in-mumbais-shivaji-park-1128121"
+          ]
+        },
+        {
+          "statement": "Abhijeet Dipke was briefly detained by Mumbai Police at Marine Drive on 1 October, the evening before the protest, and released after questioning.",
+          "status": "verified",
+          "sources": [
+            "https://www.uniindia.com/west-india/politics-mum-dipke-briefly-detained/200019",
+            "https://www.gulte.com/shorts/434638/breaking-cjp-founder-abhijeet-dipke-detained/amp",
+            "https://telanganatoday.com/arrest-us-now-cjp-founder-abhijeet-dipke-tells-fadnavis-govt"
           ]
         },
         {
@@ -464,6 +489,14 @@
           "sources": [
             "https://theprint.in/india/cjp-activists-getting-police-notices-being-pressured-not-to-join-oct-10-delhi-protest-dipke/3063117/",
             "https://www.tribuneindia.com/news/india/cjp-activists-getting-police-notices-being-pressured-not-to-join-oct-10-delhi-protest-dipke/"
+          ]
+        },
+        {
+          "statement": "The government is planning to arrest CJP leaders including Abhijeet Dipke, Ashutosh Ranka and Ratna Singh.",
+          "status": "claim",
+          "claimed_by": "Saurav Das (CJP), in an X post with about 67,000 engagements; no official confirmation",
+          "sources": [
+            "https://x.com/SauravDassss/status/2106806404363460794"
           ]
         },
         {
@@ -535,6 +568,14 @@
           "sources": [
             "https://www.indiatvnews.com/news/india/india-bloc-mps-march-election-commission-gyanesh-kumar-resignation-2026-10-06-1056186",
             "https://www.thehansindia.com/news/cities/new-delhi/opposition-showdown-with-election-commission-india-bloc-mps-march-demand-cec-gyanesh-kumars-resignation-1129536"
+          ]
+        },
+        {
+          "statement": "CJP says about 13 crore voters were removed from electoral rolls by SIR.",
+          "status": "claim",
+          "claimed_by": "Abhijeet Dipke (CJP); figures in circulation conflict and are not established",
+          "sources": [
+            "https://telanganatoday.com/arrest-us-now-cjp-founder-abhijeet-dipke-tells-fadnavis-govt"
           ]
         }
       ],
@@ -646,6 +687,24 @@
           "title": "Cockroach Janta Party",
           "publisher": "Wikipedia",
           "url": "https://en.wikipedia.org/wiki/Cockroach_Janta_Party"
+        },
+        {
+          "title": "75-year-old man dies of heart attack during CJP protest",
+          "publisher": "Gulte",
+          "url": "https://www.gulte.com/shorts/434803/75-year-old-man-dies-of-heart-attack-during-cjp-protest/amp",
+          "published_at": "2026-10-02"
+        },
+        {
+          "title": "Residents protest against CJP stir at Shivaji Park",
+          "publisher": "ThePrint",
+          "url": "https://theprint.in/india/residents-protest-against-cjp-stir-at-shivaji-park-javed-akhtar-adds-sarcasm-in-x-post/3060617/",
+          "published_at": "2026-10-02"
+        },
+        {
+          "title": "CJP founder Abhijeet Dipke briefly detained",
+          "publisher": "UNI",
+          "url": "https://www.uniindia.com/west-india/politics-mum-dipke-briefly-detained/200019",
+          "published_at": "2026-10-01"
         }
       ]
     }
