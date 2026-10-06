@@ -44,7 +44,8 @@ const main = async () => {
         followers: p.author_followers || null,
         published: p.published_at,
         on_video: p.parent_title || undefined,
-        text: String(p.text || '').slice(0, 1500),
+        // Cut on whole characters so emoji are never split into lone surrogates.
+        text: Array.from(String(p.text || '')).slice(0, 1500).join(''),
         media: (p.media || []).map((m) => m.kind).filter(Boolean),
     }));
     const size = Math.ceil(rows.length / chunks);

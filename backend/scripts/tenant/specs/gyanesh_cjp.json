@@ -234,7 +234,20 @@
           "Abhijeet Dipke",
           "Go Gyanu Go",
           "Jail Bharo Shivaji Park CJP",
-          "Gyanesh Kumar resignation protest"
+          "Gyanesh Kumar resignation protest",
+          "Gyanesh Kumar",
+          "Abhijeet Dipke CJP",
+          "Cockroach Janta Party",
+          "CJP protest",
+          "Gyanesh Kumar resign",
+          "Jantar Mantar 10 October",
+          "Shivaji Park CJP",
+          "vote chori Gyanesh Kumar",
+          "ज्ञानेश कुमार",
+          "कॉकरोच जनता पार्टी",
+          "Election Commission protest CJP",
+          "Saurav Das CJP",
+          "INDIA bloc march Election Commission"
         ],
         "instagram_accounts": [
           "cockroachjantaparty",
@@ -300,7 +313,9 @@
         ],
         "x_latest_pages": 25,
         "youtube_search_pages": 3,
-        "youtube_comments_per_video": 150
+        "youtube_comments_per_video": 150,
+        "facebook_search_pages": 20,
+        "facebook_page_pages": 6
       },
       "narratives": [
         {
@@ -727,7 +742,7 @@
         }
       ],
       "auto_refresh": {
-        "enabled": true,
+        "enabled": false,
         "x_minutes": 60,
         "youtube_hours": 6
       }

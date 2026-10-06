@@ -21,7 +21,6 @@
 
 const TenantPost = require('../../models/tenant/TenantPost');
 const xService = require('../rapidApiXService');
-const fbService = require('../rapidApiFacebookService');
 const igService = require('../rapidApiInstagramService');
 const blugate = require('../blugateClient');
 const redditService = require('../redditService');
@@ -177,41 +176,87 @@ const collectX = async (queries, since, latestPages = X_LATEST_PAGES, stopBefore
 };
 
 // ── Facebook ─────────────────────────────────────────────────────────
+// facebook-scraper3: /search/posts and /page/posts return a few posts per
+// call plus a `cursor` for the next page.
 
-const collectFacebook = async (queries) => {
+const fbGet = async (path, params) => (await blugate.get('facebook', path, params)).data;
+
+const fbDay = (d) => new Date(d).toISOString().slice(0, 10);
+
+const fromFacebook = (r, via) => {
+    const text = r.message || r.text || '';
+    const files = r.video_files || {};
+    const media = [];
+    const video = files.video_hd_file || files.video_sd_file || r.video || null;
+    if (video) media.push({ kind: 'video', url: video });
+    if (r.image) media.push({ kind: 'photo', url: typeof r.image === 'string' ? r.image : (r.image.uri || r.image.url || null) });
+    return {
+        platform: 'facebook',
+        platform_post_id: String(r.post_id || r.id),
+        url: r.url || null,
+        author_name: r.author?.name || null,
+        author_handle: r.author?.url ? r.author.url.replace(/^https?:\/\/(www\.)?facebook\.com\//, '').replace(/\/$/, '') : (r.author?.id || null),
+        published_at: validDate(r.timestamp),
+        text,
+        hashtags: extractHashtags(text),
+        mentions: [],
+        media: media.filter((m) => m.url),
+        post_type: r.attached_post || r.attached_post_url ? 'quote' : 'original',
+        metrics: {
+            likes: toNum(r.reactions_count),
+            comments: toNum(r.comments_count),
+            shares: toNum(r.reshare_count),
+            views: toNum(r.video_view_count),
+        },
+        collected_via: via,
+    };
+};
+
+/** Page through a cursor-based endpoint, keeping posts inside the window. */
+const fbPaged = async (path, params, maxPages, since, via, label) => {
     const out = [];
+    let cursor;
+    let stale = 0;
+    for (let page = 0; page < maxPages; page++) {
+        let data;
+        try {
+            data = await withRetry(() => fbGet(path, { ...params, cursor }));
+        } catch (_) { data = null; }
+        if (!data) break;
+        const rows = data.results || [];
+        const posts = rows.map((r) => fromFacebook(r, via)).filter((p) => p.platform_post_id && p.platform_post_id !== 'undefined');
+        const fresh = posts.filter((p) => !since || !p.published_at || p.published_at >= since);
+        fresh.forEach((post) => out.push({ query: label, post }));
+        // Page posts come newest first: two pages with nothing in the window means we are past it.
+        stale = fresh.length ? 0 : stale + 1;
+        if (!data.cursor || !rows.length || stale >= 2) break;
+        cursor = typeof data.cursor === 'string' ? data.cursor : JSON.stringify(data.cursor);
+    }
+    return out;
+};
+
+const collectFacebook = async (queries, since, pagesPerQuery) => {
+    const out = [];
+    const window = since ? { start_date: fbDay(since), end_date: fbDay(Date.now() + 86400000) } : {};
     for (const q of queries) {
-        const posts = (await withRetry(() => fbService.searchPosts(q, undefined, { throwOnCooldown: true }))) || [];
-        posts.forEach((p) => {
-            if (!p.id) return;
-            const metrics = {
-                likes: toNum(p.metrics?.likes),
-                comments: toNum(p.metrics?.comments),
-                shares: toNum(p.metrics?.shares),
-                views: toNum(p.metrics?.views) || null,
-            };
-            out.push({
-                query: q,
-                post: {
-                    platform: 'facebook',
-                    platform_post_id: String(p.id),
-                    url: p.url || null,
-                    author_name: p.author && p.author !== 'Facebook User' ? p.author : null,
-                    author_handle: p.author_handle ? String(p.author_handle) : null,
-                    published_at: validDate(p.created_at),
-                    text: p.text || '',
-                    hashtags: extractHashtags(p.text),
-                    mentions: extractMentions(p.text),
-                    media: (p.media || []).map((m) => ({
-                        kind: typeof m === 'object' && m?.type ? m.type : null,
-                        url: typeof m === 'string' ? m : (m?.url || m?.uri || null),
-                    })),
-                    post_type: 'original',
-                    metrics,
-                    collected_via: 'facebook_search',
-                },
-            });
-        });
+        out.push(...(await fbPaged('search/posts', { query: q, ...window }, pagesPerQuery, since, 'facebook_search', q)));
+    }
+    return out;
+};
+
+const collectFacebookPages = async (pages, since, mentionsEvent, pagesPerPage) => {
+    const out = [];
+    for (const page of pages) {
+        let pageId = /^\d+$/.test(page) ? page : null;
+        if (!pageId) {
+            try {
+                pageId = (await withRetry(() => fbGet('page/page_id', { url: page })))?.page_id || null;
+            } catch (_) { pageId = null; }
+        }
+        if (!pageId) continue;
+        const rows = await fbPaged('page/posts', { page_id: pageId }, pagesPerPage, since, 'facebook_page', `page:${page}`);
+        // Outlet pages post about everything; keep only posts about this event.
+        rows.filter(({ post }) => mentionsEvent(post.text)).forEach((r) => out.push(r));
     }
     return out;
 };
@@ -264,44 +309,6 @@ const collectInstagram = async (accounts, since, mentionsEvent) => {
     return out;
 };
 
-
-// ── Facebook pages ───────────────────────────────────────────────────
-
-const collectFacebookPages = async (pages, since, mentionsEvent) => {
-    const out = [];
-    for (const page of pages) {
-        const posts = (await withRetry(() => fbService.fetchPagePosts(page, 40, null, { throwOnCooldown: true }))) || [];
-        posts.forEach((p) => {
-            if (!p.id || !mentionsEvent(p.text)) return;
-            const published = validDate(p.created_at);
-            if (since && published && published < since) return;
-            out.push({
-                query: `page:${page}`,
-                post: {
-                    platform: 'facebook',
-                    platform_post_id: String(p.id),
-                    url: p.url || null,
-                    author_name: p.author_name || null,
-                    author_handle: p.author_id ? String(p.author_id) : null,
-                    published_at: published,
-                    text: p.text || '',
-                    hashtags: extractHashtags(p.text),
-                    mentions: extractMentions(p.text),
-                    media: (p.media || []).map((m) => ({ kind: null, url: typeof m === 'string' ? m : (m?.url || null) })),
-                    post_type: 'original',
-                    metrics: {
-                        likes: toNum(p.engagement?.likes),
-                        comments: toNum(p.engagement?.comments),
-                        shares: toNum(p.engagement?.shares),
-                        views: toNum(p.engagement?.views) || null,
-                    },
-                    collected_via: 'facebook_page',
-                },
-            });
-        });
-    }
-    return out;
-};
 
 // ── YouTube ──────────────────────────────────────────────────────────
 
@@ -528,8 +535,8 @@ const collectForEvent = async (event, { platforms = ALL_PLATFORMS, incrementalSi
     const runners = {
         x: () => collectX(plan.x_queries || [], since, plan.x_latest_pages || X_LATEST_PAGES, incrementalSince),
         facebook: async () => [
-            ...(await collectFacebook(plan.facebook_queries || [])),
-            ...(await collectFacebookPages(plan.facebook_pages || [], since, mentionsEvent)),
+            ...(await collectFacebook(plan.facebook_queries || [], incrementalSince || since, incrementalSince ? 2 : (plan.facebook_search_pages || 10))),
+            ...(await collectFacebookPages(plan.facebook_pages || [], incrementalSince || since, mentionsEvent, incrementalSince ? 1 : (plan.facebook_page_pages || 5))),
         ],
         instagram: () => collectInstagram(plan.instagram_accounts || [], since, mentionsEvent),
         youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent, {
