@@ -17,6 +17,25 @@ const xService = require('../rapidApiXService');
 const fbService = require('../rapidApiFacebookService');
 const igService = require('../rapidApiInstagramService');
 
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+// The FB/IG providers share quota with the Goa jobs and rate-limit in bursts;
+// wait out the cooldown and try again rather than recording nothing.
+const PROVIDER_RETRY_WAIT_MS = parseInt(process.env.TENANT_PROVIDER_RETRY_WAIT_MS || '90000', 10);
+const withRetry = async (fn, isEmpty, attempts = 3) => {
+    let last = null;
+    for (let i = 0; i < attempts; i++) {
+        try {
+            last = await fn();
+            if (!isEmpty(last)) return last;
+        } catch (err) {
+            console.warn(`[tenantCollect] provider error (attempt ${i + 1}): ${err.message}`);
+        }
+        if (i < attempts - 1) await sleep(PROVIDER_RETRY_WAIT_MS);
+    }
+    return last;
+};
+
 const toNum = (v) => {
     if (v === null || v === undefined || v === '') return null;
     const n = Number(v);
@@ -87,12 +106,52 @@ const fromTweet = (t) => {
     };
 };
 
+// Pull tweets and the bottom cursor out of a raw search timeline response.
+const readSearchPage = (data) => {
+    const instructions = data?.result?.timeline?.instructions
+        || data?.data?.search_by_raw_query?.search_timeline?.timeline?.instructions
+        || data?.timeline?.instructions || [];
+    const tweets = [];
+    let cursor = null;
+    instructions.forEach((ins) => {
+        const entries = ins.entries || (ins.entry ? [ins.entry] : []);
+        entries.forEach((entry) => {
+            const c = entry.content || {};
+            if (c.cursorType === 'Bottom' || /cursor-bottom/.test(entry.entryId || '')) cursor = c.value || cursor;
+            const raws = [c.itemContent?.tweet_results?.result, ...(c.items || []).map((i) => i?.item?.itemContent?.tweet_results?.result)];
+            raws.filter(Boolean).forEach((r) => {
+                const t = xService.normalizeTweet(r);
+                if (t) tweets.push(t);
+            });
+        });
+    });
+    return { tweets, cursor };
+};
+
+const X_LATEST_PAGES = 3;
+
+/** Top results via the shared searchTweets, plus up to X_LATEST_PAGES pages of Latest. */
 const collectX = async (queries, since) => {
     const sinceStr = since ? new Date(since).toISOString().slice(0, 10) : null;
     const out = [];
     for (const q of queries) {
-        const tweets = await xService.searchTweets(q, sinceStr);
-        tweets.forEach((t) => out.push({ query: q, post: fromTweet(t) }));
+        const top = await xService.searchTweets(q, sinceStr);
+        top.forEach((t) => out.push({ query: q, post: fromTweet(t) }));
+
+        let cursor = null;
+        for (let page = 0; page < X_LATEST_PAGES; page++) {
+            try {
+                const params = { query: sinceStr ? `${q} since:${sinceStr}` : q, type: 'Latest', count: 40 };
+                if (cursor) params.cursor = cursor;
+                const res = readSearchPage(await xService.rapidGet('search', params));
+                res.tweets.forEach((t) => out.push({ query: q, post: fromTweet(t) }));
+                if (!res.cursor || !res.tweets.length || res.cursor === cursor) break;
+                cursor = res.cursor;
+            } catch (err) {
+                console.warn(`[tenantCollect] X Latest page ${page + 1} failed for "${q}": ${err.message}`);
+                break;
+            }
+        }
     }
     return out;
 };
@@ -102,7 +161,10 @@ const collectX = async (queries, since) => {
 const collectFacebook = async (queries) => {
     const out = [];
     for (const q of queries) {
-        const posts = await fbService.searchPosts(q);
+        const posts = (await withRetry(
+            () => fbService.searchPosts(q, undefined, { throwOnCooldown: true }),
+            (r) => !Array.isArray(r) || r.length === 0,
+        )) || [];
         posts.forEach((p) => {
             if (!p.id) return;
             const metrics = {
@@ -171,7 +233,7 @@ const fromInstagram = (node, account) => {
 const collectInstagram = async (accounts, since, mentionsEvent) => {
     const out = [];
     for (const account of accounts) {
-        const raw = await igService.fetchUserPosts(account);
+        const raw = await withRetry(() => igService.fetchUserPosts(account), (r) => !r, 2);
         if (!raw) continue;
         const edges = raw.result?.edges || raw.edges || raw.items || (Array.isArray(raw) ? raw : []);
         for (const e of edges) {
