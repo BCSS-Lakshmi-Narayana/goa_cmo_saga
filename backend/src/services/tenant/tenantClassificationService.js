@@ -250,4 +250,13 @@ const classifyEvent = async (event, { retryFailed = true, concurrency = parseInt
     return counts;
 };
 
-module.exports = { classifyEvent, CATEGORIES, RISK_BANDS };
+/**
+ * Store labels produced outside the pipeline (e.g. by an analyst or another
+ * model) through the same validation as the pipeline's own output.
+ */
+const importLabels = async (event, post, raw, model) => {
+    await save(event, post, raw);
+    await TenantPost.updateOne({ tenant_id: event.tenant_id, event_id: event.id, _id: post._id }, { $set: { 'analysis.model': model } });
+};
+
+module.exports = { classifyEvent, importLabels, prefilterUnrelated, CATEGORIES, RISK_BANDS, SYSTEM_PROMPT, SCHEMA, eventContext };
