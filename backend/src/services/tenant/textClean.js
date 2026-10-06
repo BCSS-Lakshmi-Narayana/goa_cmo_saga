@@ -63,8 +63,8 @@ const ABBREVIATIONS = [
 const ALT = ABBREVIATIONS.map(([a]) => a).sort((a, b) => b.length - a.length).join('|');
 // Drop "(CJP)"-style parentheticals that follow the full name, so expansion doesn't repeat it.
 const PAREN_RX = new RegExp(`\\s*\\((?:${ALT})\\)`, 'g');
-// Whole-word, upper-case only; not inside hashtags, mentions, URLs, or "4 PM"-style times.
-const WORD_RX = new RegExp(`(?<![#@/\\w.])(?<!\\d\\s)(${ALT})(?=[^\\w]|$)`, 'g');
+// Whole-word, upper-case only; not inside hashtags, mentions or URLs.
+const WORD_RX = new RegExp(`(?<![#@/\\w.])(${ALT})(?=[^\\w]|$)`, 'g');
 const MAP = Object.fromEntries(ABBREVIATIONS);
 
 // "an FIR" → "a First Information Report", "a AISA" → "an All India …": fix the article before an expansion.
@@ -82,7 +82,11 @@ const expand = (text) => {
             const cap = a[0] === 'A';
             return `${vowel ? (cap ? 'An' : 'an') : (cap ? 'A' : 'a')} `;
         })
-        .replace(WORD_RX, (m) => MAP[m] || m);
+        .replace(WORD_RX, (m, _g, offset, whole) => {
+            // "4 PM" is a time, not "Prime Minister".
+            if (m === 'PM' && /\d\s?$/.test(whole.slice(Math.max(0, offset - 3), offset))) return m;
+            return MAP[m] || m;
+        });
 };
 
 // Report fields that hold prose. Everything nested under these keys is expanded.
