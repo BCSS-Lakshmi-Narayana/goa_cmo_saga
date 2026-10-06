@@ -94,7 +94,7 @@ const dbChecks = async (tenantId) => {
     }
 
     // 5. Tenant users are invisible to the Goa user filter used by admin screens.
-    const visible = await User.countDocuments({ ...goaUserFilter(), tenant_id: tenantId });
+    const visible = await User.countDocuments({ $and: [goaUserFilter(), { tenant_id: tenantId }] });
     check('DB', 'tenant users excluded by Goa admin user filter', visible === 0);
 
     return { users, events };
