@@ -84,7 +84,8 @@ const PrintReport = () => {
   if (!state.report) return null;
   return (
     <div className="bg-white">
-      <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
+      {/* Page numbers in the page margin; defining margin content also stops the browser printing its own URL/date header and footer. */}
+      <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 9px; color: #64748b; } @top-left { content: ""; } @top-right { content: ""; } @bottom-left { content: ""; } @bottom-right { content: ""; } } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
       <ReportBrief report={state.report} workspace={state.workspace} />
       {state.posts && <PostsAppendix posts={state.posts} />}
     </div>

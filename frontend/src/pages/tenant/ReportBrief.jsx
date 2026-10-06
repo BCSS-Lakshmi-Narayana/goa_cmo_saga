@@ -25,7 +25,7 @@ const ACTIVITY_LABEL = {
   detention_arrest: 'Detentions / arrests', legal_action: 'Legal action', announcement: 'Announced',
 };
 const TARGET_LABEL = {
-  subject: 'The CEC (subject)', election_commission: 'Election Commission', protest_organisers: 'Protest organisers',
+  subject: 'Subject', election_commission: 'Election Commission of India', protest_organisers: 'Protest organisers',
   police: 'Police', political_leader: 'Political leaders', government: 'Government', judiciary: 'Judiciary',
   media: 'Media', organisation: 'Organisations', other: 'Other',
 };
@@ -42,16 +42,19 @@ const fmtBig = (n) => {
   if (v >= 1e5) return `${(v / 1e5).toFixed(1)} lakh`;
   return v.toLocaleString('en-IN');
 };
-const fmtDate = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) : '—');
-const fmtDay = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'short', year: 'numeric' }) : '—');
-const shortDay = (iso) => { const [, m, d] = iso.split('-'); return `${d}/${m}`; };
-const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-const dayLabel = (iso) => { const [, m, d] = iso.split('-'); return `${Number(d)} ${MONTHS[Number(m) - 1]}`; };
+const FULL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+/** "6 October 2026" (Indian Standard Time). */
+const fmtDay = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long', year: 'numeric' }) : '—');
+/** "6 October 2026, 23:29" (Indian Standard Time, 24-hour clock). */
+const fmtDate = (d) => (d ? `${fmtDay(d)}, ${new Date(d).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false })}` : '—');
+/** "2026-10-06" → { day: 6, month: "October" } for chart and grid axes. */
+const dayParts = (iso) => { const [, m, d] = iso.split('-'); return { day: Number(d), month: FULL_MONTHS[Number(m) - 1] }; };
+const dayLabel = (iso) => { const [y, m, d] = iso.split('-'); return `${Number(d)} ${FULL_MONTHS[Number(m) - 1]} ${y}`; };
 /** "2 Oct" or "1–3 Oct (peak 2 Oct)" from an activity group's publication days. */
 const activityWhen = (g) => {
   if (!g.first_day) return '—';
   if (g.first_day === g.last_day) return dayLabel(g.first_day);
-  return `${dayLabel(g.first_day)} – ${dayLabel(g.last_day)}${g.peak_day ? ` (peak ${dayLabel(g.peak_day)})` : ''}`;
+  return `${dayLabel(g.last_day)} back to ${dayLabel(g.first_day)}${g.peak_day ? `; busiest ${dayLabel(g.peak_day)}` : ''}`;
 };
 const hostOf = (url) => { try { return new URL(url).hostname.replace(/^www\./, ''); } catch { return url; } };
 
@@ -108,9 +111,10 @@ const ToneBar = ({ tone }) => {
  * Daily stacked tone bars (SVG, print-safe) with each day's negativity % above
  * the bar and a red dot under days that carry high/critical-risk posts.
  */
-const DailyToneChart = ({ rows }) => {
-  if (!rows.length) return null;
-  const W = 860; const H = 230; const padL = 36; const padB = 34; const padT = 26;
+const DailyToneChart = ({ rows: chronological }) => {
+  if (!chronological.length) return null;
+  const rows = [...chronological].reverse(); // newest date first
+  const W = 860; const H = 240; const padL = 36; const padB = 40; const padT = 26;
   const max = Math.max(1, ...rows.map((r) => r.total));
   const slot = (W - padL) / rows.length;
   const bw = Math.min(46, slot * 0.7);
@@ -138,8 +142,11 @@ const DailyToneChart = ({ rows }) => {
             })}
             <text x={x + bw / 2} y={y(r.total) - 12} fontSize="9" textAnchor="middle" fill="#334155" fontWeight="600">{r.total.toLocaleString('en-IN')}</text>
             <text x={x + bw / 2} y={y(r.total) - 3} fontSize="8" textAnchor="middle" fill={r.negative_pct >= 50 ? '#b91c1c' : '#64748b'}>{r.negative_pct}% neg</text>
-            <text x={x + bw / 2} y={H - padB + 12} fontSize="9" textAnchor="middle" fill="#475569">{shortDay(r.day)}</text>
-            {r.high_risk > 0 && <circle cx={x + bw / 2} cy={H - padB + 22} r={Math.min(6, 2 + Math.log2(r.high_risk + 1))} fill="#b91c1c" />}
+            <text x={x + bw / 2} y={H - padB + 12} fontSize="9" textAnchor="middle" fill="#475569">{dayParts(r.day).day}</text>
+            {(i === 0 || dayParts(rows[i - 1].day).month !== dayParts(r.day).month) && (
+              <text x={x + bw / 2} y={H - 1} fontSize="8" textAnchor="middle" fill="#64748b">{dayParts(r.day).month}</text>
+            )}
+            {r.high_risk > 0 && <circle cx={x + bw / 2} cy={H - padB + 20} r={Math.min(5, 2 + Math.log2(r.high_risk + 1) / 2)} fill="#b91c1c" />}
           </g>
         );
       })}
@@ -152,22 +159,29 @@ const DailyToneChart = ({ rows }) => {
 const LocationHeat = ({ trends }) => {
   if (!trends?.places?.length) return null;
   const max = Math.max(1, ...trends.places.flatMap((p) => p.by_day));
+  const order = trends.days.map((_, i) => i).reverse(); // newest date first
+  const days = order.map((i) => trends.days[i]);
   return (
     <div className="overflow-x-auto">
       <table className="text-[10px] border-collapse w-full">
         <thead>
           <tr>
             <th className="text-left px-1.5 py-1 font-semibold text-slate-600">Place</th>
-            {trends.days.map((d) => <th key={d} className="px-0.5 py-1 font-normal text-slate-500 text-center">{shortDay(d)}</th>)}
+            {days.map((d, i) => (
+              <th key={d} className="px-0.5 py-1 font-normal text-slate-500 text-center leading-tight">
+                {dayParts(d).day}
+                {(i === 0 || dayParts(days[i - 1]).month !== dayParts(d).month) && <div className="text-[8px]">{dayParts(d).month}</div>}
+              </th>
+            ))}
             <th className="px-1.5 py-1 text-right font-semibold text-slate-600">Total</th>
-            <th className="px-1.5 py-1 text-right font-semibold text-slate-600">% neg</th>
+            <th className="px-1.5 py-1 text-right font-semibold text-slate-600">% negative</th>
           </tr>
         </thead>
         <tbody>
           {trends.places.map((p) => (
             <tr key={p.place} className="border-t border-slate-100">
               <td className="px-1.5 py-1 font-medium whitespace-nowrap">{p.place}</td>
-              {p.by_day.map((v, i) => {
+              {order.map((i) => p.by_day[i]).map((v, i) => {
                 const a = v ? 0.12 + 0.88 * (v / max) : 0;
                 return (
                   <td key={i} className="text-center tabular-nums" style={{ background: v ? `rgba(30,58,95,${a.toFixed(2)})` : 'transparent', color: a > 0.55 ? '#fff' : '#334155', minWidth: 26 }}>
@@ -249,16 +263,15 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       </div>
 
       {/* Cover */}
-      <div className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">Public discussion monitoring brief · {workspace?.name || 'Workspace'}</div>
-      <h1 className="text-[30px] font-extrabold text-[#1e3a5f] leading-tight mt-1">{ev.short_name}</h1>
-      <p className="text-slate-600 text-sm">India · Aggregate monitoring of public posts by media, organisations, public figures and the public</p>
+      <div className="text-[11px] font-semibold tracking-wider text-slate-500 uppercase">Public discussion monitoring report</div>
+      <h1 className="text-[30px] font-extrabold text-[#1e3a5f] leading-tight mt-1">{ev.subject?.name || ev.short_name}</h1>
+      {ev.subject?.role && <div className="text-[17px] font-semibold text-slate-700">{ev.subject.role}</div>}
+      <p className="text-slate-600 text-sm mt-1">{ev.name}</p>
 
       <div className="mt-4"><Table
         head={['Report period', 'Generated', 'Posts analysed', 'Platforms']}
         rows={[[
-          report.range_from || report.range_to
-            ? `${report.range_from ? fmtDay(report.range_from) : 'Start'} – ${report.range_to ? fmtDay(report.range_to) : 'latest'}`
-            : `${fmtDay(report.period_start)} – ${fmtDay(report.period_end)} (whole event)`,
+          `${fmtDay(report.range_from || report.period_start)} to ${fmtDay(report.range_to || report.period_end)}`,
           fmtDay(report.created_at), fmt(t.relevant), s.by_platform.filter((p) => p.relevant).map((p) => PLATFORM_LABEL[p.platform]).join(', '),
         ]]}
       /></div>
@@ -284,11 +297,20 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         {' '}{fmt(t.collected)} posts collected, {fmt(t.excluded_unrelated)} judged unrelated and excluded. Keywords: {[...(ev.keywords || []).slice(0, 8), ...(ev.hashtags || []).slice(0, 4)].join(', ')}.
       </p>
 
-      {/* Bottom line + attention */}
-      <div className="mt-6 rounded border-l-4 border-[#1e3a5f] bg-slate-50 p-4">
-        <p className="text-[14px] leading-relaxed"><span className="font-bold text-[#1e3a5f]">Bottom line. </span>{d.bottom_line}</p>
-        {d.bottom_line_source === 'analyst' && d.analyst_review && <p className="text-[11px] text-slate-500 mt-2">Written by analyst on {fmtDay(d.analyst_review.reviewed_at)}.</p>}
-      </div>
+      <H2>Executive summary</H2>
+      <table className="w-full text-[13px] leading-relaxed border-collapse">
+        <tbody>
+          {[['In brief', d.bottom_line], ['What happened', d.executive_summary?.what_happened], ['When and where', d.executive_summary?.when_where],
+            ['Who is involved', d.executive_summary?.who_involved], ['Why it matters', d.executive_summary?.why_attention], ['Online discussion', d.executive_summary?.social_discussion]]
+            .filter(([, v]) => v)
+            .map(([k, v]) => (
+              <tr key={k} className="border-b border-slate-200 align-top break-inside-avoid">
+                <td className="py-2 pr-4 w-40 font-semibold text-[#1e3a5f] whitespace-nowrap">{k}</td>
+                <td className="py-2 text-slate-800">{v}</td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
 
       {(s.key_intelligence || []).length > 0 && <>
         <H2>Key intelligence</H2>
@@ -336,7 +358,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
 
       <H2>Posts and negativity by day</H2>
       <p className="text-[12px] text-slate-600 mb-2">
-        Relevant posts per day by publication date (IST), split by tone: <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.negative }} /> negative,{' '}
+        Relevant posts per day by publication date (Indian Standard Time), newest date first, split by tone: <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.negative }} /> negative,{' '}
         <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.neutral }} /> neutral,{' '}
         <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.positive }} /> positive. The figure above each bar is that day's share of negative posts;
         a red dot marks days with critical or high-risk posts. Peak: {fmt(s.volume_change.peak_posts)} posts on {s.volume_change.peak_day ? fmtDay(s.volume_change.peak_day) : '—'}.
@@ -344,7 +366,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       <DailyToneChart rows={s.timeline} />
       <div className="mt-3"><Table
         head={['Day', 'Posts', '% negative', `Critical of ${ev.subject?.name || 'subject'}`, 'High-risk', 'Leading narrative', 'Most-named place']}
-        rows={s.timeline.map((d) => [
+        rows={[...s.timeline].reverse().map((d) => [
           <b>{fmtDay(d.day)}</b>, fmt(d.total),
           <span style={{ color: d.negative_pct >= 50 ? '#b91c1c' : undefined, fontWeight: d.negative_pct >= 50 ? 600 : 400 }}>{d.negative_pct ?? '—'}%</span>,
           fmt(d.critical_of_subject), d.high_risk ? <span className="text-red-700 font-semibold">{fmt(d.high_risk)}</span> : '0',
@@ -354,23 +376,16 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
 
       {s.location_trends?.places?.length > 0 && <>
         <H2>Location trends</H2>
-        <p className="text-[12px] text-slate-600 mb-2">Daily posts naming each of the most-mentioned places (darker = more posts), with each place's share of negative posts. A place counts only when a post names it.</p>
+        <p className="text-[12px] text-slate-600 mb-2">Daily posts naming each of the most-mentioned places, newest date first (darker = more posts), with each place's share of negative posts. A place counts only when a post names it.</p>
         <LocationHeat trends={s.location_trends} />
       </>}
-
-      <H2>Executive summary</H2>
-      <div className="space-y-1.5 text-[13px] leading-relaxed">
-        {[['What happened', d.executive_summary?.what_happened], ['When and where', d.executive_summary?.when_where], ['Who is involved', d.executive_summary?.who_involved],
-          ['Why it is receiving attention', d.executive_summary?.why_attention], ['Social-media discussion', d.executive_summary?.social_discussion]]
-          .map(([k, v]) => <p key={k}><span className="font-semibold">{k}: </span>{v}</p>)}
-      </div>
 
       <H2 n="01">Activity analysis</H2>
       <Tiles items={[[fmt(s.activity.posts), 'Activity posts'], [fmt(t.relevant), 'Posts in window'], [s.lead_platform ? PLATFORM_LABEL[s.lead_platform.platform] : '—', 'Lead platform'], [fmtBig(t.engagement), 'Engagement']]} />
       <p className="text-[13px] mt-3 mb-2">Protests, marches, meetings, detentions and legal steps named in the posts.</p>
       <ul className="list-disc pl-5 space-y-1 text-[13px] mb-3">
         {s.activity.groups.filter((g) => g.place !== 'Unspecified').slice(0, 6).map((g) => (
-          <li key={`${g.type}|${g.place}`}><b>{ACTIVITY_LABEL[g.type] || g.type} — {g.place}</b>: {fmt(g.posts)} posts ({fmt(g.news)} news/reporting, {fmt(g.critical_of_subject)} critical of the subject). {d.activity_notes?.[`${g.type}|${g.place}`] || ''}</li>
+          <li key={`${g.type}|${g.place}`}><b>{ACTIVITY_LABEL[g.type] || g.type} — {g.place}</b>: {fmt(g.posts)} posts ({fmt(g.news)} news/reporting, {fmt(g.critical_of_subject)} critical of {ev.subject?.name}). {d.activity_notes?.[`${g.type}|${g.place}`] || ''}</li>
         ))}
       </ul>
       <Table
@@ -425,7 +440,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
             </div>
           ))}
         </div>
-        {s.tone_sections.filter((ts) => ts.key !== 'neutral').map((ts) => (
+        {s.tone_sections.filter((ts) => ts.key === 'negative').map((ts) => (
           <div key={ts.key} className="mt-4">
             <div className="font-semibold text-[13px] mb-1 break-after-avoid capitalize" style={{ color: TONE_COLOR[ts.key] }}>{ts.key} posts — highest engagement</div>
             <Table
@@ -470,7 +485,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       <div className="space-y-1.5 mb-3">
         {s.target_table.map((r) => (
           <div key={r.type} className="flex items-center gap-2 text-xs">
-            <div className="w-40 text-right text-slate-600 truncate">{TARGET_LABEL[r.type] || r.type}</div>
+            <div className="w-40 text-right text-slate-600 truncate">{r.type === 'subject' ? ev.subject?.name : (TARGET_LABEL[r.type] || r.type)}</div>
             <div className="flex-1 flex h-4 rounded-sm overflow-hidden" style={{ maxWidth: `${(r.posts / Math.max(...s.target_table.map((x) => x.posts))) * 70 + 10}%` }}>
               {['positive', 'neutral', 'negative'].map((k) => <div key={k} style={{ width: `${(r[k] / (r.posts || 1)) * 100}%`, background: TONE_COLOR[k] }} />)}
             </div>
@@ -478,7 +493,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
           </div>
         ))}
       </div>
-      <Table head={['Target / entity', 'Posts', 'Positive', 'Neutral', 'Negative']} rows={s.target_table.map((r) => [<b>{TARGET_LABEL[r.type] || r.type}</b>, fmt(r.posts), fmt(r.positive), fmt(r.neutral), fmt(r.negative)])} />
+      <Table head={['Target / entity', 'Posts', 'Positive', 'Neutral', 'Negative']} rows={s.target_table.map((r) => [<b>{r.type === 'subject' ? ev.subject?.name : (TARGET_LABEL[r.type] || r.type)}</b>, fmt(r.posts), fmt(r.positive), fmt(r.neutral), fmt(r.negative)])} />
       <p className="text-[12px] text-slate-600 mt-2">
         Most named people and organisations: {s.entities.slice(0, 10).map((e) => `${e.name} (${fmt(e.count)})`).join(', ')}.
       </p>
@@ -494,32 +509,11 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         head={['Account', 'Type', 'Platform', 'Posts', 'Score', 'Mostly']}
         rows={s.influencers.slice(0, 12).map((a) => [
           a.top?.url ? <Link href={a.top.url}>{a.name || `@${a.handle}`}</Link> : (a.name || `@${a.handle}`),
-          ACCOUNT_LABEL[a.account_type] || 'Account', PLATFORM_LABEL[a.platform], fmt(a.posts), fmt(a.score), a.dominant_stance === 'critical' ? 'critical of subject' : a.dominant_stance,
+          ACCOUNT_LABEL[a.account_type] || 'Account', PLATFORM_LABEL[a.platform], fmt(a.posts), fmt(a.score), a.dominant_stance === 'critical' ? `critical of ${ev.subject?.name}` : a.dominant_stance,
         ])}
       /></div>
 
-      <H2 n="08">Evidence register (media sample)</H2>
-      <Table
-        head={['When', 'Platform', 'Outlet / account', 'Summary']}
-        rows={s.evidence.map((p) => [<b>{fmtDate(p.published_at)}</b>, PLATFORM_LABEL[p.platform], p.author, <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>source</Link>}<Footage items={p.footage} /></span>])}
-      />
-
-            {s.footage && s.footage.top.length > 0 && <>
-        <H2 n="09">Footage</H2>
-        <p className="text-[12px] text-slate-600 mb-2">
-          {fmt(s.footage.videos)} relevant posts carry video and {fmt(s.footage.images)} carry images. The most-engaged, one per account; ▶ links open the video itself (direct file for X, the video page for YouTube).
-        </p>
-        <Table
-          head={['When', 'Platform', 'Account', 'What it shows', 'Footage', 'Engagement']}
-          rows={s.footage.top.map((p) => [
-            fmtDate(p.published_at), PLATFORM_LABEL[p.platform], p.author,
-            <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>post</Link>}</span>,
-            <Footage items={p.footage} />, fmt(p.engagement),
-          ])}
-        />
-      </>}
-
-      <H2 n="10">Key narratives</H2>
+      <H2 n="08">Key narratives</H2>
       <div className="space-y-3">
         {s.narratives.map((n) => (
           <div key={n.key} className="border rounded p-3 break-inside-avoid">
@@ -537,7 +531,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         ))}
       </div>
 
-      <H2 n="11">Verified facts and claims</H2>
+      <H2 n="09">Verified facts and claims</H2>
       <p className="text-[12px] text-slate-600 mb-2">From published reporting. Verified = two or more independent outlets. Social-media allegations are listed separately and are not verified by this brief.</p>
       <ul className="space-y-1.5">
         {(ev.facts || []).map((f, i) => (
@@ -560,7 +554,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         </ul>
       </>}
 
-      <H2 n="12">Recommended considerations</H2>
+      <H2 n="10">Recommended considerations</H2>
       <p className="text-[12px] text-slate-500 mb-2">Neutral, information-focused considerations for the office. Not messaging or persuasion advice.</p>
       <div className="grid md:grid-cols-2 gap-4">
         {[['Fact-check against official records', rec.fact_check], ['Questions a factual clarification could answer', rec.clarifications], ['Communication considerations', rec.communication],
@@ -573,23 +567,35 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         <Bullets items={d.analyst_review.notes} />
       </>}
 
+      <H2 n="11">Evidence register (media sample)</H2>
+      <Table
+        head={['When', 'Platform', 'Outlet / account', 'Summary']}
+        rows={s.evidence.map((p) => [<b>{fmtDate(p.published_at)}</b>, PLATFORM_LABEL[p.platform], p.author, <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>source</Link>}<Footage items={p.footage} /></span>])}
+      />
+
+            {s.footage && s.footage.top.length > 0 && <>
+        <H2 n="12">Footage</H2>
+        <p className="text-[12px] text-slate-600 mb-2">
+          {fmt(s.footage.videos)} relevant posts carry video and {fmt(s.footage.images)} carry images. The most-engaged, one per account; ▶ links open the video itself (direct file for X, the video page for YouTube).
+        </p>
+        <Table
+          head={['When', 'Platform', 'Account', 'What it shows', 'Footage', 'Engagement']}
+          rows={s.footage.top.map((p) => [
+            fmtDate(p.published_at), PLATFORM_LABEL[p.platform], p.author,
+            <span>{p.summary || p.excerpt} {p.url && <Link href={p.url}>post</Link>}</span>,
+            <Footage items={p.footage} />, fmt(p.engagement),
+          ])}
+        />
+      </>}
+
       <H2>Summary</H2>
       <ul className="list-disc pl-5 text-[13px] space-y-1">
-        <li>Prepared for: {workspace?.name}. Event: {ev.name}. Relevant posts analysed: {fmt(t.relevant)} of {fmt(t.collected)} collected.</li>
+        <li>Prepared for: {ev.subject?.name}, {ev.subject?.role}. Event: {ev.name}. Relevant posts analysed: {fmt(t.relevant)} of {fmt(t.collected)} collected.</li>
         <li>Platforms: {s.by_platform.filter((p) => p.relevant).map((p) => `${PLATFORM_LABEL[p.platform]} ${fmt(p.relevant)}`).join(' · ')}.</li>
         <li>Places named: {fmt(s.places.count)}; most named {s.places.rows[0]?.place || '—'}. Tone (positive / neutral / negative): {fmt(toneOf('positive').count)} / {fmt(toneOf('neutral').count)} / {fmt(toneOf('negative').count)}.</li>
         <li>Risk bands (critical / high / medium / low): {['critical', 'high', 'medium', 'low'].map((k) => fmt(band(k).count)).join(' / ')}.</li>
       </ul>
 
-      <H2>Methodology and sources</H2>
-      <ul className="list-disc pl-5 text-[12px] text-slate-700 space-y-1">{d.methodology.map((m, i) => <li key={i}>{m}</li>)}</ul>
-      <div className="text-[12px] mt-3">
-        <div className="font-semibold mb-1">Published sources</div>
-        <ol className="list-decimal pl-5 space-y-0.5">
-          {(ev.sources || []).map((src) => <li key={src.url}><a href={src.url} target="_blank" rel="noreferrer" className="text-blue-700 hover:underline">{src.title || src.url}</a>{src.publisher ? ` — ${src.publisher}` : ''}{src.published_at ? `, ${fmtDay(src.published_at)}` : ''}</li>)}
-        </ol>
-      </div>
-      <p className="text-[10px] text-slate-400 mt-6 text-center">{workspace?.name} · {ev.short_name} · generated {fmtDay(report.created_at)}</p>
     </article>
   );
 };

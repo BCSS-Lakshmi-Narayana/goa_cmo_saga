@@ -12,6 +12,7 @@ const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
 const { completeReport, footageOf, isPublicAccount } = require('../services/tenant/tenantReportService');
+const { expand } = require('../services/tenant/textClean');
 
 const requireTenant = (req, res, next) => {
     if (!isTenantUser(req.user)) {
@@ -181,7 +182,7 @@ const exportPosts = async (req, res) => {
             narratives: (p.analysis?.narratives || []).join(', '),
             target: p.analysis?.target,
             risk_band: p.analysis?.review?.risk_band || p.analysis?.risk_band,
-            summary: p.analysis?.summary,
+            summary: expand(p.analysis?.summary),
             language: p.language,
             footage: footageOf(p),
             public_account: isPublicAccount(p),

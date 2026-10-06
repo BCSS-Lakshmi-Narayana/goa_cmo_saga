@@ -11,6 +11,7 @@
 const TenantPost = require('../../models/tenant/TenantPost');
 const TenantReport = require('../../models/tenant/TenantReport');
 const llm = require('../llmProvider');
+const { expandReport } = require('./textClean');
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 const IST_OFFSET_MS = 5.5 * 60 * 60 * 1000;
@@ -71,6 +72,9 @@ const postRef = (p, { maskPrivate = true } = {}) => ({
     reviewed: Boolean(p.analysis?.review?.reviewed_at),
     footage: footageOf(p),
 });
+
+/** Newest first (posts without a date go last). */
+const byDateDesc = (a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0);
 
 /** First `n` posts with distinct authors, keeping the input order. */
 const distinctAuthors = (posts, n) => {
@@ -169,7 +173,14 @@ const computeStats = (event, all) => {
         const age = newest - new Date(p.published_at).getTime();
         return age >= from && age < to;
     }).length;
-    const volume = { last_24h: inWindow(0, DAY_MS), previous_24h: inWindow(DAY_MS, 2 * DAY_MS), peak_day: peak?.day || null, peak_posts: peak?.total || 0 };
+    const lastDay = timeline[timeline.length - 1] || null;
+    const prevDay = timeline[timeline.length - 2] || null;
+    const volume = {
+        last_24h: inWindow(0, DAY_MS), previous_24h: inWindow(DAY_MS, 2 * DAY_MS),
+        last_day: lastDay?.day || null, last_day_posts: lastDay?.total || 0,
+        prev_day: prevDay?.day || null, prev_day_posts: prevDay?.total || 0,
+        peak_day: peak?.day || null, peak_posts: peak?.total || 0,
+    };
 
     // Activity: offline events the posts report, grouped by type and place.
     const activityPosts = relevant.filter((p) => p.analysis.activity?.type && p.analysis.activity.type !== 'none');
@@ -203,7 +214,8 @@ const computeStats = (event, all) => {
             };
         })
         .sort((a, b) => b.posts - a.posts)
-        .slice(0, 12);
+        .slice(0, 12)
+        .sort((a, b) => String(b.last_day || '').localeCompare(String(a.last_day || '')) || b.posts - a.posts);
 
     // Places named in posts.
     const placeCounts = new Map();
@@ -276,7 +288,7 @@ const computeStats = (event, all) => {
             negative: rows.filter((p) => tone(p) === 'negative').length,
             trend,
             examples: distinctAuthors(topBy(rows.filter((p) => p.post_type !== 'repost' && isPublicAccount(p)
-                && (n.key !== 'questioning_cjp' || p.analysis.stance_toward_protest === 'critical')), 30), 3).map((p) => postRef(p)),
+                && (n.key !== 'questioning_cjp' || p.analysis.stance_toward_protest === 'critical')), 30), 3).sort(byDateDesc).map((p) => postRef(p)),
         };
     }).filter((n) => n.count > 0).sort((a, b) => b.count - a.count);
 
@@ -319,7 +331,7 @@ const computeStats = (event, all) => {
     const COVERAGE = new Set(['news_media_coverage', 'direct_protest_coverage', 'neutral_reporting']);
     const mediaPosts = publicOriginals.filter((p) => MEDIA_TYPES.has(p.analysis.account_type) && p.post_type !== 'comment' && COVERAGE.has(p.analysis.category));
     const evidencePool = mediaPosts.length >= 10 ? mediaPosts : publicOriginals;
-    const evidence = topBy(evidencePool, 15).map((p) => postRef(p))
+    const evidence = topBy(evidencePool, 15).sort(byDateDesc).map((p) => postRef(p))
         .sort((a, b) => new Date(b.published_at || 0) - new Date(a.published_at || 0));
 
     // Risk bands (analyst review overrides the model).
@@ -327,8 +339,9 @@ const computeStats = (event, all) => {
         const n = relevant.filter((p) => riskBand(p) === k).length;
         return { key: k, count: n, pct: pct(n, relevant.length) };
     });
-    const riskRows = topBy(relevant.filter((p) => ['critical', 'high'].includes(riskBand(p))), 25).map((p) => postRef(p));
-    const mediumRows = topBy(relevant.filter((p) => riskBand(p) === 'medium'), 10).map((p) => postRef(p));
+    // Selected by reach, shown newest first.
+    const riskRows = topBy(relevant.filter((p) => ['critical', 'high'].includes(riskBand(p))), 25).sort(byDateDesc).map((p) => postRef(p));
+    const mediumRows = topBy(relevant.filter((p) => riskBand(p) === 'medium'), 10).sort(byDateDesc).map((p) => postRef(p));
     const reviewed = relevant.filter((p) => p.analysis.review?.reviewed_at).length;
     const modelFlagged = relevant.filter((p) => ['critical', 'high', 'medium'].includes(p.analysis.risk_band)).length;
 
@@ -348,8 +361,8 @@ const computeStats = (event, all) => {
         const median = others.length ? others[Math.floor(others.length / 2)] : 0;
         keyIntel.push({
             key: 'volume_spike',
-            title: `Public conversation peaked on ${dayLabel(peak.day)}`,
-            detail: `${peak.total.toLocaleString('en-IN')} relevant posts that day${median ? `, about ${(peak.total / median).toFixed(1)}× the median day (${median.toLocaleString('en-IN')})` : ''}; ${peak.negative_pct}% negative in tone.`,
+            title: `Public conversation peaked on ${dayLabel(peak.day)} ${peak.day.slice(0, 4)}`,
+            detail: `${peak.total.toLocaleString('en-IN')} relevant posts on ${dayLabel(peak.day)} ${peak.day.slice(0, 4)}${median ? `, about ${(peak.total / median).toFixed(1)}× the median day (${median.toLocaleString('en-IN')})` : ''}; ${peak.negative_pct}% negative in tone.`,
             caveat: 'X search returns the newest posts first, so the most recent days are over-represented; read late peaks as directional.',
         });
     }
@@ -409,11 +422,12 @@ const computeStats = (event, all) => {
             .sort((a, b) => new Date(a.date) - new Date(b.date))[0];
         if (next) {
             const mobil = relevant.filter((p) => (p.analysis.narratives || []).includes('oct10_mobilisation'));
-            const recent = mobil.filter((p) => p.published_at && lastDay - new Date(p.published_at) < 2 * DAY_MS).length;
+            const recentDays = days.slice(-2);
+            const recent = mobil.filter((p) => p.published_at && recentDays.includes(istDay(p.published_at))).length;
             keyIntel.push({
                 key: 'next_point',
-                title: `Next significant monitoring point: ${dayLabel(istDay(next.date))}`,
-                detail: `${next.description} ${mobil.length.toLocaleString('en-IN')} posts carry mobilisation for it, ${recent.toLocaleString('en-IN')} of them in the last two days of the period.`,
+                title: `Next significant monitoring point: ${dayLabel(istDay(next.date))} ${istDay(next.date).slice(0, 4)}`,
+                detail: `${next.description} ${mobil.length.toLocaleString('en-IN')} posts carry mobilisation for it, ${recent.toLocaleString('en-IN')} of them on ${recentDays.map((d) => `${dayLabel(d)} ${d.slice(0, 4)}`).join(' and ')}.`,
             });
         }
     }
@@ -424,7 +438,7 @@ const computeStats = (event, all) => {
     const footage = {
         videos: withVideo.length,
         images: withImage.length,
-        top: distinctAuthors(topBy(withVideo.length >= 10 ? withVideo : [...withVideo, ...withImage], 80), 20).map((p) => postRef(p)),
+        top: distinctAuthors(topBy(withVideo.length >= 10 ? withVideo : [...withVideo, ...withImage], 80), 20).sort(byDateDesc).map((p) => postRef(p)),
     };
 
     // Positive / negative / neutral, each broken down on its own.
@@ -442,8 +456,9 @@ const computeStats = (event, all) => {
             narratives: countBy(rows, (p) => p.analysis.narratives || []).slice(0, 5).map(([k, count]) => ({ key: k, count })),
             hashtags: countBy(rows, (p) => p.hashtags || []).slice(0, 6).map(([tag, count]) => ({ tag, count })),
             // Ranked by the engagement figure the table shows.
-            top_public: distinctAuthors(topBy(publicRows, 40, (p) => p.engagement_total || 0), 10).map((p) => postRef(p)),
-            top_all: topBy(rows.filter((p) => p.post_type !== 'repost'), 10, (p) => p.engagement_total || 0).map((p) => postRef(p)),
+            // Highest engagement, shown newest first.
+            top_public: distinctAuthors(topBy(publicRows, 40, (p) => p.engagement_total || 0), 10).sort(byDateDesc).map((p) => postRef(p)),
+            top_all: topBy(rows.filter((p) => p.post_type !== 'repost'), 10, (p) => p.engagement_total || 0).sort(byDateDesc).map((p) => postRef(p)),
         };
     });
 
@@ -548,7 +563,7 @@ Give 4-6 attention items, most important first.`;
 const PLATFORM_NAME = { x: 'X', youtube: 'YouTube', facebook: 'Facebook', instagram: 'Instagram', reddit: 'Reddit', telegram: 'Telegram' };
 const NARRATIVE_LABEL = (event, key) => ((event.narratives || []).find((n) => n.key === key) || {}).label || 'Other';
 const num = (n) => Number(n || 0).toLocaleString('en-IN');
-const dayText = (d) => (d ? new Date(d).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long' }) : '');
+const dayText = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long', year: 'numeric' }) : '');
 const compact = (n) => (n >= 1e7 ? `${(n / 1e7).toFixed(1)} crore` : n >= 1e5 ? `${(n / 1e5).toFixed(1)} lakh` : num(n));
 
 /**
@@ -592,9 +607,9 @@ const templateProse = (event, s) => {
         attention.push({ title: `Leading narrative: ${topNarr[0].label}`, detail: `${num(topNarr[0].count)} posts (${topNarr[0].pct}%), trend ${topNarr[0].trend}, mostly on ${topNarr[0].platforms.map((p) => PLATFORM_NAME[p.platform]).slice(0, 2).join(' and ')}.`, severity: 'medium' });
     }
     attention.push({
-        title: 'Volume in the latest 24 hours',
-        detail: `${num(s.volume_change.last_24h)} posts in the last 24 hours of the period against ${num(s.volume_change.previous_24h)} in the 24 hours before; the busiest day was ${dayText(s.volume_change.peak_day)} (${num(s.volume_change.peak_posts)} posts). X search favours the newest posts, so part of a late rise is a sampling effect.`,
-        severity: s.volume_change.last_24h > s.volume_change.previous_24h * 1.5 ? 'medium' : 'low',
+        title: `Posts on ${dayText(s.volume_change.last_day)} compared with ${dayText(s.volume_change.prev_day)}`,
+        detail: `${num(s.volume_change.last_day_posts)} posts on ${dayText(s.volume_change.last_day)} against ${num(s.volume_change.prev_day_posts)} on ${dayText(s.volume_change.prev_day)}; the busiest day was ${dayText(s.volume_change.peak_day)} (${num(s.volume_change.peak_posts)} posts). X search favours the newest posts, so part of a late rise is a sampling effect.`,
+        severity: s.volume_change.last_day_posts > s.volume_change.prev_day_posts * 1.5 ? 'medium' : 'low',
     });
     if (negTarget && negTarget.negative) {
         const TARGET_TEXT = {
@@ -694,7 +709,7 @@ const buildReportData = async (event, { from = null, to = null } = {}) => {
 
     return {
         stats,
-        data: {
+        data: expandReport({
             version: 2,
             generated_at: new Date(),
             prose_source: source,
@@ -734,7 +749,7 @@ const buildReportData = async (event, { from = null, to = null } = {}) => {
             stats,
             methodology: METHODOLOGY,
             collection: { last_collected_at: event.last_collected_at, last_summary: event.last_collection_summary },
-        },
+        }),
     };
 };
 

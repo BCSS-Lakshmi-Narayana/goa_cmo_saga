@@ -1,8 +1,8 @@
 {
   "tenant_id": "gyanesh",
   "workspace": {
-    "name": "Gyanesh — Public Discussion Monitor",
-    "client_description": "Monitoring of public discussion concerning the Chief Election Commissioner of India"
+    "name": "Gyanesh Kumar, Chief Election Commissioner of India",
+    "client_description": "Public discussion monitoring"
   },
   "user": {
     "email": "gyanesh@blurasaga.com",
@@ -10,9 +10,9 @@
   },
   "events": [
     {
-      "name": "CJP 'Jail Bharo' protest against CEC Gyanesh Kumar — Shivaji Park, Mumbai",
-      "short_name": "CJP protests – CEC Gyanesh Kumar & ECI",
-      "description": "The Cockroach Janta Party (CJP), led by founder-convenor Abhijeet Dipke, held a 'Jail Bharo Andolan' at Shivaji Park, Dadar, Mumbai on 2 October 2026 (Gandhi Jayanti) demanding the resignation of Chief Election Commissioner Gyanesh Kumar and a halt to the Special Intensive Revision (SIR) of electoral rolls. Mumbai Police had refused permission. CJP has announced a further protest at Jantar Mantar, Delhi on 10 October if the CEC does not resign.",
+      "name": "Cockroach Janta Party 'Jail Bharo' protest against Chief Election Commissioner Gyanesh Kumar, Shivaji Park, Mumbai",
+      "short_name": "Gyanesh Kumar",
+      "description": "The Cockroach Janta Party, led by its founder and convenor Abhijeet Dipke, held a 'Jail Bharo' (court arrest) protest at Shivaji Park, Dadar, Mumbai on 2 October 2026 (Gandhi Jayanti). It demanded the resignation of Chief Election Commissioner Gyanesh Kumar and a halt to the Special Intensive Revision of electoral rolls. Mumbai Police had refused permission. The party has announced a further protest at Jantar Mantar, New Delhi on 10 October 2026 if the Chief Election Commissioner does not resign.",
       "start_date": "2026-10-02T10:30:00.000Z",
       "end_date": null,
       "location": "Shivaji Park, Dadar, Mumbai, Maharashtra",
@@ -30,9 +30,9 @@
       },
       "organisers": [
         {
-          "name": "Cockroach Janta Party (CJP)",
+          "name": "Cockroach Janta Party",
           "type": "organisation",
-          "role": "Organiser; satirical youth movement founded 16 May 2026, not registered with ECI",
+          "role": "Organiser; a satirical youth movement founded on 16 May 2026, not registered with the Election Commission of India",
           "aliases": [
             "CJP",
             "Cockroach Janata Party",
@@ -320,23 +320,23 @@
       "narratives": [
         {
           "key": "resignation_demand",
-          "label": "Demand for the CEC's resignation",
-          "description": "Calls for Gyanesh Kumar to resign or face action; slogans such as 'Go Gyanu Go'."
+          "label": "Demand for the Chief Election Commissioner's resignation",
+          "description": "Calls for Gyanesh Kumar to resign or face action, often through slogans such as 'Go Gyanu Go'."
         },
         {
           "key": "sir_voter_roll",
-          "label": "SIR and voter-roll deletion allegations",
-          "description": "Claims that the Special Intensive Revision removed eligible voters ('vote theft'), and defences of SIR."
+          "label": "Special Intensive Revision and voter-roll deletion allegations",
+          "description": "Claims that the Special Intensive Revision removed eligible voters, and defences of the revision."
         },
         {
           "key": "ec_internal_dissent",
-          "label": "Election Commissioners' objections and ECI response",
-          "description": "The reported objections by ECs Sandhu and Joshi, and ECI's statement that decisions were unanimous."
+          "label": "Election Commissioners' objections and the Election Commission's response",
+          "description": "The reported objections by Election Commissioners Sukhbir Singh Sandhu and Vivek Joshi, and the Commission's statement that its decisions were unanimous."
         },
         {
           "key": "policing_legal",
-          "label": "Permission denial, policing and legal action",
-          "description": "Refused permission, police deployment, detentions, the FIR, the NHRC notice, police notices to activists."
+          "label": "Permission refusals, policing and legal action",
+          "description": "Refused permission, police deployment, detentions, the First Information Report, the National Human Rights Commission notice and police notices to activists."
         },
         {
           "key": "celebrity_opposition_support",
@@ -345,28 +345,28 @@
         },
         {
           "key": "questioning_cjp",
-          "label": "Criticism of CJP and its motives",
-          "description": "Counter-narratives: 'political drama', the purported leaked meeting recording, foreign-funding claims, counter-protest."
+          "label": "Criticism of the Cockroach Janta Party and its motives",
+          "description": "Counter-narratives: 'political drama', the purported leaked meeting recording, foreign-funding claims and the counter-protest."
         },
         {
           "key": "oct10_mobilisation",
-          "label": "Mobilisation for 10 October Delhi protest",
-          "description": "Calls to join Jantar Mantar on 10 October ('Chalo Delhi')."
+          "label": "Mobilisation for the 10 October 2026 protest in New Delhi",
+          "description": "Calls to travel to Jantar Mantar, New Delhi on 10 October 2026."
         },
         {
           "key": "free_speech_media",
           "label": "Free speech, platform restrictions and journalists",
-          "description": "Withheld or restricted X posts/handles; journalists' harassment complaints in Delhi."
+          "description": "Withheld or restricted posts and accounts on X, and women journalists' harassment complaints in New Delhi."
         },
         {
           "key": "satire_memes",
           "label": "Satire, memes and slogans",
-          "description": "Humour and meme content about the CEC or the protest."
+          "description": "Humour and memes about the Chief Election Commissioner or the protest."
         },
         {
           "key": "misattributed_content",
           "label": "Misattributed or manipulated content",
-          "description": "Old or wrongly-captioned videos, AI-generated images, and fact-checks of them."
+          "description": "Old or wrongly captioned videos, AI-generated images, and fact-checks of them."
         }
       ],
       "facts": [
@@ -616,7 +616,7 @@
       "watch_items": [
         {
           "date": "2026-10-10T00:00:00.000Z",
-          "description": "CJP's announced protest at Jantar Mantar, Delhi. No report yet of Delhi Police granting or refusing permission.",
+          "description": "The Cockroach Janta Party's announced protest at Jantar Mantar, New Delhi. No report yet of Delhi Police granting or refusing permission.",
           "status": "verified",
           "sources": [
             "https://theprint.in/india/fresh-protest-at-jantar-mantar-on-october-10-if-cec-kumar-didnt-resign-cjp-leader-dipke/3060648/",
@@ -625,7 +625,7 @@
         },
         {
           "date": "2026-10-10T00:00:00.000Z",
-          "description": "NHRC's one-week deadline for reports on the alleged use of minors at the Mumbai protest falls around this date.",
+          "description": "The National Human Rights Commission's one-week deadline for reports on the alleged use of minors at the Mumbai protest falls around this date.",
           "status": "single_source",
           "sources": [
             "https://dailypioneer.com/news/slug-lite/nhrc-seeks-reports-over-alleged-use-of-minors-at-cjp-mumbai-protest?year=2026"
