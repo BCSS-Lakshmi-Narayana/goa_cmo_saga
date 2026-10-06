@@ -60,7 +60,7 @@ const Tiles = ({ items }) => (
   <div className="grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-0 border-t-4 border-indigo-500 bg-slate-50 rounded-b">
     {items.map(([value, label], i) => (
       <div key={i} className="px-3 py-3 border-r last:border-r-0 border-white">
-        <div className="text-[22px] leading-tight font-bold text-[#1e3a5f] truncate">{value}</div>
+        <div className={`${String(value).length > 11 ? 'text-[15px] break-all' : 'text-[22px] truncate'} leading-tight font-bold text-[#1e3a5f]`}>{value}</div>
         <div className="text-[10px] font-semibold tracking-wide text-slate-500 uppercase">{label}</div>
       </div>
     ))}
