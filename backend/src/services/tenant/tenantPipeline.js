@@ -33,7 +33,7 @@ const runEventPipeline = async (tenantId, eventId, { generatedBy = null, platfor
         }
 
         state.stage = 'classifying';
-        state.classification = await classifyEvent(event);
+        state.classification = await classifyEvent(event, { onProgress: (c) => { state.progress = { ...c }; } });
 
         state.stage = 'reporting';
         event = await load();

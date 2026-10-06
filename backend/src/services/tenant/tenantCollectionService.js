@@ -2,10 +2,17 @@
  * Collects public X, Facebook and Instagram posts for a tenant event into
  * tenant_posts, using the deployment's existing provider clients.
  *
- *   X         — search queries (Top + Latest), one page each
- *   Facebook  — post search queries
+ *   X         — search queries (Top, plus paginated Latest)
+ *   Facebook  — post search queries, and recent posts of listed public pages
+ *               (kept only if they mention the event)
  *   Instagram — recent posts of the event's listed accounts (the provider has
  *               no hashtag search), kept only if they mention the event
+ *   YouTube   — video search in the event window, plus comments on the most
+ *               viewed relevant videos
+ *   Reddit    — public search
+ *   Telegram  — global search of public channels; only inside the running
+ *               backend, which owns the Telegram session (a second connection
+ *               from a script would invalidate it)
  *
  * Only what a provider returns is stored; a missing timestamp or metric stays
  * null. Posts are de-duplicated on (tenant, event, platform, post id), and
@@ -16,6 +23,8 @@ const TenantPost = require('../../models/tenant/TenantPost');
 const xService = require('../rapidApiXService');
 const fbService = require('../rapidApiFacebookService');
 const igService = require('../rapidApiInstagramService');
+const blugate = require('../blugateClient');
+const redditService = require('../redditService');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
@@ -247,6 +256,228 @@ const collectInstagram = async (accounts, since, mentionsEvent) => {
     return out;
 };
 
+
+// ── Facebook pages ───────────────────────────────────────────────────
+
+const collectFacebookPages = async (pages, since, mentionsEvent) => {
+    const out = [];
+    for (const page of pages) {
+        const posts = (await withRetry(
+            () => fbService.fetchPagePosts(page, 40, null, { throwOnCooldown: true }),
+            (r) => !Array.isArray(r),
+            2,
+        )) || [];
+        posts.forEach((p) => {
+            if (!p.id || !mentionsEvent(p.text)) return;
+            const published = validDate(p.created_at);
+            if (since && published && published < since) return;
+            out.push({
+                query: `page:${page}`,
+                post: {
+                    platform: 'facebook',
+                    platform_post_id: String(p.id),
+                    url: p.url || null,
+                    author_name: p.author_name || null,
+                    author_handle: p.author_id ? String(p.author_id) : null,
+                    published_at: published,
+                    text: p.text || '',
+                    hashtags: extractHashtags(p.text),
+                    mentions: extractMentions(p.text),
+                    media: (p.media || []).map((m) => ({ kind: null, url: typeof m === 'string' ? m : (m?.url || null) })),
+                    post_type: 'original',
+                    metrics: {
+                        likes: toNum(p.engagement?.likes),
+                        comments: toNum(p.engagement?.comments),
+                        shares: toNum(p.engagement?.shares),
+                        views: toNum(p.engagement?.views) || null,
+                    },
+                    collected_via: 'facebook_page',
+                },
+            });
+        });
+    }
+    return out;
+};
+
+// ── YouTube ──────────────────────────────────────────────────────────
+
+const ytGet = async (resource, params) => (await blugate.get('youtube', resource, params)).data;
+
+const ytVideoPost = (v) => {
+    const sn = v.snippet || {};
+    const st = v.statistics || {};
+    const text = `${sn.title || ''}\n\n${String(sn.description || '').slice(0, 1500)}`.trim();
+    return {
+        platform: 'youtube',
+        platform_post_id: String(v.id),
+        url: `https://www.youtube.com/watch?v=${v.id}`,
+        author_name: sn.channelTitle || null,
+        author_handle: sn.channelId || null,
+        published_at: validDate(sn.publishedAt),
+        text,
+        hashtags: extractHashtags(text),
+        mentions: [],
+        media: [{ kind: 'video', url: sn.thumbnails?.high?.url || sn.thumbnails?.default?.url || null }],
+        language: sn.defaultAudioLanguage || sn.defaultLanguage || null,
+        post_type: 'original',
+        metrics: {
+            likes: toNum(st.likeCount),
+            comments: toNum(st.commentCount),
+            shares: null,
+            views: toNum(st.viewCount),
+        },
+        collected_via: 'youtube_search',
+    };
+};
+
+const collectYouTube = async (queries, since, commentVideos, mentionsEvent) => {
+    const out = [];
+    const videos = new Map();
+    for (const q of queries) {
+        try {
+            const search = await ytGet('search', {
+                part: 'snippet', q, type: 'video', maxResults: 50, order: 'relevance',
+                publishedAfter: since ? new Date(since).toISOString() : undefined,
+            });
+            const ids = (search.items || []).map((i) => i.id?.videoId).filter(Boolean).filter((id) => !videos.has(id));
+            for (let i = 0; i < ids.length; i += 50) {
+                const details = await ytGet('videos', { part: 'snippet,statistics', id: ids.slice(i, i + 50).join(',') });
+                (details.items || []).forEach((v) => {
+                    const post = ytVideoPost(v);
+                    videos.set(v.id, post);
+                    out.push({ query: q, post });
+                });
+            }
+        } catch (err) {
+            console.warn(`[tenantCollect] YouTube search failed for "${q}": ${err.message}`);
+        }
+    }
+
+    // Comments on the most-viewed videos that are actually about the event.
+    const top = [...videos.values()]
+        .filter((v) => mentionsEvent(v.text))
+        .sort((a, b) => (b.metrics.views || 0) - (a.metrics.views || 0))
+        .slice(0, commentVideos);
+    for (const video of top) {
+        try {
+            const res = await ytGet('commentThreads', {
+                part: 'snippet', videoId: video.platform_post_id, maxResults: 100, order: 'relevance', textFormat: 'plainText',
+            });
+            (res.items || []).forEach((item) => {
+                const c = item.snippet?.topLevelComment?.snippet;
+                if (!c) return;
+                out.push({
+                    query: `comments:${video.platform_post_id}`,
+                    post: {
+                        platform: 'youtube',
+                        platform_post_id: String(item.id),
+                        url: `https://www.youtube.com/watch?v=${video.platform_post_id}&lc=${item.id}`,
+                        author_name: c.authorDisplayName || null,
+                        author_handle: c.authorChannelId?.value || null,
+                        published_at: validDate(c.publishedAt),
+                        text: c.textOriginal || c.textDisplay || '',
+                        hashtags: extractHashtags(c.textOriginal || c.textDisplay),
+                        mentions: [],
+                        post_type: 'comment',
+                        parent_post_id: video.platform_post_id,
+                        parent_title: video.text.split('\n')[0].slice(0, 200),
+                        metrics: { likes: toNum(c.likeCount), comments: toNum(item.snippet?.totalReplyCount), shares: null, views: null },
+                        collected_via: 'youtube_comments',
+                    },
+                });
+            });
+        } catch (err) {
+            // Comments disabled or quota: skip this video.
+            console.warn(`[tenantCollect] YouTube comments skipped for ${video.platform_post_id}: ${err.response?.status || err.message}`);
+        }
+    }
+    return out;
+};
+
+// ── Reddit ───────────────────────────────────────────────────────────
+
+const collectReddit = async (queries) => {
+    const out = [];
+    for (const q of queries) {
+        const posts = await redditService.searchPosts(q);
+        posts.forEach((p) => {
+            if (!p.id) return;
+            out.push({
+                query: q,
+                post: {
+                    platform: 'reddit',
+                    platform_post_id: String(p.id),
+                    url: p.url || null,
+                    author_name: p.author || null,
+                    author_handle: p.author_handle || null,
+                    published_at: validDate(p.created_at),
+                    text: p.text || '',
+                    hashtags: extractHashtags(p.text),
+                    mentions: [],
+                    post_type: 'original',
+                    metrics: { likes: toNum(p.metrics?.likes), comments: toNum(p.metrics?.comments), shares: null, views: toNum(p.metrics?.views) || null },
+                    collected_via: 'reddit_search',
+                },
+            });
+        });
+        await sleep(2000); // Reddit's public JSON is strict about bursts
+    }
+    return out;
+};
+
+// ── Telegram ─────────────────────────────────────────────────────────
+
+const collectTelegram = async (queries, since) => {
+    // Loaded lazily: requiring it opens nothing, but getClient() does.
+    const { getClient } = require('../telegramService');
+    const { Api } = require('telegram');
+    const client = await getClient();
+    const out = [];
+    for (const q of queries) {
+        try {
+            const res = await client.invoke(new Api.messages.SearchGlobal({
+                q,
+                filter: new Api.InputMessagesFilterEmpty(),
+                minDate: since ? Math.floor(new Date(since).getTime() / 1000) : 0,
+                maxDate: 0,
+                offsetRate: 0,
+                offsetPeer: new Api.InputPeerEmpty(),
+                offsetId: 0,
+                limit: 100,
+                broadcastsOnly: true, // public channels only, never private chats
+            }));
+            const chats = new Map((res.chats || []).map((c) => [String(c.id), c]));
+            (res.messages || []).forEach((m) => {
+                const channelId = String(m.peerId?.channelId || '');
+                const chat = chats.get(channelId);
+                if (!chat || !chat.username || !m.message) return; // public channels with a username only
+                out.push({
+                    query: q,
+                    post: {
+                        platform: 'telegram',
+                        platform_post_id: `${channelId}_${m.id}`,
+                        url: `https://t.me/${chat.username}/${m.id}`,
+                        author_name: chat.title || null,
+                        author_handle: chat.username,
+                        author_followers: toNum(chat.participantsCount),
+                        published_at: validDate(m.date),
+                        text: m.message,
+                        hashtags: extractHashtags(m.message),
+                        mentions: extractMentions(m.message),
+                        post_type: m.fwdFrom ? 'repost' : 'original',
+                        metrics: { likes: null, comments: toNum(m.replies?.replies), shares: toNum(m.forwards), views: toNum(m.views) },
+                        collected_via: 'telegram_search',
+                    },
+                });
+            });
+        } catch (err) {
+            console.warn(`[tenantCollect] Telegram search failed for "${q}": ${err.message}`);
+        }
+        await sleep(1500);
+    }
+    return out;
+};
+
 // ── Orchestration ────────────────────────────────────────────────────
 
 const buildMentionMatcher = (event) => {
@@ -263,15 +494,24 @@ const buildMentionMatcher = (event) => {
  * Collect for one event. Returns a per-platform summary; never throws for a
  * single provider failure — that platform is reported as failed instead.
  */
-const collectForEvent = async (event, { platforms = ['x', 'facebook', 'instagram'] } = {}) => {
+const ALL_PLATFORMS = ['x', 'youtube', 'facebook', 'instagram', 'reddit', 'telegram'];
+
+const collectForEvent = async (event, { platforms = ALL_PLATFORMS } = {}) => {
     const plan = event.collection_plan || {};
     const since = plan.since || event.start_date || null;
     const summary = { started_at: new Date(), platforms: {} };
+    const mentionsEvent = buildMentionMatcher(event);
 
     const runners = {
         x: () => collectX(plan.x_queries || [], since),
-        facebook: () => collectFacebook(plan.facebook_queries || []),
-        instagram: () => collectInstagram(plan.instagram_accounts || [], since, buildMentionMatcher(event)),
+        facebook: async () => [
+            ...(await collectFacebook(plan.facebook_queries || [])),
+            ...(await collectFacebookPages(plan.facebook_pages || [], since, mentionsEvent)),
+        ],
+        instagram: () => collectInstagram(plan.instagram_accounts || [], since, mentionsEvent),
+        youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent),
+        reddit: () => collectReddit(plan.reddit_queries || []),
+        telegram: () => collectTelegram(plan.telegram_queries || [], since),
     };
 
     for (const platform of platforms) {
@@ -313,4 +553,4 @@ const collectForEvent = async (event, { platforms = ['x', 'facebook', 'instagram
     return summary;
 };
 
-module.exports = { collectForEvent, fromTweet, extractHashtags };
+module.exports = { collectForEvent, fromTweet, extractHashtags, ALL_PLATFORMS };

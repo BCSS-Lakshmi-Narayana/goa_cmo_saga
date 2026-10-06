@@ -1596,6 +1596,7 @@ const runSyncCycle = async (force = false) => {
 };
 
 module.exports = {
+    getClient,
     sendCode,
     signIn,
     checkStatus,

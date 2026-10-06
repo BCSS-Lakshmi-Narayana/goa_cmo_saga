@@ -229,6 +229,52 @@
           "wionews",
           "aljazeeraenglish",
           "outlookindia"
+        ],
+        "youtube_queries": [
+          "Cockroach Janta Party protest",
+          "CJP Gyanesh Kumar",
+          "Abhijeet Dipke",
+          "Gyanesh Kumar resign protest",
+          "Shivaji Park CJP protest",
+          "Jantar Mantar CJP",
+          "कॉकरोच जनता पार्टी",
+          "ज्ञानेश कुमार इस्तीफा",
+          "Go Gyanu Go"
+        ],
+        "youtube_comment_videos": 15,
+        "reddit_queries": [
+          "Cockroach Janta Party",
+          "Gyanesh Kumar",
+          "Abhijeet Dipke",
+          "CJP Shivaji Park",
+          "CJP Jantar Mantar"
+        ],
+        "telegram_queries": [
+          "Cockroach Janta Party",
+          "Gyanesh Kumar",
+          "Abhijeet Dipke",
+          "कॉकरोच जनता पार्टी",
+          "ज्ञानेश कुमार"
+        ],
+        "facebook_pages": [
+          "https://www.facebook.com/TimesNow",
+          "https://www.facebook.com/abplive",
+          "https://www.facebook.com/thehindu",
+          "https://www.facebook.com/IndiaToday",
+          "https://www.facebook.com/ndtv",
+          "https://www.facebook.com/ThePrintIndia",
+          "https://www.facebook.com/FreePressJournal",
+          "https://www.facebook.com/TheQuint",
+          "https://www.facebook.com/OrganiserWeekly",
+          "https://www.facebook.com/RepublicWorld",
+          "https://www.facebook.com/HindustanTimes",
+          "https://www.facebook.com/IndianExpress",
+          "https://www.facebook.com/aajtak",
+          "https://www.facebook.com/abpnews",
+          "https://www.facebook.com/thelallantop",
+          "https://www.facebook.com/cnnnews18",
+          "https://www.facebook.com/SaamTVNews",
+          "https://www.facebook.com/LokmatNews"
         ]
       },
       "narratives": [

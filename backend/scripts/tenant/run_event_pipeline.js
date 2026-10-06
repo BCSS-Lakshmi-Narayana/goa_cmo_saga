@@ -2,14 +2,19 @@
  * Runs collect → classify → report for a tenant event from the command line.
  *
  *   node scripts/tenant/run_event_pipeline.js --tenant <id> --event "<name or id>" \
- *       [--platforms x,facebook,instagram] [--skip-collect] [--reclassify]
+ *       [--platforms x,youtube,facebook,instagram,reddit] [--skip-collect] [--skip-classify] \
+ *       [--skip-report] [--reclassify]
+ *
+ * Telegram is never collected from here: the running backend owns the Telegram
+ * session and a second connection would invalidate it. Use trigger_refresh.js,
+ * which runs the same pipeline inside the backend, to include Telegram.
  */
 
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
 
 const mongoose = require('mongoose');
 const TenantEvent = require('../../src/models/tenant/TenantEvent');
-const { collectForEvent } = require('../../src/services/tenant/tenantCollectionService');
+const { collectForEvent, ALL_PLATFORMS } = require('../../src/services/tenant/tenantCollectionService');
 const { classifyEvent } = require('../../src/services/tenant/tenantClassificationService');
 const { generateReport } = require('../../src/services/tenant/tenantReportService');
 
@@ -30,14 +35,23 @@ const main = async () => {
     if (!event) throw new Error('event not found');
 
     if (!flag('--skip-collect')) {
-        const platforms = arg('--platforms') ? arg('--platforms').split(',') : undefined;
-        const summary = await collectForEvent(event, platforms ? { platforms } : {});
+        const requested = arg('--platforms') ? arg('--platforms').split(',') : ALL_PLATFORMS;
+        if (requested.includes('telegram')) console.warn('telegram skipped: run trigger_refresh.js to collect it inside the backend');
+        const platforms = requested.filter((p) => p !== 'telegram');
+        const summary = await collectForEvent(event, { platforms });
         await TenantEvent.updateOne({ tenant_id: tenantId, id: event.id },
             { $set: { last_collected_at: new Date(), last_collection_summary: summary } });
         console.log('collection:', JSON.stringify(summary.platforms));
     }
     if (!flag('--skip-classify')) {
-        console.log('classification:', await classifyEvent(event, { reclassify: flag('--reclassify') }));
+        let last = 0;
+        const counts = await classifyEvent(event, {
+            reclassify: flag('--reclassify'),
+            onProgress: (c) => {
+                if (c.done + c.failed - last >= 30) { last = c.done + c.failed; console.log(`  classified ${last}/${c.total} (${c.failed} failed)`); }
+            },
+        });
+        console.log('classification:', counts);
     }
     if (!flag('--skip-report')) {
         event = await load();
