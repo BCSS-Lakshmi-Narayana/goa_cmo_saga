@@ -26,7 +26,7 @@ const TARGET_TYPES = ['subject', 'election_commission', 'protest_organisers', 'p
 const ACTIVITY_TYPES = ['protest', 'rally_march', 'meeting', 'press_conference', 'detention_arrest', 'legal_action', 'announcement', 'none'];
 const RISK_BANDS = ['critical', 'high', 'medium', 'low'];
 
-const BATCH_SIZE = parseInt(process.env.TENANT_CLASSIFY_BATCH || '6', 10);
+const BATCH_SIZE = parseInt(process.env.TENANT_CLASSIFY_BATCH || '8', 10);
 
 const pick = (v, allowed, fallback) => (allowed.includes(v) ? v : fallback);
 
@@ -193,13 +193,45 @@ const classifyBatch = async (event, posts) => {
     return outcomes;
 };
 
+/**
+ * Video search returns many generic political videos. A video whose title and
+ * description name none of the event's terms is marked unrelated without an
+ * LLM call. (X results come from targeted queries and comments come only from
+ * videos that do mention the event, so neither is pre-filtered.)
+ */
+const prefilterUnrelated = async (event) => {
+    const terms = [...(event.keywords || []), ...(event.hashtags || [])]
+        .map((t) => String(t).toLowerCase().replace(/^#/, '').trim())
+        .filter((t) => t.length >= 5);
+    const candidates = await TenantPost.find({
+        tenant_id: event.tenant_id, event_id: event.id, platform: 'youtube', post_type: 'original',
+        'analysis.status': { $in: ['pending', 'failed'] },
+    }).select('_id text').lean();
+    const unrelated = candidates.filter((p) => !terms.some((t) => String(p.text || '').toLowerCase().includes(t)));
+    if (unrelated.length) {
+        await TenantPost.updateMany(
+            { tenant_id: event.tenant_id, event_id: event.id, _id: { $in: unrelated.map((p) => p._id) } },
+            { $set: {
+                'analysis.status': 'done', 'analysis.is_relevant': false, 'analysis.category': 'unrelated',
+                'analysis.risk_band': 'low', 'analysis.rationale': 'Pre-filter: title and description name none of the event terms',
+                'analysis.analysed_at': new Date(), 'analysis.error': null,
+            } },
+        );
+    }
+    return unrelated.length;
+};
+
 /** Classify an event's pending (and optionally failed / all) posts. */
-const classifyEvent = async (event, { retryFailed = true, concurrency = 2, reclassify = false, onProgress } = {}) => {
+const classifyEvent = async (event, { retryFailed = true, concurrency = parseInt(process.env.TENANT_CLASSIFY_CONCURRENCY || '3', 10), reclassify = false, onProgress } = {}) => {
+    const prefiltered = await prefilterUnrelated(event);
+    if (prefiltered) console.log(`[tenantClassify] pre-filtered ${prefiltered} unrelated videos`);
     const statuses = reclassify ? ['pending', 'failed', 'done'] : (retryFailed ? ['pending', 'failed'] : ['pending']);
     const posts = await TenantPost.find({
         tenant_id: event.tenant_id,
         event_id: event.id,
         'analysis.status': { $in: statuses },
+        // Never re-send pre-filtered rows on a reclassify.
+        'analysis.rationale': { $not: /^Pre-filter/ },
     }).sort({ engagement_total: -1 }).lean();
 
     const batches = [];

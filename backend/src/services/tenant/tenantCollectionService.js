@@ -325,6 +325,9 @@ const ytVideoPost = (v) => {
     };
 };
 
+// Top comments by relevance per video: enough to read the reaction without flooding the sample.
+const COMMENTS_PER_VIDEO = 40;
+
 const collectYouTube = async (queries, since, commentVideos, mentionsEvent) => {
     const out = [];
     const videos = new Map();
@@ -356,7 +359,7 @@ const collectYouTube = async (queries, since, commentVideos, mentionsEvent) => {
     for (const video of top) {
         try {
             const res = await ytGet('commentThreads', {
-                part: 'snippet', videoId: video.platform_post_id, maxResults: 100, order: 'relevance', textFormat: 'plainText',
+                part: 'snippet', videoId: video.platform_post_id, maxResults: COMMENTS_PER_VIDEO, order: 'relevance', textFormat: 'plainText',
             });
             (res.items || []).forEach((item) => {
                 const c = item.snippet?.topLevelComment?.snippet;
