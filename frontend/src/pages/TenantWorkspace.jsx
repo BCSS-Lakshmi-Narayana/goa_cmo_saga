@@ -12,14 +12,16 @@ import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card'
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import ReportBrief from './tenant/ReportBrief';
 
 /**
  * Workspace for tenant (non-Goa) users: their monitored events, the collected
  * posts and the executive report. Talks only to /api/tenant/*.
  */
 
-const PLATFORM_LABEL = { x: 'X', facebook: 'Facebook', instagram: 'Instagram' };
-const PLATFORM_COLOR = { x: '#111827', facebook: '#1d4ed8', instagram: '#c026d3' };
+const PLATFORM_LABEL = { x: 'X', youtube: 'YouTube', facebook: 'Facebook', instagram: 'Instagram', reddit: 'Reddit', telegram: 'Telegram' };
+const PLATFORM_COLOR = { x: '#111827', youtube: '#dc2626', facebook: '#1d4ed8', instagram: '#c026d3', reddit: '#ea580c', telegram: '#0284c7' };
+const BAND_CLS = { critical: 'bg-red-700 text-white', high: 'bg-orange-500 text-white', medium: 'bg-amber-200 text-amber-900', low: 'bg-slate-100 text-slate-600' };
 const CATEGORY_LABEL = {
   direct_protest_coverage: 'Direct protest coverage',
   reaction_support: 'Reaction / support',
@@ -377,7 +379,7 @@ const ReportView = ({ report }) => {
 /* ─────────────────────────────── Posts ─────────────────────────────── */
 
 const PostsView = ({ eventId, narratives }) => {
-  const [filters, setFilters] = useState({ platform: '', category: '', stance: '', narrative: '', sort: 'recent' });
+  const [filters, setFilters] = useState({ platform: '', category: '', stance: '', narrative: '', risk: '', sort: 'recent' });
   const [page, setPage] = useState(1);
   const [data, setData] = useState({ posts: [], total: 0 });
   const [loading, setLoading] = useState(false);
@@ -412,6 +414,9 @@ const PostsView = ({ eventId, narratives }) => {
         <select className={sel} value={filters.narrative} onChange={setF('narrative')}>
           <option value="">Any narrative</option>{(narratives || []).map((n) => <option key={n.key} value={n.key}>{n.label}</option>)}
         </select>
+        <select className={sel} value={filters.risk} onChange={setF('risk')}>
+          <option value="">Any risk band</option>{['critical', 'high', 'medium', 'low'].map((k) => <option key={k} value={k}>{k}</option>)}
+        </select>
         <select className={sel} value={filters.sort} onChange={setF('sort')}>
           <option value="recent">Newest first</option><option value="engagement">Most engagement</option>
         </select>
@@ -429,6 +434,7 @@ const PostsView = ({ eventId, narratives }) => {
                 {p.language && <span>lang: {p.language}</span>}
                 {p.url && <a href={p.url} target="_blank" rel="noreferrer" className="ml-auto text-blue-700 inline-flex items-center gap-1">open <ExternalLink className="h-3 w-3" /></a>}
               </div>
+              {p.parent_title && <div className="mt-1 text-xs text-slate-500">Comment on: {p.parent_title}</div>}
               <p className="mt-1 whitespace-pre-wrap text-slate-800">{p.text}</p>
               <div className="flex flex-wrap gap-1 mt-2 text-[11px]">
                 <Badge variant="secondary">{CATEGORY_LABEL[p.analysis?.category] || '—'}</Badge>
@@ -436,6 +442,11 @@ const PostsView = ({ eventId, narratives }) => {
                 <Badge variant="outline">toward protest: {p.analysis?.stance_toward_protest || '—'}</Badge>
                 <Badge variant="outline">tone: {p.analysis?.sentiment || '—'}</Badge>
                 {p.analysis?.target && <Badge variant="outline">about: {p.analysis.target}</Badge>}
+                {(p.analysis?.review?.risk_band || p.analysis?.risk_band) && (
+                  <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold uppercase ${BAND_CLS[p.analysis?.review?.risk_band || p.analysis.risk_band]}`}>
+                    risk: {p.analysis?.review?.risk_band || p.analysis.risk_band}{p.analysis?.review?.reviewed_at ? ' (reviewed)' : ''}
+                  </span>
+                )}
               </div>
               {(p.analysis?.claims || []).filter((c) => c.kind === 'allegation').length > 0 && (
                 <div className="mt-1 text-xs text-rose-700">Allegation (unverified): {p.analysis.claims.filter((c) => c.kind === 'allegation').map((c) => c.text).join('; ')}</div>
@@ -543,7 +554,7 @@ const TenantWorkspace = () => {
               <span className="text-xs text-slate-500">Last collected {fmtDate(event.last_collected_at)}</span>
               <Button size="sm" variant="outline" className="ml-auto" onClick={refresh} disabled={running}>
                 {running ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <RefreshCw className="h-4 w-4 mr-1" />}
-                {running ? `Updating (${detail.pipeline.stage})…` : 'Collect & refresh report'}
+                {running ? `Updating (${detail.pipeline.stage}${detail.pipeline.progress ? ` ${detail.pipeline.progress.done + detail.pipeline.progress.failed}/${detail.pipeline.progress.total}` : ''})…` : 'Collect & refresh report'}
               </Button>
             </div>
             <Tabs defaultValue="report">
@@ -552,7 +563,8 @@ const TenantWorkspace = () => {
                 <TabsTrigger value="posts"><MessageSquare className="h-4 w-4 mr-1" />Posts</TabsTrigger>
               </TabsList>
               <TabsContent value="report" className="bg-white rounded-lg p-4 md:p-6 print:p-0">
-                {report ? <ReportView report={report} /> : <p className="text-slate-600">No report yet. Use “Collect & refresh report”.</p>}
+                {!report ? <p className="text-slate-600">No report yet. Use “Collect & refresh report”.</p>
+                  : report.data?.version === 2 ? <ReportBrief report={report} workspace={workspace} /> : <ReportView report={report} />}
               </TabsContent>
               <TabsContent value="posts">
                 <PostsView eventId={eventId} narratives={narratives} />

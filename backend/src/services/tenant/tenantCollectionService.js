@@ -28,21 +28,23 @@ const redditService = require('../redditService');
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
-// The FB/IG providers share quota with the Goa jobs and rate-limit in bursts;
-// wait out the cooldown and try again rather than recording nothing.
-const PROVIDER_RETRY_WAIT_MS = parseInt(process.env.TENANT_PROVIDER_RETRY_WAIT_MS || '90000', 10);
-const withRetry = async (fn, isEmpty, attempts = 3) => {
-    let last = null;
-    for (let i = 0; i < attempts; i++) {
+// Providers rate-limit in bursts. Wait out a 429/cooldown and try again, but
+// never retry an empty answer or a hard refusal (403 "not subscribed", 404):
+// those will not change by waiting.
+const PROVIDER_RETRY_WAIT_MS = parseInt(process.env.TENANT_PROVIDER_RETRY_WAIT_MS || '60000', 10);
+const isRateLimit = (err) => err?.response?.status === 429 || /cooldown|rate.?limit|429/i.test(String(err?.code || err?.message || ''));
+const withRetry = async (fn, attempts = 3) => {
+    for (let i = 0; ; i++) {
         try {
-            last = await fn();
-            if (!isEmpty(last)) return last;
+            return await fn();
         } catch (err) {
-            console.warn(`[tenantCollect] provider error (attempt ${i + 1}): ${err.message}`);
+            if (!isRateLimit(err) || i >= attempts - 1) {
+                console.warn(`[tenantCollect] provider error: ${err.response?.status || ''} ${err.message}`);
+                return null;
+            }
+            await sleep(PROVIDER_RETRY_WAIT_MS);
         }
-        if (i < attempts - 1) await sleep(PROVIDER_RETRY_WAIT_MS);
     }
-    return last;
 };
 
 const toNum = (v) => {
@@ -170,10 +172,7 @@ const collectX = async (queries, since) => {
 const collectFacebook = async (queries) => {
     const out = [];
     for (const q of queries) {
-        const posts = (await withRetry(
-            () => fbService.searchPosts(q, undefined, { throwOnCooldown: true }),
-            (r) => !Array.isArray(r) || r.length === 0,
-        )) || [];
+        const posts = (await withRetry(() => fbService.searchPosts(q, undefined, { throwOnCooldown: true }))) || [];
         posts.forEach((p) => {
             if (!p.id) return;
             const metrics = {
@@ -242,7 +241,7 @@ const fromInstagram = (node, account) => {
 const collectInstagram = async (accounts, since, mentionsEvent) => {
     const out = [];
     for (const account of accounts) {
-        const raw = await withRetry(() => igService.fetchUserPosts(account), (r) => !r, 2);
+        const raw = await igService.fetchUserPosts(account);
         if (!raw) continue;
         const edges = raw.result?.edges || raw.edges || raw.items || (Array.isArray(raw) ? raw : []);
         for (const e of edges) {
@@ -262,11 +261,7 @@ const collectInstagram = async (accounts, since, mentionsEvent) => {
 const collectFacebookPages = async (pages, since, mentionsEvent) => {
     const out = [];
     for (const page of pages) {
-        const posts = (await withRetry(
-            () => fbService.fetchPagePosts(page, 40, null, { throwOnCooldown: true }),
-            (r) => !Array.isArray(r),
-            2,
-        )) || [];
+        const posts = (await withRetry(() => fbService.fetchPagePosts(page, 40, null, { throwOnCooldown: true }))) || [];
         posts.forEach((p) => {
             if (!p.id || !mentionsEvent(p.text)) return;
             const published = validDate(p.created_at);
@@ -514,8 +509,17 @@ const collectForEvent = async (event, { platforms = ALL_PLATFORMS } = {}) => {
         telegram: () => collectTelegram(plan.telegram_queries || [], since),
     };
 
+    const CREDENTIAL_PLATFORM = { x: 'twitter', facebook: 'facebook', instagram: 'instagram', youtube: 'youtube' };
     for (const platform of platforms) {
         const result = { fetched: 0, inserted: 0, updated: 0, skipped_before_window: 0, error: null };
+        if (CREDENTIAL_PLATFORM[platform] && !blugate.hasCredentials(CREDENTIAL_PLATFORM[platform])) {
+            summary.platforms[platform] = { ...result, error: 'no credentials configured' };
+            continue;
+        }
+        if (platform === 'telegram' && !(process.env.TELEGRAM_API_ID && process.env.TELEGRAM_API_HASH)) {
+            summary.platforms[platform] = { ...result, error: 'Telegram API ID/hash not configured on this deployment' };
+            continue;
+        }
         try {
             const items = await runners[platform]();
             result.fetched = items.length;

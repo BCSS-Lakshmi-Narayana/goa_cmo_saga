@@ -36,6 +36,8 @@ const narrativeSchema = new mongoose.Schema({
 const tenantEventSchema = new mongoose.Schema({
     id: { type: String, default: uuidv4, unique: true },
     name: { type: String, required: true },
+    // Short title used on the brief's cover, e.g. "CJP – Gyanesh Kumar & ECI".
+    short_name: { type: String, default: null },
     description: { type: String, default: '' },
     start_date: { type: Date, required: true },
     end_date: { type: Date, default: null },

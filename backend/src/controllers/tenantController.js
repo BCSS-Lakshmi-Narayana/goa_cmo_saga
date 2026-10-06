@@ -52,9 +52,13 @@ const listPosts = async (req, res) => {
     if (!event) return res.status(404).json({ message: 'Event not found' });
 
     const filter = { tenant_id: req.tenantId, event_id: event.id };
-    const { platform, category, stance, narrative, post_type: postType, q } = req.query;
+    const { platform, category, stance, narrative, risk, post_type: postType, q } = req.query;
     if (req.query.include_unrelated !== 'true') filter['analysis.is_relevant'] = true;
-    if (['x', 'facebook', 'instagram'].includes(platform)) filter.platform = platform;
+    if (['x', 'youtube', 'facebook', 'instagram', 'reddit', 'telegram'].includes(platform)) filter.platform = platform;
+    // The analyst's band wins over the model's.
+    if (['critical', 'high', 'medium', 'low'].includes(risk)) {
+        filter.$or = [{ 'analysis.review.risk_band': risk }, { 'analysis.review.risk_band': null, 'analysis.risk_band': risk }];
+    }
     if (category) filter['analysis.category'] = String(category);
     if (stance) filter['analysis.stance_toward_subject'] = String(stance);
     if (narrative) filter['analysis.narratives'] = String(narrative);
