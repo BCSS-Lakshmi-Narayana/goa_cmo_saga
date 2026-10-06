@@ -8,7 +8,7 @@ const fmtDate = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asi
 const TONES = [['positive', '#16a34a'], ['negative', '#dc2626'], ['neutral', '#475569']];
 
 /** Appendix: every relevant post in the period, grouped by tone, with links and footage. */
-const PostsAppendix = ({ posts }) => (
+export const PostsAppendix = ({ posts }) => (
   <section style={{ breakBefore: 'page' }} className="max-w-[900px] mx-auto text-slate-900">
     <h2 className="mt-2 mb-1 pb-1 border-b-2 border-[#1e3a5f] text-[17px] font-bold text-[#1e3a5f]">Appendix — all posts in the period</h2>
     <p className="text-[11px] text-slate-600 mb-3">
