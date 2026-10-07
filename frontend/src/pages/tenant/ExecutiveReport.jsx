@@ -118,15 +118,46 @@ const ExecutiveReport = ({ report }) => {
   const factCount = (k) => facts.filter((f) => f.status === k).length;
   const openClaims = facts.filter((f) => f.status !== 'verified');
   const upcoming = (d.attention || []).filter((a) => /^Upcoming/i.test(a.title));
+  // Recommended actions: three groups, each led by points computed from this period's data,
+  // followed by the analyst's specific items.
   const recs = d.recommendations || {};
-  const REC_TITLES = [
-    ['fact_check', 'Fact-check priorities'],
-    ['clarifications', 'Clarifications the Commission could issue'],
-    ['communication', 'Communication'],
-    ['information_gaps', 'Information gaps to close'],
-    ['monitoring', 'Monitoring'],
-    ['safety', 'Safety and security'],
-  ].filter(([k]) => (recs[k] || []).length);
+  const topPlatforms = listJoin([...platforms].sort((a, b) => (b.engagement || 0) - (a.engagement || 0)).slice(0, 2).map((p) => PLATFORM_LABEL[p.platform] || p.platform));
+  const REC_GROUPS = [
+    {
+      key: 'fact_check',
+      title: 'Claims to verify and answer, highest reach first',
+      items: [
+        // Claims made in the same post share its engagement: list them together.
+        ...Object.values((s.allegations || []).reduce((acc, a) => {
+          const k = `${a.platform}:${a.engagement}`;
+          (acc[k] = acc[k] || { ...a, texts: [] }).texts.push(`“${a.text}”`);
+          return acc;
+        }, {})).slice(0, 3).map((a) => `${listJoin(a.texts)} — ${fmtBig(a.engagement)} engagements on ${PLATFORM_LABEL[a.platform] || a.platform}. Check ${a.texts.length > 1 ? 'each' : 'it'} against the official record and publish the finding if ${a.texts.length > 1 ? 'any is' : 'it is'} wrong.`),
+        ...(recs.fact_check || []).map((x) => `Check ${lcFirst(x)}`),
+      ],
+    },
+    {
+      key: 'communication',
+      title: 'Communication approach',
+      items: [
+        leading.length && `Address the issues behind most criticism of ${name} first: ${listJoin(leading.slice(0, 2).map((n) => `${lcFirst(n.label)}${n.critical_share !== undefined ? ` (in ${pctTxt(n.critical_share)} of critical posts)` : ''}`))}.`,
+        `Respond where the discussion is: ${topPlatforms} carry the most engagement${influencers[0] ? `, and the most influential voice is ${influencers[0].name || influencers[0].handle}` : ''}. Official responses on these platforms reach the audience that is engaging.`,
+        next && `Put factual material out before ${nextLabel}, while attention is highest; volume on ${fmtDay(peak?.day)} was about ${multiple}× a normal day.`,
+        ...(recs.communication || []),
+      ].filter(Boolean),
+    },
+    {
+      key: 'monitoring',
+      title: 'What to watch next',
+      items: [
+        next && `${nextLabel}: ${nextWhat}. ${fmt(next.mobilisation_posts)} posts mobilise for it, ${fmt(next.recent_posts)} of them in the last two days.`,
+        `Explicit threats: ${fmt(band('critical').count)} so far${ex.threats ? ` (${fmt(ex.threats.at_subject)} at ${name} or the Commission)` : ''}; escalate any that name a date, a place or a home address.`,
+        ex.information?.misattributed_media ? `Manipulated or misattributed media: ${fmt(ex.information.misattributed_media)} posts so far; flag new items early, before they spread.` : null,
+        ...(recs.monitoring || []).filter((x) => !(next && x.includes(nextLabel) && /protest/i.test(x))
+          && !(ex.information?.misattributed_media && /misattributed|AI-generated/i.test(x))),
+      ].filter(Boolean),
+    },
+  ].filter((g) => g.items.length);
 
   const assessment = [
     ['Conversation intensity', intensity],
@@ -432,18 +463,16 @@ const ExecutiveReport = ({ report }) => {
       </div>
 
       {/* 10 */}
-      {REC_TITLES.length > 0 && (
+      {REC_GROUPS.length > 0 && (
         <>
           <H2 n={10}>Recommended actions</H2>
           <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>Considerations drawn from the monitored conversation; they are for the decision-maker's judgement, not instructions.</p>
-          <div className="grid grid-cols-2 gap-x-6">
-            {REC_TITLES.map(([k, title]) => (
-              <div key={k} style={{ breakInside: 'avoid' }}>
-                <H3>{title}</H3>
-                <Bullets items={recs[k]} />
-              </div>
-            ))}
-          </div>
+          {REC_GROUPS.map((g) => (
+            <div key={g.key} style={{ breakInside: 'avoid' }}>
+              <H3>{g.title}</H3>
+              <Bullets items={g.items} />
+            </div>
+          ))}
         </>
       )}
 
