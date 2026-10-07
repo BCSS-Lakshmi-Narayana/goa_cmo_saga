@@ -123,7 +123,7 @@ const ToneBar = ({ tone }) => {
  * Daily stacked tone bars (SVG, print-safe) with each day's negativity % above
  * the bar and a red dot under days that carry high/critical-risk posts.
  */
-const DailyToneChart = ({ rows: chronological }) => {
+export const DailyToneChart = ({ rows: chronological }) => {
   if (!chronological.length) return null;
   const rows = [...chronological].reverse(); // newest date first
   const W = 860; const H = 240; const padL = 36; const padB = 40; const padT = 26;

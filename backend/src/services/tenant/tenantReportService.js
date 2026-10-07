@@ -410,7 +410,11 @@ const computeStats = (event, all) => {
         const atSubject = crit.filter((p) => ['subject', 'election_commission'].includes(p.analysis.target_type)).length;
         const atOrganisers = crit.filter((p) => p.analysis.target_type === 'protest_organisers').length;
         const maxReach = crit.reduce((m, p) => Math.max(m, p.engagement_total || 0), 0);
-        exec.threats = { critical: crit.length, high: threats.length - crit.length, at_subject: atSubject, at_organisers: atOrganisers, max_engagement: maxReach };
+        exec.threats = {
+            critical: crit.length, high: threats.length - crit.length, at_subject: atSubject, at_organisers: atOrganisers, max_engagement: maxReach,
+            // The newest explicit threats, for the executive report's attention list.
+            rows: [...crit].sort(byDateDesc).slice(0, 12).map((p) => postRef(p)),
+        };
         keyIntel.push({
             key: 'threats',
             title: pct(crit.length, relevant.length) < 2
