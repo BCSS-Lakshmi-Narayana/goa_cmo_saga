@@ -23,6 +23,8 @@ const renderReportPdf = async ({ baseUrl, token, reportId, withPosts }) => {
     try {
         browser = await puppeteer.launch({
             headless: 'shell',
+            // A Chrome already on the host (e.g. Playwright's headless shell); else Puppeteer's own download.
+            executablePath: process.env.TENANT_PDF_CHROME_PATH || undefined,
             args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--font-render-hinting=none'],
         });
         const page = await browser.newPage();
