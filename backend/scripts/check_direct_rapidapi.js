@@ -14,7 +14,7 @@ const CHECKS = [
     ['twitter', 'get', 'search', { query: 'Election Commission', type: 'Latest', count: 5 }],
     ['facebook', 'get', 'search/posts', { query: 'Election Commission' }],
     ['facebook', 'get', 'page/page_id', { url: 'https://www.facebook.com/TimesNow' }],
-    ['instagram', 'post', 'api/instagram/posts', { username: 'theprintindia' }],
+    ['instagram', 'post', 'api/instagram/posts', { username: 'cockroachjantaparty' }],
     ['youtube', 'get', 'search', { part: 'snippet', q: 'Election Commission India', type: 'video', maxResults: 1 }],
 ];
 
