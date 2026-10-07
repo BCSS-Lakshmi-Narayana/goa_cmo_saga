@@ -19,11 +19,17 @@ const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const TenantPost = require('../../models/tenant/TenantPost');
 const { TONE_QUERY } = require('./tenantReportService');
 
-const APPENDIX_SLICE = parseInt(process.env.TENANT_PDF_SLICE || '600', 10);
-const MIN_FREE_MB_START = parseInt(process.env.TENANT_PDF_MIN_FREE_MB || '1200', 10);
-const MIN_FREE_MB_SLICE = Math.round(MIN_FREE_MB_START / 2);
+const os = require('os');
+const path = require('path');
 
-let busy = false;
+const APPENDIX_SLICE = parseInt(process.env.TENANT_PDF_SLICE || '600', 10);
+// Free memory needed (MB). Measured Chrome peaks: about 300 MB for the brief or executive report,
+// about 700 MB for a 600-post appendix slice.
+const MIN_FREE_MB_REPORT = parseInt(process.env.TENANT_PDF_MIN_FREE_MB || '600', 10);
+const MIN_FREE_MB_SLICE = parseInt(process.env.TENANT_PDF_MIN_FREE_MB_SLICE || '900', 10);
+// Jobs run in the background, so a render can wait a good while for memory to free up.
+const MEMORY_WAIT_MS = 10 * 60000;
+
 
 const httpError = (status, message) => Object.assign(new Error(message), { status });
 
@@ -37,14 +43,37 @@ const availableMb = () => {
     }
 };
 
-const ensureMemory = (minMb) => {
-    if (availableMb() < minMb) throw httpError(503, 'The server is busy right now. Please try the PDF again in a few minutes.');
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** Wait (up to a minute) for enough free memory; give up with a 503 only if it never comes. */
+const ensureMemory = async (minMb) => {
+    const deadline = Date.now() + MEMORY_WAIT_MS;
+    while (availableMb() < minMb) {
+        if (Date.now() > deadline) throw httpError(503, 'The server is busy right now. Please try the PDF again in a few minutes.');
+        await sleep(3000);
+    }
+};
+
+/**
+ * Chrome is started through a small wrapper that sets its out-of-memory score to the
+ * maximum, so if the shared server ever runs short the kernel stops the PDF renderer
+ * first, never another deployment. Children (renderers) inherit the score.
+ */
+let wrapperPath = null;
+const chromeWrapper = () => {
+    if (wrapperPath) return wrapperPath;
+    const target = process.env.TENANT_PDF_CHROME_PATH || puppeteer.executablePath();
+    if (process.platform !== 'linux' || !target) return target;
+    const file = path.join(os.tmpdir(), 'tenant-pdf-chrome.sh');
+    fs.writeFileSync(file, `#!/bin/sh\necho 1000 > /proc/self/oom_score_adj 2>/dev/null\nexec "${target}" "$@"\n`, { mode: 0o755 });
+    wrapperPath = file;
+    return file;
 };
 
 const launch = () => puppeteer.launch({
     headless: 'shell',
     // A Chrome already on the host (e.g. Playwright's headless shell); else Puppeteer's own download.
-    executablePath: process.env.TENANT_PDF_CHROME_PATH || undefined,
+    executablePath: chromeWrapper(),
     args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--font-render-hinting=none', '--js-flags=--max-old-space-size=512'],
 });
 
@@ -106,11 +135,9 @@ const toneCounts = async (report) => {
 };
 
 const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = false }) => {
-    if (busy) throw httpError(429, 'Another PDF is being prepared. Please try again in a minute.');
-    ensureMemory(MIN_FREE_MB_START);
-    busy = true;
-    try {
+    {
         const printUrl = (extra = '') => `${baseUrl}/workspace/print/${encodeURIComponent(report.id)}?pdf=1${extra}`;
+        await ensureMemory(MIN_FREE_MB_REPORT);
         const parts = [await printPage(printUrl(executive ? '&format=executive' : ''), token, 120000)];
 
         if (withPosts) {
@@ -119,7 +146,7 @@ const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = 
             let first = true;
             for (const tone of ['positive', 'negative', 'neutral']) {
                 for (let skip = 0; skip < counts[tone]; skip += APPENDIX_SLICE) {
-                    ensureMemory(MIN_FREE_MB_SLICE);
+                    await ensureMemory(MIN_FREE_MB_SLICE);
                     const params = new URLSearchParams({
                         appendix: '1', tone, skip: String(skip), limit: String(APPENDIX_SLICE),
                         tone_total: String(counts[tone]), total: String(total), intro: first ? '1' : '0',
@@ -130,9 +157,54 @@ const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = 
             }
         }
         return await joinAndNumber(parts);
-    } finally {
-        busy = false;
     }
 };
 
-module.exports = { renderReportPdf };
+// ── Background jobs ──────────────────────────────────────────────────
+// A PDF (especially with every post) takes minutes, longer than a request should stay
+// open, so downloads are jobs: queued, rendered one at a time, then fetched by id.
+
+const crypto = require('crypto');
+
+const JOB_TTL_MS = 30 * 60000;
+const jobs = new Map(); // id → { id, tenant_id, user_id, status, name, file, error, created_at }
+let queue = Promise.resolve();
+
+const cleanupJobs = () => {
+    const cutoff = Date.now() - JOB_TTL_MS;
+    for (const [id, job] of jobs) {
+        if (job.created_at < cutoff && job.status !== 'running' && job.status !== 'queued') {
+            if (job.file) fs.promises.unlink(job.file).catch(() => {});
+            jobs.delete(id);
+        }
+    }
+};
+
+/** Queue a PDF render; returns the job (poll getJob, then read job.file when status is 'ready'). */
+const startPdfJob = ({ tenantId, userId, name, ...opts }) => {
+    cleanupJobs();
+    const job = { id: crypto.randomUUID(), tenant_id: tenantId, user_id: userId, status: 'queued', name, file: null, error: null, created_at: Date.now() };
+    jobs.set(job.id, job);
+    queue = queue.then(async () => {
+        job.status = 'running';
+        try {
+            const pdf = await renderReportPdf(opts);
+            job.file = path.join(os.tmpdir(), `tenant-pdf-${job.id}.pdf`);
+            await fs.promises.writeFile(job.file, pdf);
+            job.status = 'ready';
+        } catch (err) {
+            console.error('[tenant] PDF job failed:', err.message);
+            job.status = 'failed';
+            job.error = err.status ? err.message : 'Could not prepare the PDF';
+        }
+    });
+    return job;
+};
+
+/** A job, only for the tenant that created it. */
+const getJob = (tenantId, id) => {
+    const job = jobs.get(id);
+    return job && job.tenant_id === tenantId ? job : null;
+};
+
+module.exports = { renderReportPdf, startPdfJob, getJob };

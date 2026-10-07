@@ -8,7 +8,7 @@ const TenantWorkspace = require('../models/tenant/TenantWorkspace');
 const TenantEvent = require('../models/tenant/TenantEvent');
 const TenantPost = require('../models/tenant/TenantPost');
 const TenantReport = require('../models/tenant/TenantReport');
-const { renderReportPdf } = require('../services/tenant/tenantPdfService');
+const { startPdfJob, getJob } = require('../services/tenant/tenantPdfService');
 const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
@@ -108,8 +108,12 @@ const getReport = async (req, res) => {
 
 const istDate = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : null);
 
-/** GET /reports/:reportId/pdf?posts=1 — the brief (optionally with every post) as a PDF file. */
-const downloadReportPdf = async (req, res) => {
+/**
+ * POST /reports/:reportId/pdf {posts?, format?} — queue the report as a PDF file
+ * (format "executive" or the detailed brief, optionally with every post). The
+ * render runs in the background; poll GET /pdf-jobs/:jobId, then fetch /file.
+ */
+const startReportPdf = async (req, res) => {
     const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId })
         .select('id tenant_id event_id title status range_from range_to period_start period_end').lean();
     if (!report) return res.status(404).json({ message: 'Report not found' });
@@ -118,20 +122,32 @@ const downloadReportPdf = async (req, res) => {
     const baseUrl = process.env.TENANT_PRINT_BASE_URL;
     if (!baseUrl) return res.status(503).json({ message: 'PDF download is not configured' });
     const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || req.query.token;
-    const withPosts = req.query.posts === '1';
-    const executive = req.query.format === 'executive';
-    try {
-        const pdf = await renderReportPdf({ baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts, executive });
-        const name = `${String(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}`
-            + `_${istDate(report.range_from || report.period_start) || 'start'}_to_${istDate(report.range_to || report.period_end) || 'latest'}`
-            + `${executive ? '_executive' : ''}${withPosts ? '_with_posts' : ''}.pdf`;
-        await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts, format: executive ? 'executive' : 'detailed' });
-        res.set({ 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${name}"`, 'Cache-Control': 'no-store' });
-        res.send(Buffer.from(pdf));
-    } catch (err) {
-        console.error('[tenant] PDF failed:', err.message);
-        res.status(err.status || 500).json({ message: err.status ? err.message : 'Could not prepare the PDF' });
-    }
+    const withPosts = Boolean(req.body?.posts);
+    const executive = req.body?.format === 'executive';
+    const name = `${String(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}`
+        + `_${istDate(report.range_from || report.period_start) || 'start'}_to_${istDate(report.range_to || report.period_end) || 'latest'}`
+        + `${executive ? '_executive' : ''}${withPosts ? '_with_posts' : ''}.pdf`;
+    const job = startPdfJob({
+        tenantId: req.tenantId, userId: req.user.id, name,
+        baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts, executive,
+    });
+    await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts, format: executive ? 'executive' : 'detailed' });
+    res.status(202).json({ job: { id: job.id, status: job.status } });
+};
+
+/** GET /pdf-jobs/:jobId — status of a queued PDF. */
+const getPdfJob = async (req, res) => {
+    const job = getJob(req.tenantId, req.params.jobId);
+    if (!job) return res.status(404).json({ message: 'Download not found or expired' });
+    res.json({ job: { id: job.id, status: job.status, error: job.error, name: job.name } });
+};
+
+/** GET /pdf-jobs/:jobId/file — the finished PDF. */
+const downloadPdfJob = async (req, res) => {
+    const job = getJob(req.tenantId, req.params.jobId);
+    if (!job || job.status !== 'ready' || !job.file) return res.status(404).json({ message: 'Download not found or expired' });
+    res.set({ 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${job.name}"`, 'Cache-Control': 'no-store' });
+    res.sendFile(job.file);
 };
 
 const parseDay = (value, endOfDay) => {
@@ -255,7 +271,9 @@ module.exports = {
     listReports: wrap(listReports),
     getLatestReport: wrap(getLatestReport),
     getReport: wrap(getReport),
-    downloadReportPdf: wrap(downloadReportPdf),
+    startReportPdf: wrap(startReportPdf),
+    getPdfJob: wrap(getPdfJob),
+    downloadPdfJob: wrap(downloadPdfJob),
     refreshEvent: wrap(refreshEvent),
     createReport: wrap(createReport),
     exportPosts: wrap(exportPosts),

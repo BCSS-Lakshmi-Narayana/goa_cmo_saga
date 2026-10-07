@@ -81,29 +81,36 @@ const ReportsPanel = ({ event, workspace }) => {
     }
   };
 
-  // The server renders the brief (optionally with every post appended) to a PDF file,
-  // so no browser print header or footer ends up in it.
+  // The server renders the PDF in the background (queued, one at a time); the page polls the
+  // job and downloads the finished file, so no browser print header or footer ends up in it.
   const downloadPdf = async (r, withPosts = false, executive = false) => {
     const key = `pdf${executive ? 'e' : ''}${withPosts ? 'p' : ''}${r.id}`;
     setBusy((b) => ({ ...b, [key]: true }));
     const note = toast.loading(withPosts ? 'Preparing PDF with all posts — this can take a few minutes…' : 'Preparing PDF…');
     try {
-      const params = { ...(withPosts ? { posts: 1 } : {}), ...(executive ? { format: 'executive' } : {}) };
-      const res = await api.get(`/tenant/reports/${r.id}/pdf`, { params, responseType: 'blob', timeout: 900000 });
-      const name = (res.headers['content-disposition'] || '').match(/filename="([^"]+)"/)?.[1] || 'report.pdf';
+      const { data } = await api.post(`/tenant/reports/${r.id}/pdf`, { posts: withPosts, format: executive ? 'executive' : 'detailed' });
+      let job = data.job;
+      const started = Date.now();
+      while (job.status === 'queued' || job.status === 'running') {
+        if (Date.now() - started > 30 * 60000) throw new Error('The PDF is taking too long. Please try again later.');
+        await new Promise((res) => setTimeout(res, 3000));
+        job = (await api.get(`/tenant/pdf-jobs/${job.id}`)).data.job;
+        if (job.status === 'queued') toast.loading('Waiting for another PDF to finish…', { id: note });
+        else if (job.status === 'running') toast.loading(withPosts ? 'Preparing PDF with all posts — this can take a few minutes…' : 'Preparing PDF…', { id: note });
+      }
+      if (job.status !== 'ready') throw new Error(job.error || 'Could not prepare the PDF');
+      const res = await api.get(`/tenant/pdf-jobs/${job.id}/file`, { responseType: 'blob', timeout: 300000 });
       const url = URL.createObjectURL(res.data);
       const a = document.createElement('a');
       a.href = url;
-      a.download = name;
+      a.download = job.name || 'report.pdf';
       document.body.appendChild(a);
       a.click();
       a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 60000);
       toast.success('PDF downloaded', { id: note });
     } catch (e) {
-      let message = 'Could not prepare the PDF';
-      try { message = JSON.parse(await e.response.data.text()).message || message; } catch (_) { /* not JSON */ }
-      toast.error(message, { id: note });
+      toast.error(e.response?.data?.message || e.message || 'Could not prepare the PDF', { id: note });
     } finally {
       setBusy((b) => ({ ...b, [key]: false }));
     }
