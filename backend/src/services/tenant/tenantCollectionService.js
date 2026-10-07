@@ -262,13 +262,30 @@ const collectFacebookPages = async (pages, since, mentionsEvent, pagesPerPage) =
 };
 
 // ── Instagram ────────────────────────────────────────────────────────
-// ig-downloader-api (same /api/instagram/* routes as before): POST /posts
-// {username, maxId} returns 12 posts per page under result.edges with
-// page_info.end_cursor for the next page.
+// ig-downloader-api has no search, so Instagram is collected from accounts:
+// each listed account's posts (12 a page, paged with maxId), its reels feed
+// and posts that tag it, then the comments on the event's posts and reels
+// (15 a page, newest first, paged with minId) — the bulk of the discussion.
 
-const igNode = (p) => p.node || p;
+const igNode = (p) => p.node?.media || p.node || p;
 
-const fromInstagram = (node, account) => {
+// Media ids carry their creation time (ms since 2011-08-24, above bit 23) and
+// shortcodes encode the id, so reels and tagged posts, which come without a
+// timestamp, still get a date.
+const IG_EPOCH_MS = 1314220021721n;
+const IG_B64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_';
+const igDateFromCode = (code) => {
+    if (!code) return null;
+    let n = 0n;
+    for (const ch of String(code).slice(0, 11)) {
+        const i = IG_B64.indexOf(ch);
+        if (i < 0) return null;
+        n = n * 64n + BigInt(i);
+    }
+    return validDate(Number((n >> 23n) + IG_EPOCH_MS));
+};
+
+const fromInstagram = (node, account, via = 'instagram_account') => {
     const code = node.shortcode || node.code || null;
     const caption = node.caption?.text || node.edge_media_to_caption?.edges?.[0]?.node?.text || '';
     const video = node.video_versions?.[0]?.url || node.video_url || null;
@@ -282,7 +299,7 @@ const fromInstagram = (node, account) => {
         url: code ? `https://www.instagram.com/p/${code}/` : null,
         author_name: node.user?.full_name || node.owner?.full_name || null,
         author_handle: node.user?.username || node.owner?.username || account,
-        published_at: validDate(node.taken_at || node.taken_at_timestamp),
+        published_at: validDate(node.taken_at || node.taken_at_timestamp) || igDateFromCode(code),
         text: caption,
         hashtags: extractHashtags(caption),
         mentions: extractMentions(caption),
@@ -295,39 +312,121 @@ const fromInstagram = (node, account) => {
             shares: toNum(node.reshare_count),
             views: toNum(node.play_count ?? node.view_count ?? node.video_view_count),
         },
-        collected_via: 'instagram_account',
+        collected_via: via,
     };
 };
 
+const igFeedPage = (feed, account, maxId) => (feed === 'posts'
+    ? igService.fetchUserPosts(account, maxId)
+    : igService.fetchUserFeed(feed, account, maxId));
+
+/** Page one feed of an account back to `since`, calling onPost for each post in the window. */
+const pageIgFeed = async (feed, account, pages, since, onPost) => {
+    let maxId = '';
+    for (let page = 0; page < pages; page++) {
+        const raw = await igFeedPage(feed, account, maxId);
+        if (!raw) break;
+        const result = raw.result || raw;
+        const edges = result.edges || raw.edges || raw.items || [];
+        if (!edges.length) break;
+        let older = 0;
+        for (const e of edges) {
+            const node = igNode(e);
+            const post = fromInstagram(node, account, `instagram_${feed}`);
+            if (since && post.published_at && post.published_at < since) { older += 1; continue; }
+            onPost(post, node);
+        }
+        // Pinned posts can be old, so stop only when most of a page predates the window.
+        if (older >= Math.ceil(edges.length / 2)) break;
+        const next = result.page_info?.end_cursor || raw.next_max_id || '';
+        if (!next || result.page_info?.has_next_page === false) break;
+        maxId = next;
+    }
+};
+
 /**
- * Recent posts of each listed account, paging back until posts predate the
- * window. Posts by the organisers' own accounts are all kept (their captions
- * often don't name the event) and judged at labelling; other accounts' posts
- * must mention the event.
+ * Posts, reels and tagged posts of the listed accounts. Posts by the
+ * organisers' own accounts are all kept (their captions often don't name the
+ * event) and judged at labelling; anything else must mention the event.
+ * Reels mostly repeat the posts grid (with play counts but no caption), so a
+ * reel only adds play counts to a known post; organisers' reels missing from
+ * the grid are returned as comment sources. Returns { items, reels }.
  */
-const collectInstagram = async (accounts, since, mentionsEvent, { pages = 5, ownAccounts = new Set() } = {}) => {
-    const out = [];
+const collectInstagram = async (accounts, since, mentionsEvent, { pages = 5, reelPages = 3, taggedPages = 3, ownAccounts = new Set() } = {}) => {
+    const byCode = new Map();
+    const reels = [];
     for (const account of accounts) {
         const own = ownAccounts.has(String(account).toLowerCase());
-        let maxId = '';
-        for (let page = 0; page < pages; page++) {
-            const raw = await igService.fetchUserPosts(account, maxId);
-            if (!raw) break;
-            const result = raw.result || raw;
-            const edges = result.edges || raw.edges || raw.items || (Array.isArray(raw) ? raw : []);
-            if (!edges.length) break;
-            let older = 0;
-            for (const e of edges) {
-                const post = fromInstagram(igNode(e), account);
-                if (since && post.published_at && post.published_at < since) { older += 1; continue; }
-                if (!own && !mentionsEvent(post.text)) continue;
-                out.push({ query: `@${account}`, post });
+        await pageIgFeed('posts', account, pages, since, (post) => {
+            if (!own && !mentionsEvent(post.text)) return;
+            byCode.set(post.url, { query: `@${account}`, post });
+        });
+        await pageIgFeed('reels', account, reelPages, since, (post) => {
+            const known = byCode.get(post.url);
+            if (known) {
+                known.post.metrics.views = known.post.metrics.views ?? post.metrics.views;
+                return;
             }
-            // Pinned posts can be old, so stop only when most of a page predates the window.
-            if (older >= Math.ceil(edges.length / 2)) break;
-            const next = result.page_info?.end_cursor || raw.next_max_id || '';
-            if (!next || !(result.page_info?.has_next_page ?? true)) break;
-            maxId = next;
+            if (own && post.url) reels.push({ ...post, author_handle: account });
+        });
+        if (own) {
+            await pageIgFeed('taggedPosts', account, taggedPages, since, (post) => {
+                if (!mentionsEvent(post.text) || byCode.has(post.url)) return;
+                byCode.set(post.url, { query: `tagged:@${account}`, post });
+            });
+        }
+    }
+    return { items: [...byCode.values()], reels };
+};
+
+const igCodeOf = (url) => (String(url || '').match(/instagram\.com\/(?:p|reel)\/([\w-]+)/) || [])[1] || null;
+
+/**
+ * Comments on the given parent posts (most-commented first), up to perPost
+ * each and maxTotal overall. With stopBefore, paging stops at the first page
+ * that reaches older comments (they come newest first).
+ */
+const collectInstagramComments = async (parents, { perPost = 600, maxTotal = 20000, stopBefore = null } = {}) => {
+    const out = [];
+    for (const parent of parents) {
+        if (out.length >= maxTotal) break;
+        const code = igCodeOf(parent.url);
+        if (!code) continue;
+        let minId = '';
+        let got = 0;
+        while (got < perPost && out.length < maxTotal) {
+            const raw = await igService.fetchComments(code, minId);
+            const result = raw?.result || raw;
+            const list = result?.comments || [];
+            if (!list.length) break;
+            let reachedOld = false;
+            for (const c of list) {
+                const text = c.text || '';
+                const published = validDate(c.created_at_utc || c.created_at);
+                if (stopBefore && published && published < stopBefore) { reachedOld = true; continue; }
+                out.push({
+                    query: `comments:${code}`,
+                    post: {
+                        platform: 'instagram',
+                        platform_post_id: String(c.pk || c.id),
+                        url: `https://www.instagram.com/p/${code}/c/${c.pk || c.id}/`,
+                        author_name: c.user?.full_name || null,
+                        author_handle: c.user?.username || null,
+                        published_at: published,
+                        text,
+                        hashtags: extractHashtags(text),
+                        mentions: extractMentions(text),
+                        post_type: 'comment',
+                        parent_post_id: parent.platform_post_id,
+                        parent_title: String(parent.text || `Reel by @${parent.author_handle}`).split('\n')[0].slice(0, 200),
+                        metrics: { likes: toNum(c.comment_like_count), comments: toNum(c.child_comment_count), shares: null, views: null },
+                        collected_via: 'instagram_comments',
+                    },
+                });
+                got += 1;
+            }
+            minId = result.next_min_id || '';
+            if (reachedOld || !minId) break;
         }
     }
     return out;
@@ -561,12 +660,40 @@ const collectForEvent = async (event, { platforms = ALL_PLATFORMS, incrementalSi
             ...(await collectFacebook(plan.facebook_queries || [], incrementalSince || since, incrementalSince ? 2 : (plan.facebook_search_pages || 10))),
             ...(await collectFacebookPages(plan.facebook_pages || [], incrementalSince || since, mentionsEvent, incrementalSince ? 1 : (plan.facebook_page_pages || 5))),
         ],
-        instagram: () => collectInstagram(plan.instagram_accounts || [], incrementalSince || since, mentionsEvent, {
-            pages: incrementalSince ? 1 : (plan.instagram_pages || 5),
+        instagram: async () => {
             // Organisers' own handles, from their "@handle" aliases.
-            ownAccounts: new Set((event.organisers || []).flatMap((o) => o.aliases || [])
-                .filter((a) => String(a).startsWith('@')).map((a) => a.slice(1).toLowerCase())),
-        }),
+            const ownAccounts = new Set((event.organisers || []).flatMap((o) => o.aliases || [])
+                .filter((a) => String(a).startsWith('@')).map((a) => a.slice(1).toLowerCase()));
+            const { items, reels } = await collectInstagram(plan.instagram_accounts || [], incrementalSince || since, mentionsEvent, {
+                pages: incrementalSince ? 1 : (plan.instagram_pages || 5),
+                reelPages: incrementalSince ? 1 : (plan.instagram_reel_pages || 3),
+                taggedPages: incrementalSince ? 1 : (plan.instagram_tagged_pages || 3),
+                ownAccounts,
+            });
+            // Comment sources: this run's posts and reels plus the event's stored Instagram posts
+            // that weren't labelled unrelated, most-commented first.
+            const stored = await TenantPost.find({
+                tenant_id: event.tenant_id, event_id: event.id, platform: 'instagram', post_type: 'original',
+                'analysis.is_relevant': { $ne: false },
+            }).select('platform_post_id url text author_handle metrics').lean();
+            const parents = new Map();
+            [...stored, ...items.map((i) => i.post), ...reels].forEach((p) => {
+                if (!p.url) return;
+                if (p.text && !ownAccounts.has(String(p.author_handle || '').toLowerCase()) && !mentionsEvent(p.text)) return;
+                const prev = parents.get(p.url);
+                parents.set(p.url, prev && prev.text ? { ...prev, metrics: p.metrics } : p);
+            });
+            const ranked = [...parents.values()]
+                .filter((p) => (p.metrics?.comments || 0) > 0)
+                .sort((x, y) => (y.metrics?.comments || 0) - (x.metrics?.comments || 0))
+                .slice(0, plan.instagram_comment_posts ?? 60);
+            const comments = await collectInstagramComments(ranked, {
+                perPost: incrementalSince ? 150 : (plan.instagram_comments_per_post || 600),
+                maxTotal: plan.instagram_max_comments || 20000,
+                stopBefore: incrementalSince,
+            });
+            return [...items, ...comments];
+        },
         youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent, {
             searchPages: incrementalSince ? 1 : (plan.youtube_search_pages || 1),
             commentsPerVideo: plan.youtube_comments_per_video || COMMENTS_PER_VIDEO,

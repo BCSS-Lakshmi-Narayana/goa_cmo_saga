@@ -151,6 +151,36 @@ const fetchUserPosts = async (username, maxId = "") => {
 };
 
 /**
+ * One page of an account's reels or of posts that tag it
+ * (feed = 'reels' | 'taggedPosts'); same paging as fetchUserPosts.
+ */
+const fetchUserFeed = async (feed, username, maxId = "") => {
+    const cleanUsername = normalizeUsername(username);
+    if (!cleanUsername || !['reels', 'taggedPosts'].includes(feed)) return null;
+    try {
+        const body = { username: cleanUsername };
+        if (maxId) body.maxId = maxId;
+        const response = await rapidPost(`/api/instagram/${feed}`, body);
+        return response?.data || null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/** One page (15) of a post's comments, newest first; pass the previous page's next_min_id as minId. */
+const fetchComments = async (shortcode, minId = "") => {
+    if (!shortcode) return null;
+    try {
+        const body = { shortcode };
+        if (minId) body.minId = minId;
+        const response = await rapidPost('/api/instagram/comments', body);
+        return response?.data || null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
  * Fetch profile information for a given username.
  * `userInfo` and `profile` are both real BluGate endpoints with slightly
  * different payload shapes, so we try userInfo first and fall back to
@@ -321,6 +351,8 @@ const searchPosts = async (query, limit = IG_DEFAULT_LIMIT) => {
 
 module.exports = {
     fetchUserPosts,
+    fetchUserFeed,
+    fetchComments,
     fetchUserStories,
     fetchUserProfile,
     fetchInstagramPostDetail,
