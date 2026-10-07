@@ -31,7 +31,7 @@ const Note = ({ label, children }) => (
 );
 const Table = ({ head, rows, align = [] }) => (
   <table className="w-full text-[12.5px] border-collapse mb-3">
-    <thead>
+    <thead style={{ breakAfter: 'avoid' }}>
       <tr style={{ background: NAVY }} className="text-white text-left">
         {head.map((h, i) => <th key={h} className={`px-2.5 py-1.5 font-semibold ${align[i] === 'r' ? 'text-right' : ''}`}>{h}</th>)}
       </tr>
@@ -226,7 +226,7 @@ const ExecutiveReport = ({ report }) => {
         rows={platforms.map((p) => [PLATFORM_LABEL[p.platform] || p.platform, fmt(p.relevant), pctTxt(share(p.relevant, total))])}
       />
       <H3>Posts and negativity by day</H3>
-      <p className="text-[11.5px] text-slate-600 mb-1">Relevant posts per day (newest first), split by tone; the line is the share of negative posts.</p>
+      <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>Relevant posts per day (newest first), split by tone; the line is the share of negative posts.</p>
       <DailyToneChart rows={days} />
       {peak && (
         <>
@@ -270,7 +270,7 @@ const ExecutiveReport = ({ report }) => {
       {(s.allegations || []).length > 0 && (
         <>
           <H3>Allegations circulating about {name}</H3>
-          <p className="text-[11.5px] text-slate-600 mb-1">The most-engaged allegations stated in posts. These are claims made by posters, not findings.</p>
+          <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>The most-engaged allegations stated in posts. These are claims made by posters, not findings.</p>
           <Table head={['Allegation', 'Platform', 'Engagement']} align={['l', 'l', 'r']}
             rows={s.allegations.slice(0, 8).map((a) => [a.text, PLATFORM_LABEL[a.platform] || a.platform, fmt(a.engagement)])} />
         </>
@@ -318,7 +318,7 @@ const ExecutiveReport = ({ report }) => {
       {/* 5 */}
       <H2 n={5}>Who is driving the conversation</H2>
       <H3>Most influential public accounts</H3>
-      <p className="text-[11.5px] text-slate-600 mb-1">Ranked by engagement score (likes, plus twice the comments, three times the shares and a tenth of the views). Only public figures, media and organisations are named.</p>
+      <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>Ranked by engagement score (likes, plus twice the comments, three times the shares and a tenth of the views). Only public figures, media and organisations are named.</p>
       <Table head={['Account', 'Platform', 'Posts', 'Engagement score', 'Main stance toward ' + name]} align={['l', 'l', 'r', 'r', 'l']}
         rows={influencers.map((i) => [
           <span><span className="font-semibold">{i.name || i.handle}</span>{i.top?.url ? <> · <a href={i.top.url} className="text-blue-700">top post</a></> : null}</span>,
@@ -373,7 +373,7 @@ const ExecutiveReport = ({ report }) => {
       {shownThreats.length > 0 && (
         <>
           <H3>{threatRows.length >= 5 ? 'Explicit threats requiring attention' : 'High-risk posts requiring attention'} (newest first)</H3>
-          <p className="text-[11.5px] text-slate-600 mb-1">Each was read by an analyst. Private individuals are not named.</p>
+          <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>Each was read by an analyst. Private individuals are not named.</p>
           <Table head={['Date', 'Platform', 'Account', 'What it says', 'Link']}
             rows={shownThreats.map((r) => [
               fmtDay(r.published_at), PLATFORM_LABEL[r.platform] || r.platform, r.author,
