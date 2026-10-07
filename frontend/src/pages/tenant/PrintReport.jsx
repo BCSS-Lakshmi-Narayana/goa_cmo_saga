@@ -84,10 +84,18 @@ const PrintReport = () => {
   if (!state.report) return null;
   return (
     <div className="bg-white">
-      {/* Page numbers in the page margin; defining margin content also stops the browser printing its own URL/date header and footer. */}
-      <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 9px; color: #64748b; } @top-left { content: ""; } @top-center { content: ""; } @top-right { content: ""; } @bottom-left { content: ""; } @bottom-right { content: ""; } } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
-      <ReportBrief report={state.report} workspace={state.workspace} />
-      {state.posts && <PostsAppendix posts={state.posts} />}
+      {/* Zero page margin leaves the browser no room for its own header/footer (page URL, date,
+          title), in every browser. The frame table's header and footer rows repeat on each printed
+          page and stand in for the top and bottom margins; the cell padding is the side margin. */}
+      <style>{'@page { size: A4; margin: 0; } .print-frame { width: 100%; border-collapse: collapse; } .print-frame > thead > tr > td { height: 14mm; padding: 0; } .print-frame > tfoot > tr > td { height: 16mm; padding: 0; } .print-frame > tbody > tr > td { padding: 0 13mm; vertical-align: top; } .print-frame > tbody > tr { break-inside: auto !important; } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
+      <table className="print-frame">
+        <thead><tr><td /></tr></thead>
+        <tfoot><tr><td /></tr></tfoot>
+        <tbody><tr><td>
+          <ReportBrief report={state.report} workspace={state.workspace} />
+          {state.posts && <PostsAppendix posts={state.posts} />}
+        </td></tr></tbody>
+      </table>
     </div>
   );
 };
