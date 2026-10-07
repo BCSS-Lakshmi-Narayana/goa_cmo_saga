@@ -65,7 +65,7 @@ const listPosts = async (req, res) => {
     if (stance) filter['analysis.stance_toward_subject'] = String(stance);
     if (narrative) filter['analysis.narratives'] = String(narrative);
     if (postType) filter.post_type = String(postType);
-    if (q) filter.text = { $regex: String(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&').slice(0, 100), $options: 'i' };
+    if (q) filter.text = { $regex: String(q).slice(0, 100).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), $options: 'i' };
 
     const limit = Math.min(100, Math.max(1, parseInt(req.query.limit, 10) || 25));
     const page = Math.max(1, parseInt(req.query.page, 10) || 1);
@@ -114,7 +114,7 @@ const parseDay = (value, endOfDay) => {
     return Number.isNaN(d.getTime()) ? undefined : d;
 };
 
-const generating = new Set(); // tenant ids with a report in progress
+const generating = new Set(); // "tenant:event" keys with a report in progress
 
 /** POST /events/:id/reports {from?, to?} — build a report for a period, in the background. */
 const createReport = async (req, res) => {
@@ -124,7 +124,8 @@ const createReport = async (req, res) => {
     const to = parseDay(req.body?.to, true);
     if (from === undefined || to === undefined) return res.status(400).json({ message: 'Invalid date' });
     if (from && to && from > to) return res.status(400).json({ message: '"From" must be before "To"' });
-    if (generating.has(req.tenantId)) return res.status(409).json({ message: 'A report is already being generated' });
+    const lockKey = `${req.tenantId}:${event.id}`;
+    if (generating.has(lockKey)) return res.status(409).json({ message: 'A report is already being generated' });
 
     const report = await TenantReport.create({
         tenant_id: req.tenantId,
@@ -135,10 +136,10 @@ const createReport = async (req, res) => {
         range_to: to,
         generated_by: req.user.id,
     });
-    generating.add(req.tenantId);
+    generating.add(lockKey);
     completeReport(event, report.id, { from, to })
         .catch((err) => console.error('[tenant] report failed:', err.message))
-        .finally(() => generating.delete(req.tenantId));
+        .finally(() => generating.delete(lockKey));
     await createAuditLog(req.user, 'create_report', 'tenant_report', report.id, { from, to });
     res.status(202).json({ report: { id: report.id, status: report.status, range_from: from, range_to: to } });
 };

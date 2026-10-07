@@ -31,10 +31,12 @@ const narrativeSchema = new mongoose.Schema({
     key: { type: String, required: true },
     label: { type: String, required: true },
     description: { type: String, default: '' },
+    // Only posts with this stance toward the protest are shown as the narrative's examples (e.g. 'critical').
+    example_protest_stance: { type: String, default: null },
 }, { _id: false });
 
 const tenantEventSchema = new mongoose.Schema({
-    id: { type: String, default: uuidv4, unique: true },
+    id: { type: String, default: uuidv4 },
     name: { type: String, required: true },
     // Short title used on the brief's cover, e.g. "CJP – Gyanesh Kumar & ECI".
     short_name: { type: String, default: null },
@@ -121,5 +123,8 @@ tenantEventSchema.pre('save', function touch(next) {
     this.updated_at = new Date();
     next();
 });
+
+// Event ids are unique per tenant (specs pin them), not across tenants.
+tenantEventSchema.index({ tenant_id: 1, id: 1 }, { unique: true });
 
 module.exports = mongoose.model('TenantEvent', tenantEventSchema);

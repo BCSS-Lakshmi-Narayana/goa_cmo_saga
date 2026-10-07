@@ -348,7 +348,8 @@
         {
           "key": "questioning_cjp",
           "label": "Criticism of the Cockroach Janta Party and its motives",
-          "description": "Counter-narratives: 'political drama', the purported leaked meeting recording, foreign-funding claims and the counter-protest."
+          "description": "Counter-narratives: 'political drama', the purported leaked meeting recording, foreign-funding claims and the counter-protest.",
+          "example_protest_stance": "critical"
         },
         {
           "key": "oct10_mobilisation",

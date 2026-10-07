@@ -196,7 +196,7 @@ const computeStats = (event, all) => {
         if (p.analysis.stance_toward_subject === 'critical') g.critical_of_subject += 1;
         if (p.analysis.stance_toward_subject === 'supportive') g.supportive_of_subject += 1;
         if (a.date_text) g.dates.set(a.date_text, (g.dates.get(a.date_text) || 0) + 1);
-        if (!g.top || engagementScore(p.metrics) > g.top._score) g.top = { ...postRef(p), _score: engagementScore(p.metrics) };
+        if (!g.top || engagementScore(p.metrics) > g.top.score) g.top = postRef(p);
         activityGroups.set(key, g);
     });
     const activities = [...activityGroups.values()]
@@ -224,7 +224,7 @@ const computeStats = (event, all) => {
             const r = placeCounts.get(pl) || { place: pl, posts: 0, negative: 0, top: null };
             r.posts += 1;
             if (tone(p) === 'negative') r.negative += 1;
-            if (!r.top || engagementScore(p.metrics) > r.top._score) r.top = { ...postRef(p), _score: engagementScore(p.metrics) };
+            if (!r.top || engagementScore(p.metrics) > r.top.score) r.top = postRef(p);
             placeCounts.set(pl, r);
         });
     });
@@ -288,7 +288,7 @@ const computeStats = (event, all) => {
             negative: rows.filter((p) => tone(p) === 'negative').length,
             trend,
             examples: distinctAuthors(topBy(rows.filter((p) => p.post_type !== 'repost' && isPublicAccount(p)
-                && (n.key !== 'questioning_cjp' || p.analysis.stance_toward_protest === 'critical')), 30), 3).sort(byDateDesc).map((p) => postRef(p)),
+                && (!n.example_protest_stance || p.analysis.stance_toward_protest === n.example_protest_stance)), 30), 3).sort(byDateDesc).map((p) => postRef(p)),
         };
     }).filter((n) => n.count > 0).sort((a, b) => b.count - a.count);
 

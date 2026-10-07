@@ -91,7 +91,8 @@ const expand = (text) => {
 
 // Report fields that hold prose. Everything nested under these keys is expanded.
 const TEXT_KEYS = new Set([
-    'title', 'detail', 'caveat', 'summary', 'excerpt', 'risk_reason', 'statement', 'claimed_by', 'description',
+    // Not 'excerpt': that is the post's own words, quoted as written.
+    'title', 'detail', 'caveat', 'summary', 'risk_reason', 'statement', 'claimed_by', 'description',
     'label', 'bottom_line', 'what_happened', 'when_where', 'who_involved', 'why_attention', 'social_discussion',
     'theme', 'status_note', 'notes', 'recommendations', 'narrative_summaries', 'activity_notes', 'place_context',
     'risk_assessment', 'role',
