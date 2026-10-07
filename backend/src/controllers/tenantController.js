@@ -12,7 +12,7 @@ const { renderReportPdf } = require('../services/tenant/tenantPdfService');
 const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
-const { completeReport, footageOf, isPublicAccount } = require('../services/tenant/tenantReportService');
+const { completeReport, footageOf, isPublicAccount, TONE_QUERY } = require('../services/tenant/tenantReportService');
 const { expand } = require('../services/tenant/textClean');
 
 const requireTenant = (req, res, next) => {
@@ -111,7 +111,7 @@ const istDate = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toIS
 /** GET /reports/:reportId/pdf?posts=1 — the brief (optionally with every post) as a PDF file. */
 const downloadReportPdf = async (req, res) => {
     const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId })
-        .select('id title status range_from range_to period_start period_end').lean();
+        .select('id tenant_id event_id title status range_from range_to period_start period_end').lean();
     if (!report) return res.status(404).json({ message: 'Report not found' });
     if (report.status !== 'ready') return res.status(409).json({ message: 'The report is not ready yet' });
     // The page is opened at this fixed address (never one taken from the request), signed in with the caller's token.
@@ -120,7 +120,7 @@ const downloadReportPdf = async (req, res) => {
     const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || req.query.token;
     const withPosts = req.query.posts === '1';
     try {
-        const pdf = await renderReportPdf({ baseUrl: baseUrl.replace(/\/+$/, ''), token, reportId: report.id, withPosts });
+        const pdf = await renderReportPdf({ baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts });
         const name = `${String(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}`
             + `_${istDate(report.range_from || report.period_start) || 'start'}_to_${istDate(report.range_to || report.period_end) || 'latest'}`
             + `${withPosts ? '_with_posts' : ''}.pdf`;
@@ -185,10 +185,18 @@ const exportPosts = async (req, res) => {
         if (from) filter.published_at.$gte = from;
         if (to) filter.published_at.$lte = to;
     }
+    // Optional slice (one tone, skip/limit) for the PDF appendix, which is rendered in parts.
+    if (req.query.tone) {
+        if (!TONE_QUERY[req.query.tone]) return res.status(400).json({ message: 'Invalid tone' });
+        Object.assign(filter, TONE_QUERY[req.query.tone]);
+    }
+    const skip = Math.max(0, parseInt(req.query.skip, 10) || 0);
+    const limit = Math.min(50000, Math.max(1, parseInt(req.query.limit, 10) || 50000));
     const posts = await TenantPost.find(filter)
         .select('platform post_type url media author_name author_handle author_followers analysis.account_type published_at text hashtags metrics engagement_total language analysis.sentiment analysis.stance_toward_subject analysis.stance_toward_protest analysis.category analysis.narratives analysis.risk_band analysis.review.risk_band analysis.summary analysis.target')
-        .sort({ published_at: -1 })
-        .limit(50000)
+        .sort({ published_at: -1, _id: -1 })
+        .skip(skip)
+        .limit(limit)
         .lean();
     res.json({
         posts: posts.map((p) => ({

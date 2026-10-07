@@ -37,6 +37,12 @@ const titleCase = (s) => String(s || '').trim().replace(/\s+/g, ' ').replace(/\b
 const riskBand = (p) => p.analysis?.review?.risk_band || p.analysis?.risk_band || 'low';
 const isPublicAccount = (p) => PUBLIC_ACCOUNT_TYPES.has(p.analysis?.account_type) || (p.author_followers || 0) >= PUBLIC_FOLLOWER_FLOOR;
 const tone = (p) => ({ positive: 'positive', negative: 'negative', mixed: 'negative' }[p.analysis?.sentiment] || 'neutral');
+// The same split as a database filter.
+const TONE_QUERY = {
+    positive: { 'analysis.sentiment': 'positive' },
+    negative: { 'analysis.sentiment': { $in: ['negative', 'mixed'] } },
+    neutral: { 'analysis.sentiment': { $nin: ['positive', 'negative', 'mixed'] } },
+};
 
 /** likes + 2×comments + 3×shares + views/10 */
 const engagementScore = (m = {}) => Math.round((m.likes || 0) + 2 * (m.comments || 0) + 3 * (m.shares || 0) + (m.views || 0) / 10);
@@ -789,4 +795,5 @@ const completeReport = async (event, reportId, { from = null, to = null } = {}) 
     }
 };
 
-module.exports = { generateReport, completeReport, buildReportData, computeStats, templateProse, engagementScore, footageOf, isPublicAccount };
+module.exports = {
+    TONE_QUERY, generateReport, completeReport, buildReportData, computeStats, templateProse, engagementScore, footageOf, isPublicAccount };

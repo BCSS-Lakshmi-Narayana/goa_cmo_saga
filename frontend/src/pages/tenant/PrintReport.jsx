@@ -7,18 +7,29 @@ const istDay = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISO
 const fmtDate = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) : '—');
 const TONES = [['positive', '#16a34a'], ['negative', '#dc2626'], ['neutral', '#475569']];
 
-/** Appendix: every relevant post in the period, grouped by tone, with links and footage. */
-export const PostsAppendix = ({ posts }) => (
-  <section style={{ breakBefore: 'page' }} className="max-w-[900px] mx-auto text-slate-900">
-    <h2 className="mt-2 mb-1 pb-1 border-b-2 border-[#1e3a5f] text-[17px] font-bold text-[#1e3a5f]">Appendix — all posts in the period</h2>
-    <p className="text-[11px] text-slate-600 mb-3">
-      {posts.length.toLocaleString('en-IN')} relevant posts, newest first within each tone. Private individuals' posts are listed by link only; "Stance" is toward the subject.
-    </p>
-    {TONES.map(([tone, color]) => {
+/**
+ * Appendix: every relevant post in the period, grouped by tone, with links and footage.
+ * The server renders it in slices (one tone, part of its posts at a time): `slice`
+ * then gives the tone, whether this is its first part, and the full counts.
+ */
+export const PostsAppendix = ({ posts, slice = null }) => (
+  <section style={slice ? undefined : { breakBefore: 'page' }} className="max-w-[900px] mx-auto text-slate-900">
+    {(!slice || slice.intro) && (
+      <>
+        <h2 className="mt-2 mb-1 pb-1 border-b-2 border-[#1e3a5f] text-[17px] font-bold text-[#1e3a5f]">Appendix — all posts in the period</h2>
+        <p className="text-[11px] text-slate-600 mb-3">
+          {(slice ? slice.total : posts.length).toLocaleString('en-IN')} relevant posts, newest first within each tone. Private individuals' posts are listed by link only; "Stance" is toward the subject.
+        </p>
+      </>
+    )}
+    {TONES.filter(([tone]) => !slice || tone === slice.tone).map(([tone, color]) => {
       const rows = posts.filter((p) => p.tone === tone);
+      const count = slice ? slice.toneTotal : rows.length;
       return (
         <div key={tone} className="mb-5">
-          <h3 className="text-[14px] font-bold capitalize mb-1" style={{ color, breakAfter: 'avoid' }}>{tone} — {rows.length.toLocaleString('en-IN')} posts</h3>
+          <h3 className="text-[14px] font-bold capitalize mb-1" style={{ color, breakAfter: 'avoid' }}>
+            {tone} — {count.toLocaleString('en-IN')} posts{slice && !slice.first ? ' (continued)' : ''}
+          </h3>
           <table className="w-full text-[9.5px] border-collapse">
             <thead>
               <tr className="bg-[#1e3a5f] text-white text-left">
@@ -55,6 +66,16 @@ const PrintReport = () => {
   const withPosts = params.get('posts') === '1';
   // ?pdf=1: rendered by the server's headless Chrome into a PDF file (no print dialog).
   const forPdf = params.get('pdf') === '1';
+  // A slice of the appendix only (server-side PDF of the posts, rendered in parts).
+  const slice = forPdf && params.get('appendix') === '1' ? {
+    tone: params.get('tone'),
+    skip: parseInt(params.get('skip'), 10) || 0,
+    limit: parseInt(params.get('limit'), 10) || 800,
+    toneTotal: parseInt(params.get('tone_total'), 10) || 0,
+    total: parseInt(params.get('total'), 10) || 0,
+    intro: params.get('intro') === '1',
+    first: (parseInt(params.get('skip'), 10) || 0) === 0,
+  } : null;
   const [ready, setReady] = useState(false);
   const [state, setState] = useState({ report: null, workspace: null, posts: null, error: null });
 
@@ -63,14 +84,19 @@ const PrintReport = () => {
       const [r, w] = await Promise.all([api.get(`/tenant/reports/${reportId}`), api.get('/tenant/workspace')]);
       const report = r.data.report;
       let posts = null;
-      if (withPosts) {
+      if (withPosts || slice) {
         const { data } = await api.get(`/tenant/events/${report.event_id}/posts/export`, {
-          params: { from: istDay(report.range_from), to: istDay(report.range_to) }, timeout: 300000,
+          params: {
+            from: istDay(report.range_from), to: istDay(report.range_to),
+            ...(slice ? { tone: slice.tone, skip: slice.skip, limit: slice.limit } : {}),
+          },
+          timeout: 300000,
         });
         posts = data.posts;
       }
       setState({ report, workspace: w.data.workspace, posts, error: null });
     })().catch((err) => setState({ report: null, workspace: null, posts: null, error: err.response?.status ? `HTTP ${err.response.status}` : err.message }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId, withPosts]);
 
   useEffect(() => {
@@ -92,10 +118,9 @@ const PrintReport = () => {
     <div className="bg-white" data-print-ready={ready ? '1' : '0'}>
       {forPdf ? (
         <>
-          {/* Server-rendered PDF: real page margins with page numbers; there is no browser header/footer here. */}
-          <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 9px; color: #64748b; } } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
-          <ReportBrief report={state.report} workspace={state.workspace} />
-          {state.posts && <PostsAppendix posts={state.posts} />}
+          {/* Server-rendered PDF: real page margins; the server joins the parts and stamps page numbers. */}
+          <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
+          {slice ? <PostsAppendix posts={state.posts || []} slice={slice} /> : <ReportBrief report={state.report} workspace={state.workspace} />}
         </>
       ) : (
       <>
