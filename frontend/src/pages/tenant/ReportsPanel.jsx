@@ -19,7 +19,7 @@ const fmtDateTime = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 
 
 const periodLabel = (r) => (r.range_from || r.range_to
   ? `${r.range_from ? fmtDay(r.range_from) : 'Start'} – ${r.range_to ? fmtDay(r.range_to) : 'latest'}`
-  : 'Whole event');
+  : `Whole event${r.period_start ? ` (${fmtDay(r.period_start)} – ${fmtDay(r.period_end)})` : ''}`);
 
 const ReportsPanel = ({ event, workspace }) => {
   const eventStart = istDay(event.collection_plan?.since || event.start_date) || istDaysAgo(7);
@@ -78,11 +78,31 @@ const ReportsPanel = ({ event, workspace }) => {
     }
   };
 
-  // Opens the print-ready brief (optionally with every post appended), which
-  // prints itself; choose "Save as PDF".
-  const downloadPdf = (r, withPosts = false) => {
-    const w = window.open(`/workspace/print/${r.id}?autoprint=1${withPosts ? '&posts=1' : ''}`, '_blank');
-    if (!w) toast.error('Allow pop-ups for this site to download the PDF');
+  // The server renders the brief (optionally with every post appended) to a PDF file,
+  // so no browser print header or footer ends up in it.
+  const downloadPdf = async (r, withPosts = false) => {
+    const key = `pdf${withPosts ? 'p' : ''}${r.id}`;
+    setBusy((b) => ({ ...b, [key]: true }));
+    const note = toast.loading(withPosts ? 'Preparing PDF with all posts — this can take a few minutes…' : 'Preparing PDF…');
+    try {
+      const res = await api.get(`/tenant/reports/${r.id}/pdf`, { params: withPosts ? { posts: 1 } : {}, responseType: 'blob', timeout: 900000 });
+      const name = (res.headers['content-disposition'] || '').match(/filename="([^"]+)"/)?.[1] || 'report.pdf';
+      const url = URL.createObjectURL(res.data);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      toast.success('PDF downloaded', { id: note });
+    } catch (e) {
+      let message = 'Could not prepare the PDF';
+      try { message = JSON.parse(await e.response.data.text()).message || message; } catch (_) { /* not JSON */ }
+      toast.error(message, { id: note });
+    } finally {
+      setBusy((b) => ({ ...b, [key]: false }));
+    }
   };
 
   const downloadExcel = async (r) => {
@@ -113,16 +133,19 @@ const ReportsPanel = ({ event, workspace }) => {
             <input type="date" className="border rounded-md px-2 py-1.5 text-sm" value={to} min={from || undefined} max={istToday()} onChange={(e) => setTo(e.target.value)} />
           </label>
           <div className="flex flex-wrap gap-1">
-            {[['Today', 1], ['Last 3 days', 3], ['Last 7 days', 7], ['Whole event', 'all']].map(([label, d]) => (
-              <Button key={label} type="button" variant="outline" size="sm" onClick={() => preset(d)}>{label}</Button>
-            ))}
+            {[['Today', 1], ['Last 3 days', 3], ['Last 7 days', 7], ['Whole event', 'all']].map(([label, d]) => {
+              const active = to === istToday() && from === (d === 'all' ? eventStart : istDaysAgo(d - 1));
+              return (
+                <Button key={label} type="button" variant={active ? 'default' : 'outline'} size="sm" onClick={() => preset(d)} aria-pressed={active}>{label}</Button>
+              );
+            })}
           </div>
           <Button onClick={generate} disabled={pending} className="ml-auto">
             {pending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <FileText className="h-4 w-4 mr-1" />}
             {pending ? 'Generating…' : 'Generate report'}
           </Button>
         </div>
-        <p className="text-xs text-slate-500 mt-2">Dates are Indian Standard Time. The report covers posts published in the period; positive, negative and neutral posts are broken down separately, and the Excel download has one sheet for each. “PDF” is the brief alone; “PDF + posts” adds every post in the period, grouped positive, negative and neutral, with post and footage links. Both open the print view — choose “Save as PDF”.</p>
+        <p className="text-xs text-slate-500 mt-2">Dates are Indian Standard Time. The report covers posts published in the period; positive, negative and neutral posts are broken down separately, and the Excel download has one sheet for each. “PDF” is the brief alone; “PDF + posts” adds every post in the period, grouped positive, negative and neutral, with post and footage links. Both download a ready PDF file.</p>
       </div>
 
       {reports.length > 0 && (
@@ -142,11 +165,11 @@ const ReportsPanel = ({ event, workspace }) => {
                     {r.status === 'ready' && (
                       <div className="flex justify-end gap-1">
                         <Button variant="ghost" size="sm" onClick={() => openReport(r.id)}><Eye className="h-4 w-4 mr-1" />View</Button>
-                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r)} title="The brief without the post list">
-                          <Download className="h-4 w-4 mr-1" />PDF
+                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r)} disabled={busy[`pdf${r.id}`]} title="The brief without the post list">
+                          {busy[`pdf${r.id}`] ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}PDF
                         </Button>
-                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r, true)} title="The brief plus every post in the period, grouped by tone">
-                          <Download className="h-4 w-4 mr-1" />PDF + posts
+                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r, true)} disabled={busy[`pdfp${r.id}`]} title="The brief plus every post in the period, grouped by tone">
+                          {busy[`pdfp${r.id}`] ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}PDF + posts
                         </Button>
                         <Button variant="outline" size="sm" onClick={() => downloadExcel(r)} disabled={busy[`xls${r.id}`]}>
                           {busy[`xls${r.id}`] ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <FileSpreadsheet className="h-4 w-4 mr-1" />}Excel

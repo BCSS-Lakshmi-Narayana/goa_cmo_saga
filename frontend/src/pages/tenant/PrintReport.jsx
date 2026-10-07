@@ -51,7 +51,11 @@ export const PostsAppendix = ({ posts }) => (
  */
 const PrintReport = () => {
   const { reportId } = useParams();
-  const withPosts = new URLSearchParams(window.location.search).get('posts') === '1';
+  const params = new URLSearchParams(window.location.search);
+  const withPosts = params.get('posts') === '1';
+  // ?pdf=1: rendered by the server's headless Chrome into a PDF file (no print dialog).
+  const forPdf = params.get('pdf') === '1';
+  const [ready, setReady] = useState(false);
   const [state, setState] = useState({ report: null, workspace: null, posts: null, error: null });
 
   useEffect(() => {
@@ -74,16 +78,27 @@ const PrintReport = () => {
     const r = state.report;
     const day = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : 'all');
     document.title = `${(r.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}_${day(r.range_from || r.period_start)}_to_${day(r.range_to || r.period_end)}${withPosts ? '_with_posts' : ''}`;
-    // Let the browser lay out the brief before printing.
+    // Let the browser lay out the brief before printing (or before the server captures it).
+    requestAnimationFrame(() => requestAnimationFrame(() => setReady(true)));
     if (new URLSearchParams(window.location.search).get('autoprint') === '1') {
       requestAnimationFrame(() => requestAnimationFrame(() => setTimeout(() => window.print(), 300)));
     }
   }, [state.report, withPosts]);
 
-  if (state.error) return <p style={{ padding: 24 }}>Could not load report ({state.error}).</p>;
+
+  if (state.error) return <p data-print-error="1" style={{ padding: 24 }}>Could not load report ({state.error}).</p>;
   if (!state.report) return null;
   return (
-    <div className="bg-white">
+    <div className="bg-white" data-print-ready={ready ? '1' : '0'}>
+      {forPdf ? (
+        <>
+          {/* Server-rendered PDF: real page margins with page numbers; there is no browser header/footer here. */}
+          <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 9px; color: #64748b; } } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
+          <ReportBrief report={state.report} workspace={state.workspace} />
+          {state.posts && <PostsAppendix posts={state.posts} />}
+        </>
+      ) : (
+      <>
       {/* Zero page margin leaves the browser no room for its own header/footer (page URL, date,
           title), in every browser. The frame table's header and footer rows repeat on each printed
           page and stand in for the top and bottom margins; the cell padding is the side margin. */}
@@ -96,6 +111,8 @@ const PrintReport = () => {
           {state.posts && <PostsAppendix posts={state.posts} />}
         </td></tr></tbody>
       </table>
+      </>
+      )}
     </div>
   );
 };

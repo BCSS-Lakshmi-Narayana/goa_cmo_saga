@@ -8,6 +8,7 @@ const TenantWorkspace = require('../models/tenant/TenantWorkspace');
 const TenantEvent = require('../models/tenant/TenantEvent');
 const TenantPost = require('../models/tenant/TenantPost');
 const TenantReport = require('../models/tenant/TenantReport');
+const { renderReportPdf } = require('../services/tenant/tenantPdfService');
 const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
@@ -103,6 +104,33 @@ const getReport = async (req, res) => {
         .select('-_id -tenant_id -__v').lean();
     if (!report) return res.status(404).json({ message: 'Report not found' });
     res.json({ report });
+};
+
+const istDate = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : null);
+
+/** GET /reports/:reportId/pdf?posts=1 — the brief (optionally with every post) as a PDF file. */
+const downloadReportPdf = async (req, res) => {
+    const report = await TenantReport.findOne({ tenant_id: req.tenantId, id: req.params.reportId })
+        .select('id title status range_from range_to period_start period_end').lean();
+    if (!report) return res.status(404).json({ message: 'Report not found' });
+    if (report.status !== 'ready') return res.status(409).json({ message: 'The report is not ready yet' });
+    // The page is opened at this fixed address (never one taken from the request), signed in with the caller's token.
+    const baseUrl = process.env.TENANT_PRINT_BASE_URL;
+    if (!baseUrl) return res.status(503).json({ message: 'PDF download is not configured' });
+    const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || req.query.token;
+    const withPosts = req.query.posts === '1';
+    try {
+        const pdf = await renderReportPdf({ baseUrl: baseUrl.replace(/\/+$/, ''), token, reportId: report.id, withPosts });
+        const name = `${String(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}`
+            + `_${istDate(report.range_from || report.period_start) || 'start'}_to_${istDate(report.range_to || report.period_end) || 'latest'}`
+            + `${withPosts ? '_with_posts' : ''}.pdf`;
+        await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts });
+        res.set({ 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${name}"`, 'Cache-Control': 'no-store' });
+        res.send(Buffer.from(pdf));
+    } catch (err) {
+        console.error('[tenant] PDF failed:', err.message);
+        res.status(err.status || 500).json({ message: err.status ? err.message : 'Could not prepare the PDF' });
+    }
 };
 
 const parseDay = (value, endOfDay) => {
@@ -218,6 +246,7 @@ module.exports = {
     listReports: wrap(listReports),
     getLatestReport: wrap(getLatestReport),
     getReport: wrap(getReport),
+    downloadReportPdf: wrap(downloadReportPdf),
     refreshEvent: wrap(refreshEvent),
     createReport: wrap(createReport),
     exportPosts: wrap(exportPosts),
