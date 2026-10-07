@@ -699,7 +699,15 @@ const buildReportData = async (event, { from = null, to = null } = {}) => {
         if (from) filter.published_at.$gte = new Date(from);
         if (to) filter.published_at.$lte = new Date(to);
     }
-    const posts = await TenantPost.find(filter).lean();
+    // Full documents only for labelled relevant posts; the rest are needed just for the
+    // collected/pending/excluded counts, so they are loaded with a few small fields.
+    // (Events reach tens of thousands of posts on a server short of memory.)
+    const [used, others] = await Promise.all([
+        TenantPost.find({ ...filter, 'analysis.status': 'done', 'analysis.is_relevant': true }).select('-matched_queries -__v').lean(),
+        TenantPost.find({ ...filter, $nor: [{ 'analysis.status': 'done', 'analysis.is_relevant': true }] })
+            .select('platform post_type published_at analysis.status analysis.is_relevant').lean(),
+    ]);
+    const posts = used.concat(others);
     const stats = computeStats(event, posts);
     const review = event.analyst_review || {};
     const analyst = review.prose || {};
