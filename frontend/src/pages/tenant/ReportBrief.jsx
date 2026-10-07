@@ -38,9 +38,9 @@ const ACCOUNT_LABEL = {
 const TERM_LABEL = { SIR: 'Special Intensive Revision', 'CEC resignation': 'Chief Election Commissioner resignation', CJP: 'Cockroach Janta Party', CEC: 'Chief Election Commissioner' };
 const termLabel = (t) => TERM_LABEL[t] || t;
 
-const fmt = (n) => (n === null || n === undefined ? '—' : Number(n).toLocaleString('en-IN'));
+export const fmt = (n) => (n === null || n === undefined ? '—' : Number(n).toLocaleString('en-IN'));
 /** Big numbers for tiles: 1.03 crore / 57.3 lakh. */
-const fmtBig = (n) => {
+export const fmtBig = (n) => {
   const v = Number(n || 0);
   if (v >= 1e7) return `${(v / 1e7).toFixed(2)} crore`;
   if (v >= 1e5) return `${(v / 1e5).toFixed(1)} lakh`;
@@ -48,7 +48,7 @@ const fmtBig = (n) => {
 };
 const FULL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 /** "6 October 2026" (Indian Standard Time). */
-const fmtDay = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long', year: 'numeric' }) : '—');
+export const fmtDay = (d) => (d ? new Date(d).toLocaleDateString('en-GB', { timeZone: 'Asia/Kolkata', day: 'numeric', month: 'long', year: 'numeric' }) : '—');
 /** "6 October 2026, 23:29" (Indian Standard Time, 24-hour clock). */
 const fmtDate = (d) => (d ? `${fmtDay(d)}, ${new Date(d).toLocaleTimeString('en-GB', { timeZone: 'Asia/Kolkata', hour: '2-digit', minute: '2-digit', hour12: false })}` : '—');
 /** "2026-10-06" → { day: 6, month: "October" } for chart and grid axes. */

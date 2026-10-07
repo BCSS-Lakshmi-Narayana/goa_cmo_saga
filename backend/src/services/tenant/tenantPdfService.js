@@ -105,13 +105,13 @@ const toneCounts = async (report) => {
     return Object.fromEntries(entries);
 };
 
-const renderReportPdf = async ({ baseUrl, token, report, withPosts }) => {
+const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = false }) => {
     if (busy) throw httpError(429, 'Another PDF is being prepared. Please try again in a minute.');
     ensureMemory(MIN_FREE_MB_START);
     busy = true;
     try {
         const printUrl = (extra = '') => `${baseUrl}/workspace/print/${encodeURIComponent(report.id)}?pdf=1${extra}`;
-        const parts = [await printPage(printUrl(), token, 120000)];
+        const parts = [await printPage(printUrl(executive ? '&format=executive' : ''), token, 120000)];
 
         if (withPosts) {
             const counts = await toneCounts(report);

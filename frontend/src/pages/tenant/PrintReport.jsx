@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../lib/api';
 import ReportBrief, { Footage, PLATFORM_LABEL } from './ReportBrief';
+import ExecutiveReport from './ExecutiveReport';
 
 const istDay = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : undefined);
 const fmtDate = (d) => (d ? new Date(d).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit', hour12: false }) : '—');
@@ -64,6 +65,8 @@ const PrintReport = () => {
   const { reportId } = useParams();
   const params = new URLSearchParams(window.location.search);
   const withPosts = params.get('posts') === '1';
+  // ?format=executive: the short executive-format report instead of the detailed brief.
+  const executive = params.get('format') === 'executive';
   // ?pdf=1: rendered by the server's headless Chrome into a PDF file (no print dialog).
   const forPdf = params.get('pdf') === '1';
   // A slice of the appendix only (server-side PDF of the posts, rendered in parts).
@@ -103,7 +106,7 @@ const PrintReport = () => {
     if (!state.report) return;
     const r = state.report;
     const day = (d) => (d ? new Date(new Date(d).getTime() + 5.5 * 3600000).toISOString().slice(0, 10) : 'all');
-    document.title = `${(r.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}_${day(r.range_from || r.period_start)}_to_${day(r.range_to || r.period_end)}${withPosts ? '_with_posts' : ''}`;
+    document.title = `${(r.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}_${day(r.range_from || r.period_start)}_to_${day(r.range_to || r.period_end)}${executive ? '_executive' : ''}${withPosts ? '_with_posts' : ''}`;
     // Let the browser lay out the brief before printing (or before the server captures it).
     requestAnimationFrame(() => requestAnimationFrame(() => setReady(true)));
     if (new URLSearchParams(window.location.search).get('autoprint') === '1') {
@@ -120,7 +123,7 @@ const PrintReport = () => {
         <>
           {/* Server-rendered PDF: real page margins; the server joins the parts and stamps page numbers. */}
           <style>{'@page { size: A4; margin: 14mm 13mm 16mm 13mm; } .print\\:hidden { display: none !important; } tr, li { break-inside: avoid; } h2 { break-after: avoid; } html, body { margin: 0; -webkit-print-color-adjust: exact; print-color-adjust: exact; background: #fff; }'}</style>
-          {slice ? <PostsAppendix posts={state.posts || []} slice={slice} /> : <ReportBrief report={state.report} workspace={state.workspace} />}
+          {slice ? <PostsAppendix posts={state.posts || []} slice={slice} /> : executive ? <ExecutiveReport report={state.report} /> : <ReportBrief report={state.report} workspace={state.workspace} />}
         </>
       ) : (
       <>
@@ -132,7 +135,7 @@ const PrintReport = () => {
         <thead><tr><td /></tr></thead>
         <tfoot><tr><td /></tr></tfoot>
         <tbody><tr><td>
-          <ReportBrief report={state.report} workspace={state.workspace} />
+          {executive ? <ExecutiveReport report={state.report} /> : <ReportBrief report={state.report} workspace={state.workspace} />}
           {state.posts && <PostsAppendix posts={state.posts} />}
         </td></tr></tbody>
       </table>

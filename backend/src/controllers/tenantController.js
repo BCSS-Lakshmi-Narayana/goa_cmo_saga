@@ -119,12 +119,13 @@ const downloadReportPdf = async (req, res) => {
     if (!baseUrl) return res.status(503).json({ message: 'PDF download is not configured' });
     const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || req.query.token;
     const withPosts = req.query.posts === '1';
+    const executive = req.query.format === 'executive';
     try {
-        const pdf = await renderReportPdf({ baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts });
+        const pdf = await renderReportPdf({ baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts, executive });
         const name = `${String(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}`
             + `_${istDate(report.range_from || report.period_start) || 'start'}_to_${istDate(report.range_to || report.period_end) || 'latest'}`
-            + `${withPosts ? '_with_posts' : ''}.pdf`;
-        await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts });
+            + `${executive ? '_executive' : ''}${withPosts ? '_with_posts' : ''}.pdf`;
+        await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts, format: executive ? 'executive' : 'detailed' });
         res.set({ 'Content-Type': 'application/pdf', 'Content-Disposition': `attachment; filename="${name}"`, 'Cache-Control': 'no-store' });
         res.send(Buffer.from(pdf));
     } catch (err) {

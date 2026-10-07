@@ -362,9 +362,12 @@ const computeStats = (event, all) => {
     // ── Key intelligence: each point computed from the posts ──
     const NARR = (k) => ((event.narratives || []).find((n) => n.key === k) || {}).label || k;
     const keyIntel = [];
+    // The same figures as numbers, for the executive-format report.
+    const exec = {};
     if (timeline.length >= 2 && peak) {
         const others = timeline.filter((d) => d.day !== peak.day).map((d) => d.total).sort((a, b) => a - b);
         const median = others.length ? others[Math.floor(others.length / 2)] : 0;
+        exec.volume = { peak_day: peak.day, peak_posts: peak.total, peak_negative_pct: peak.negative_pct, median_day_posts: median, peak_multiple: median ? Number((peak.total / median).toFixed(1)) : null };
         keyIntel.push({
             key: 'volume_spike',
             title: `Public conversation peaked on ${dayLabel(peak.day)} ${peak.day.slice(0, 4)}`,
@@ -377,6 +380,12 @@ const computeStats = (event, all) => {
         const linked = criticalOfSubject.filter((p) => (p.analysis.narratives || []).some((k) => ['resignation_demand', 'sir_voter_roll'].includes(k))).length;
         const topNarr = countBy(criticalOfSubject, (p) => (p.analysis.narratives || []).filter((k) => k !== 'other')).slice(0, 3);
         const share = pct(linked, criticalOfSubject.length);
+        exec.criticism = {
+            critical_posts: criticalOfSubject.length,
+            linked_share: share,
+            // The narratives most carried by posts critical of the subject.
+            top_narratives: topNarr.map(([k, c]) => ({ key: k, label: NARR(k), share: pct(c, criticalOfSubject.length) })),
+        };
         keyIntel.push({
             key: 'criticism_drivers',
             title: `Criticism of ${event.subject?.name || 'the subject'} is ${share >= 60 ? 'predominantly' : 'partly'} linked to the resignation and SIR narratives`,
@@ -401,6 +410,7 @@ const computeStats = (event, all) => {
         const atSubject = crit.filter((p) => ['subject', 'election_commission'].includes(p.analysis.target_type)).length;
         const atOrganisers = crit.filter((p) => p.analysis.target_type === 'protest_organisers').length;
         const maxReach = crit.reduce((m, p) => Math.max(m, p.engagement_total || 0), 0);
+        exec.threats = { critical: crit.length, high: threats.length - crit.length, at_subject: atSubject, at_organisers: atOrganisers, max_engagement: maxReach };
         keyIntel.push({
             key: 'threats',
             title: pct(crit.length, relevant.length) < 2
@@ -416,6 +426,7 @@ const computeStats = (event, all) => {
             || MEDIA_RX.test(`${p.analysis.review?.note || ''} ${p.analysis.risk_reason || ''}`));
         const reviewedFirst = (a, b) => (Boolean(b.analysis.review?.note) - Boolean(a.analysis.review?.note)) || ((b.engagement_total || 0) - (a.engagement_total || 0));
         const allegationPosts = relevant.filter((p) => (p.analysis.claims || []).some((c) => c.kind === 'allegation')).length;
+        exec.information = { misattributed_media: misattributed.length, allegations_as_fact: allegationPosts };
         keyIntel.push({
             key: 'information_risk',
             title: 'Misattributed media and unverified claims are recurring information risks',
@@ -430,6 +441,7 @@ const computeStats = (event, all) => {
             const mobil = relevant.filter((p) => (p.analysis.narratives || []).includes('oct10_mobilisation'));
             const recentDays = days.slice(-2);
             const recent = mobil.filter((p) => p.published_at && recentDays.includes(istDay(p.published_at))).length;
+            exec.next_point = { date: istDay(next.date), description: next.description, mobilisation_posts: mobil.length, recent_posts: recent, recent_days: recentDays };
             keyIntel.push({
                 key: 'next_point',
                 title: `Next significant monitoring point: ${dayLabel(istDay(next.date))} ${istDay(next.date).slice(0, 4)}`,
@@ -470,6 +482,7 @@ const computeStats = (event, all) => {
 
     return {
         key_intelligence: keyIntel,
+        executive_metrics: exec,
         location_trends: locationTrends,
         footage,
         tone_sections: toneSections,
