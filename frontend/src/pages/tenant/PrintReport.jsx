@@ -27,8 +27,8 @@ export const PostsAppendix = ({ posts, slice = null }) => (
       const count = slice ? slice.toneTotal : rows.length;
       return (
         <div key={tone} className="mb-5">
-          <h3 className="text-[14px] font-bold capitalize mb-1" style={{ color, breakAfter: 'avoid' }}>
-            {tone} — {count.toLocaleString('en-IN')} posts{slice && !slice.first ? ' (continued)' : ''}
+          <h3 className="text-[14px] font-bold mb-1" style={{ color, breakAfter: 'avoid' }}>
+            {tone[0].toUpperCase() + tone.slice(1)} — {count.toLocaleString('en-IN')} posts{slice && !slice.first ? ' (continued)' : ''}
           </h3>
           <table className="w-full text-[9.5px] border-collapse">
             <thead>
