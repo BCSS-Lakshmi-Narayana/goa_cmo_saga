@@ -19,7 +19,7 @@ const { PDFDocument, StandardFonts, rgb } = require('pdf-lib');
 const TenantPost = require('../../models/tenant/TenantPost');
 const { TONE_QUERY } = require('./tenantReportService');
 
-const APPENDIX_SLICE = parseInt(process.env.TENANT_PDF_SLICE || '800', 10);
+const APPENDIX_SLICE = parseInt(process.env.TENANT_PDF_SLICE || '600', 10);
 const MIN_FREE_MB_START = parseInt(process.env.TENANT_PDF_MIN_FREE_MB || '1200', 10);
 const MIN_FREE_MB_SLICE = Math.round(MIN_FREE_MB_START / 2);
 
@@ -41,8 +41,20 @@ const ensureMemory = (minMb) => {
     if (availableMb() < minMb) throw httpError(503, 'The server is busy right now. Please try the PDF again in a few minutes.');
 };
 
-/** Open one print-view URL in a fresh page, wait until it says it is ready, and print it. */
-const printPage = async (browser, url, token, timeout) => {
+const launch = () => puppeteer.launch({
+    headless: 'shell',
+    // A Chrome already on the host (e.g. Playwright's headless shell); else Puppeteer's own download.
+    executablePath: process.env.TENANT_PDF_CHROME_PATH || undefined,
+    args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--font-render-hinting=none', '--js-flags=--max-old-space-size=512'],
+});
+
+/**
+ * Print one print-view URL in its own short-lived Chrome. A shared renderer
+ * keeps the memory of earlier parts (it reached 2 GB over a 19,000-post
+ * appendix), so each part gets a fresh browser that is closed afterwards.
+ */
+const printPage = async (url, token, timeout) => {
+    const browser = await launch();
     const page = await browser.newPage();
     try {
         await page.evaluateOnNewDocument((t) => { localStorage.setItem('token', t); }, token);
@@ -53,7 +65,7 @@ const printPage = async (browser, url, token, timeout) => {
         await page.evaluate(() => document.fonts && document.fonts.ready);
         return await page.pdf({ preferCSSPageSize: true, printBackground: true, displayHeaderFooter: false, timeout });
     } finally {
-        await page.close().catch(() => {});
+        await browser.close().catch(() => {});
     }
 };
 
@@ -97,16 +109,9 @@ const renderReportPdf = async ({ baseUrl, token, report, withPosts }) => {
     if (busy) throw httpError(429, 'Another PDF is being prepared. Please try again in a minute.');
     ensureMemory(MIN_FREE_MB_START);
     busy = true;
-    let browser;
     try {
-        browser = await puppeteer.launch({
-            headless: 'shell',
-            // A Chrome already on the host (e.g. Playwright's headless shell); else Puppeteer's own download.
-            executablePath: process.env.TENANT_PDF_CHROME_PATH || undefined,
-            args: ['--no-sandbox', '--disable-dev-shm-usage', '--disable-gpu', '--font-render-hinting=none', '--renderer-process-limit=1'],
-        });
         const printUrl = (extra = '') => `${baseUrl}/workspace/print/${encodeURIComponent(report.id)}?pdf=1${extra}`;
-        const parts = [await printPage(browser, printUrl(), token, 120000)];
+        const parts = [await printPage(printUrl(), token, 120000)];
 
         if (withPosts) {
             const counts = await toneCounts(report);
@@ -119,7 +124,7 @@ const renderReportPdf = async ({ baseUrl, token, report, withPosts }) => {
                         appendix: '1', tone, skip: String(skip), limit: String(APPENDIX_SLICE),
                         tone_total: String(counts[tone]), total: String(total), intro: first ? '1' : '0',
                     });
-                    parts.push(await printPage(browser, printUrl(`&${params}`), token, 180000));
+                    parts.push(await printPage(printUrl(`&${params}`), token, 180000));
                     first = false;
                 }
             }
@@ -127,7 +132,6 @@ const renderReportPdf = async ({ baseUrl, token, report, withPosts }) => {
         return await joinAndNumber(parts);
     } finally {
         busy = false;
-        if (browser) await browser.close().catch(() => {});
     }
 };
 
