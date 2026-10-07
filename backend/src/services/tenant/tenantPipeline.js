@@ -12,7 +12,7 @@ const states = new Map(); // `${tenant}:${event}` → state
 
 const getPipelineState = (tenantId, eventId) => states.get(`${tenantId}:${eventId}`) || null;
 
-const runEventPipeline = async (tenantId, eventId, { generatedBy = null, platforms, skipCollect = false, skipReport = false, incrementalSince = null } = {}) => {
+const runEventPipeline = async (tenantId, eventId, { generatedBy = null, platforms, skipCollect = false, skipReport = false, incrementalSince = null, classifyLimit = 0 } = {}) => {
     const key = `${tenantId}:${eventId}`;
     if (states.get(key)?.running) throw new Error('Pipeline already running for this event');
     const state = { running: true, stage: 'collecting', started_at: new Date(), error: null };
@@ -33,7 +33,7 @@ const runEventPipeline = async (tenantId, eventId, { generatedBy = null, platfor
         }
 
         state.stage = 'classifying';
-        state.classification = await classifyEvent(event, { onProgress: (c) => { state.progress = { ...c }; } });
+        state.classification = await classifyEvent(event, { limit: classifyLimit, onProgress: (c) => { state.progress = { ...c }; } });
 
         if (skipReport) {
             state.stage = 'done';

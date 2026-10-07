@@ -222,7 +222,7 @@ const prefilterUnrelated = async (event) => {
 };
 
 /** Classify an event's pending (and optionally failed / all) posts. */
-const classifyEvent = async (event, { retryFailed = true, concurrency = parseInt(process.env.TENANT_CLASSIFY_CONCURRENCY || '3', 10), reclassify = false, onProgress } = {}) => {
+const classifyEvent = async (event, { retryFailed = true, concurrency = parseInt(process.env.TENANT_CLASSIFY_CONCURRENCY || '3', 10), reclassify = false, onProgress, limit = 0 } = {}) => {
     const prefiltered = await prefilterUnrelated(event);
     if (prefiltered) console.log(`[tenantClassify] pre-filtered ${prefiltered} unrelated videos`);
     const statuses = reclassify ? ['pending', 'failed', 'done'] : (retryFailed ? ['pending', 'failed'] : ['pending']);
@@ -232,7 +232,7 @@ const classifyEvent = async (event, { retryFailed = true, concurrency = parseInt
         'analysis.status': { $in: statuses },
         // Never re-send pre-filtered rows on a reclassify.
         'analysis.rationale': { $not: /^Pre-filter/ },
-    }).sort({ engagement_total: -1 }).lean();
+    }).sort({ engagement_total: -1 }).limit(limit > 0 ? limit : 0).lean();
 
     const batches = [];
     for (let i = 0; i < posts.length; i += BATCH_SIZE) batches.push(posts.slice(i, i + BATCH_SIZE));

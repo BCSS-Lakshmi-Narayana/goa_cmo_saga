@@ -42,7 +42,12 @@ const tick = async () => {
         await TenantEvent.updateOne({ tenant_id: ev.tenant_id, id: ev.id }, { $set: stamp });
 
         console.log(`[tenantScheduler] refreshing ${ev.tenant_id}/${ev.id}: ${platforms.join(',')} since ${incrementalSince.toISOString()}`);
-        runEventPipeline(ev.tenant_id, ev.id, { platforms, skipReport: true, incrementalSince, generatedBy: 'scheduler' })
+        runEventPipeline(ev.tenant_id, ev.id, {
+            platforms, skipReport: true, incrementalSince, generatedBy: 'scheduler',
+            // The local model does ~3 posts a minute, so each hourly refresh labels only the
+            // highest-engagement new posts; the backlog is labelled in bulk outside the pipeline.
+            classifyLimit: parseInt(process.env.TENANT_SCHEDULER_CLASSIFY_LIMIT || '30', 10),
+        })
             .catch((err) => console.error(`[tenantScheduler] ${ev.tenant_id}/${ev.id} failed: ${err.message}`));
     }
 };
