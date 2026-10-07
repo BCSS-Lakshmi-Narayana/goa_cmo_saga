@@ -262,13 +262,20 @@ const collectFacebookPages = async (pages, since, mentionsEvent, pagesPerPage) =
 };
 
 // ── Instagram ────────────────────────────────────────────────────────
+// ig-downloader-api (same /api/instagram/* routes as before): POST /posts
+// {username, maxId} returns 12 posts per page under result.edges with
+// page_info.end_cursor for the next page.
 
 const igNode = (p) => p.node || p;
 
 const fromInstagram = (node, account) => {
     const code = node.shortcode || node.code || null;
     const caption = node.caption?.text || node.edge_media_to_caption?.edges?.[0]?.node?.text || '';
-    const isVideo = node.is_video || node.media_type === 2;
+    const video = node.video_versions?.[0]?.url || node.video_url || null;
+    const image = node.display_url || node.display_uri || node.image_versions2?.candidates?.[0]?.url || null;
+    const media = [];
+    if (video) media.push({ kind: 'video', url: video });
+    if (image) media.push({ kind: 'photo', url: image });
     return {
         platform: 'instagram',
         platform_post_id: String(node.id || node.pk || code),
@@ -279,36 +286,52 @@ const fromInstagram = (node, account) => {
         text: caption,
         hashtags: extractHashtags(caption),
         mentions: extractMentions(caption),
-        media: [{ kind: isVideo ? 'video' : 'photo', url: node.display_url || node.image_versions2?.candidates?.[0]?.url || null }],
+        media,
         location: node.location?.name || null,
         post_type: 'original',
         metrics: {
             likes: toNum(node.like_count ?? node.edge_liked_by?.count ?? node.edge_media_preview_like?.count),
             comments: toNum(node.comment_count ?? node.edge_media_to_comment?.count),
-            shares: null,
-            views: toNum(node.view_count ?? node.play_count ?? node.video_view_count),
+            shares: toNum(node.reshare_count),
+            views: toNum(node.play_count ?? node.view_count ?? node.video_view_count),
         },
         collected_via: 'instagram_account',
     };
 };
 
-const collectInstagram = async (accounts, since, mentionsEvent) => {
+/**
+ * Recent posts of each listed account, paging back until posts predate the
+ * window. Posts by the organisers' own accounts are all kept (their captions
+ * often don't name the event) and judged at labelling; other accounts' posts
+ * must mention the event.
+ */
+const collectInstagram = async (accounts, since, mentionsEvent, { pages = 5, ownAccounts = new Set() } = {}) => {
     const out = [];
     for (const account of accounts) {
-        const raw = await igService.fetchUserPosts(account);
-        if (!raw) continue;
-        const edges = raw.result?.edges || raw.edges || raw.items || (Array.isArray(raw) ? raw : []);
-        for (const e of edges) {
-            const post = fromInstagram(igNode(e), account);
-            if (since && post.published_at && post.published_at < since) continue;
-            // Outlet accounts post about everything; keep only posts about this event.
-            if (!mentionsEvent(post.text)) continue;
-            out.push({ query: `@${account}`, post });
+        const own = ownAccounts.has(String(account).toLowerCase());
+        let maxId = '';
+        for (let page = 0; page < pages; page++) {
+            const raw = await igService.fetchUserPosts(account, maxId);
+            if (!raw) break;
+            const result = raw.result || raw;
+            const edges = result.edges || raw.edges || raw.items || (Array.isArray(raw) ? raw : []);
+            if (!edges.length) break;
+            let older = 0;
+            for (const e of edges) {
+                const post = fromInstagram(igNode(e), account);
+                if (since && post.published_at && post.published_at < since) { older += 1; continue; }
+                if (!own && !mentionsEvent(post.text)) continue;
+                out.push({ query: `@${account}`, post });
+            }
+            // Pinned posts can be old, so stop only when most of a page predates the window.
+            if (older >= Math.ceil(edges.length / 2)) break;
+            const next = result.page_info?.end_cursor || raw.next_max_id || '';
+            if (!next || !(result.page_info?.has_next_page ?? true)) break;
+            maxId = next;
         }
     }
     return out;
 };
-
 
 // ── YouTube ──────────────────────────────────────────────────────────
 
@@ -538,7 +561,12 @@ const collectForEvent = async (event, { platforms = ALL_PLATFORMS, incrementalSi
             ...(await collectFacebook(plan.facebook_queries || [], incrementalSince || since, incrementalSince ? 2 : (plan.facebook_search_pages || 10))),
             ...(await collectFacebookPages(plan.facebook_pages || [], incrementalSince || since, mentionsEvent, incrementalSince ? 1 : (plan.facebook_page_pages || 5))),
         ],
-        instagram: () => collectInstagram(plan.instagram_accounts || [], since, mentionsEvent),
+        instagram: () => collectInstagram(plan.instagram_accounts || [], incrementalSince || since, mentionsEvent, {
+            pages: incrementalSince ? 1 : (plan.instagram_pages || 5),
+            // Organisers' own handles, from their "@handle" aliases.
+            ownAccounts: new Set((event.organisers || []).flatMap((o) => o.aliases || [])
+                .filter((a) => String(a).startsWith('@')).map((a) => a.slice(1).toLowerCase())),
+        }),
         youtube: () => collectYouTube(plan.youtube_queries || [], since, plan.youtube_comment_videos ?? 15, mentionsEvent, {
             searchPages: incrementalSince ? 1 : (plan.youtube_search_pages || 1),
             commentsPerVideo: plan.youtube_comments_per_video || COMMENTS_PER_VIDEO,

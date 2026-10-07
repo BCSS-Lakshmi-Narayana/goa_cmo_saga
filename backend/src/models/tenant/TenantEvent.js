@@ -59,6 +59,7 @@ const tenantEventSchema = new mongoose.Schema({
         instagram_accounts: { type: [String], default: [] },
         facebook_pages: { type: [String], default: [] },
         facebook_search_pages: { type: Number, default: 10 },
+        instagram_pages: { type: Number, default: 5 },
         facebook_page_pages: { type: Number, default: 5 },
         youtube_queries: { type: [String], default: [] },
         youtube_comment_videos: { type: Number, default: 15 },

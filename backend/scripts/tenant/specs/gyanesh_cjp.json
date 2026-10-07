@@ -316,7 +316,8 @@
         "youtube_search_pages": 3,
         "youtube_comments_per_video": 150,
         "facebook_search_pages": 20,
-        "facebook_page_pages": 6
+        "facebook_page_pages": 6,
+        "instagram_pages": 8
       },
       "narratives": [
         {
