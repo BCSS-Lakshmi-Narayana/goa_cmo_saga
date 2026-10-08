@@ -81,6 +81,9 @@ const tenantEventSchema = new mongoose.Schema({
     narratives: { type: [narrativeSchema], default: [] },
 
     facts: { type: [factSchema], default: [] },
+    // Written guidance for the presentation-format report (priorities, principles, moves,
+    // draft statement, 30-day plan, closing pillars). Figures are never stored here.
+    briefing: { type: mongoose.Schema.Types.Mixed, default: null },
     // Written by a human analyst after reading the flagged posts; carried into every report.
     analyst_review: {
         bottom_line: { type: String, default: null },

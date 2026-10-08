@@ -448,6 +448,14 @@ const computeStats = (event, all) => {
         const reviewedFirst = (a, b) => (Boolean(b.analysis.review?.note) - Boolean(a.analysis.review?.note)) || ((b.engagement_total || 0) - (a.engagement_total || 0));
         const allegationPosts = relevant.filter((p) => (p.analysis.claims || []).some((c) => c.kind === 'allegation')).length;
         exec.information = { misattributed_media: misattributed.length, allegations_as_fact: allegationPosts };
+        // High- and critical-risk posts whose reason is communal, caste or religious abuse.
+        const COMMUNAL_RX = /communal|caste|religio|jihadi|rohingya|mulla|madras|hindu|muslim/i;
+        exec.communal = relevant.filter((p) => ['critical', 'high'].includes(riskBand(p))
+            && COMMUNAL_RX.test(`${p.analysis.review?.note || ''} ${p.analysis.risk_reason || ''}`)).length;
+        // Languages of the relevant posts (platform-detected), known Indian and English languages only.
+        const LANG = { en: 'English', hi: 'Hindi', mr: 'Marathi', bn: 'Bengali', ta: 'Tamil', te: 'Telugu', gu: 'Gujarati', kn: 'Kannada', ml: 'Malayalam', pa: 'Punjabi', ur: 'Urdu', or: 'Odia', as: 'Assamese' };
+        exec.languages = countBy(relevant, (p) => LANG[(p.language || p.analysis.language || '').slice(0, 2)] || null)
+            .filter(([k]) => k && k !== 'null').slice(0, 5).map(([language, posts]) => ({ language, posts }));
         keyIntel.push({
             key: 'information_risk',
             title: 'Misattributed media and unverified claims are recurring information risks',
@@ -777,6 +785,7 @@ const buildReportData = async (event, { from = null, to = null } = {}) => {
                 facts: event.facts,
                 sources: event.sources,
                 watch_items: event.watch_items || [],
+                briefing: event.briefing || null,
             },
             bottom_line: bottomLine,
             bottom_line_source: bottomLineSource,

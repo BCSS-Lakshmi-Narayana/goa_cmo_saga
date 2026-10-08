@@ -122,16 +122,17 @@ const startReportPdf = async (req, res) => {
     const baseUrl = process.env.TENANT_PRINT_BASE_URL;
     if (!baseUrl) return res.status(503).json({ message: 'PDF download is not configured' });
     const token = (req.headers.authorization || '').replace(/^Bearer\s+/i, '') || req.query.token;
-    const withPosts = Boolean(req.body?.posts);
+    const presentation = req.body?.format === 'presentation';
+    const withPosts = Boolean(req.body?.posts) && !presentation;
     const executive = req.body?.format === 'executive';
     const name = `${String(report.title || 'report').replace(/[^\w]+/g, '_').replace(/^_|_$/g, '')}`
         + `_${istDate(report.range_from || report.period_start) || 'start'}_to_${istDate(report.range_to || report.period_end) || 'latest'}`
-        + `${executive ? '_executive' : ''}${withPosts ? '_with_posts' : ''}.pdf`;
+        + `${executive ? '_executive' : ''}${presentation ? '_presentation' : ''}${withPosts ? '_with_posts' : ''}.pdf`;
     const job = startPdfJob({
         tenantId: req.tenantId, userId: req.user.id, name,
-        baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts, executive,
+        baseUrl: baseUrl.replace(/\/+$/, ''), token, report, withPosts, executive, presentation,
     });
-    await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts, format: executive ? 'executive' : 'detailed' });
+    await createAuditLog(req.user, 'download_report_pdf', 'tenant_report', report.id, { with_posts: withPosts, format: presentation ? 'presentation' : executive ? 'executive' : 'detailed' });
     res.status(202).json({ job: { id: job.id, status: job.status } });
 };
 

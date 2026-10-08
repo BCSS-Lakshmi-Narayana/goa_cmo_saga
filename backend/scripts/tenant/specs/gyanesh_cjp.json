@@ -2,7 +2,37 @@
   "tenant_id": "gyanesh",
   "workspace": {
     "name": "Gyanesh Kumar, Chief Election Commissioner of India",
-    "client_description": "Public discussion monitoring"
+    "client_description": "Public discussion monitoring",
+    "branding": {
+      "name": "Blue Cloud Softech Solutions Limited",
+      "classification": "Restricted",
+      "address": "Plot No 38, 5th Floor, N Heights, Hitech City, Madhapur, Hyderabad 500081",
+      "contact": "info@bluecloudsoftech.com | www.bluecloudsoftech.com",
+      "support": [
+        {
+          "title": "Wider monitoring",
+          "detail": "Language and state split; Reddit, Telegram; full Instagram coverage"
+        },
+        {
+          "title": "Integrity checks",
+          "detail": "Coordinated-account checks; flag fake and AI-made media"
+        },
+        {
+          "title": "Baseline and dashboard",
+          "detail": "Quiet-period baseline; weekly sentiment, correction reach, risk"
+        },
+        {
+          "title": "Daily desk on key dates",
+          "detail": "Hourly log of threats, fake media and new claims"
+        },
+        {
+          "title": "Data pages",
+          "detail": "Support the Special Intensive Revision cell on state-wise and claims pages"
+        }
+      ],
+      "safeguards": "Public posts only. No profiling. Findings to the Commission only. No amplification.",
+      "next_step": "Next step: a scoping discussion with the Commission's communications and Special Intensive Revision teams."
+    }
   },
   "user": {
     "email": "gyanesh@blurasaga.com",
@@ -782,6 +812,152 @@
         "enabled": true,
         "x_minutes": 60,
         "youtube_hours": 6
+      },
+      "briefing": {
+        "title": "Situation Assessment and Way Forward",
+        "description": "Online public discussion on Shri Gyanesh Kumar, the Special Intensive Revision of electoral rolls and the Cockroach Janta Party protests",
+        "prepared_for": "For the Office of the Chief Election Commissioner",
+        "subject_label": "the Chief Election Commissioner",
+        "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings.",
+        "this_week": [
+          {
+            "title": "Publish state-wise Special Intensive Revision figures",
+            "detail": "Additions, deletions and the reason for each, before 10 October"
+          },
+          {
+            "title": "Open a check-and-restore route",
+            "detail": "Any citizen can check their entry and be restored if removed in error"
+          },
+          {
+            "title": "Answer the most-shared claims",
+            "detail": "Point by point, in English, Hindi and Marathi, on Instagram and X"
+          },
+          {
+            "title": "Condemn threats against anyone",
+            "detail": "Officials, protesters and journalists, in one short statement"
+          },
+          {
+            "title": "Speak as the Commission",
+            "detail": "Not as an individual, and clear of police and government statements"
+          }
+        ],
+        "callouts": {
+          "tone": "So the Commission's reply must be built for this world: short videos, a sharp line, specific data.",
+          "narratives": "Good news: the substance is a factual matter the Commission can answer.",
+          "targets": "The Commission is being judged alongside permission refusals, detentions and a First Information Report that are not its decisions.",
+          "targets_action": "Answer as an institution. Move the talk back to the process.",
+          "accounts": "Opposition and ruling-side leaders have taken sides. The Commission must stay visibly outside the contest.",
+          "claims_quote": "\"Every deletion has a recorded reason. Here is the breakdown for your state, and here is how to check your own entry.\"",
+          "claims_note": "If some eligible voters were wrongly removed, say so and say what is being done.",
+          "next_risk": "Tractor mobilisation talk and counter-protest calls raise the risk of confrontation. Permission is a police matter.",
+          "communal": "Labelling of organisers by religion and \"Rohingya\" tags. The Commission should say it does not want to be defended this way."
+        },
+        "principles": [
+          {
+            "title": "Credibility over control",
+            "detail": "Answer with data, not takedowns"
+          },
+          {
+            "title": "Institution over individual",
+            "detail": "Do not answer slogans or nicknames"
+          },
+          {
+            "title": "Fair to everyone",
+            "detail": "Condemn threats on all sides; stay out of party politics"
+          }
+        ],
+        "protected": "Resignation demands, strong opinion, satire and memes, nicknames, peaceful protest",
+        "actionable": "Threats or calls for violence, incitement, communal or gendered abuse, doctored or AI-generated media, clear defamation",
+        "moves": [
+          {
+            "title": "Lead with Special Intensive Revision data",
+            "detail": "State-wise additions and deletions, weekly"
+          },
+          {
+            "title": "Make fixing mistakes easy",
+            "detail": "Check-and-restore route, running count"
+          },
+          {
+            "title": "Answer claims, not slogans",
+            "detail": "Claims-and-answers page, within a day"
+          },
+          {
+            "title": "Show how views are recorded",
+            "detail": "Publish the promised agendas and minutes"
+          },
+          {
+            "title": "Tell the data's stories",
+            "detail": "Youth enrolment, access, voter education"
+          },
+          {
+            "title": "Go where people are",
+            "detail": "Instagram, YouTube, X in three languages"
+          },
+          {
+            "title": "Brief, do not only broadcast",
+            "detail": "Technical briefings; consider independent review"
+          },
+          {
+            "title": "Condemn violence on all sides",
+            "detail": "One short statement before 10 October"
+          },
+          {
+            "title": "Protect against real threats",
+            "detail": "Report threats and fake media to platforms"
+          }
+        ],
+        "statement_title": "A draft statement for 10 October",
+        "statement": [
+          "The Election Commission of India respects the right of every citizen to question its work and to protest peacefully.",
+          "The Special Intensive Revision is being carried out to make the electoral rolls accurate and complete. Between [date] and [date], [X] names were added and [Y] removed across [states]. The reason for every removal is recorded, and state-wise figures are published at [link].",
+          "Any citizen who believes their name was removed in error can check and apply for restoration at [link]. Applications will be decided within [N] days. So far, [Z] names have been restored.",
+          "The Commission condemns threats of violence against any person, whether an official, a protester or a journalist."
+        ],
+        "statement_note": "Fill every bracket from the official record, and confirm each sentence is true on the day of issue.",
+        "plan": [
+          {
+            "label": "By 9 Oct",
+            "detail": "Approve statement; publish first state-wise figures; prepare claims page and videos"
+          },
+          {
+            "label": "9 Oct",
+            "detail": "Brief journalists on the Special Intensive Revision method; share threat posts with security staff"
+          },
+          {
+            "label": "10 Oct",
+            "detail": "Watch Jantar Mantar; log threats and fake media; answer new claims within hours"
+          },
+          {
+            "label": "2 weeks",
+            "detail": "Launch check-and-restore route and weekly data page; explainer series"
+          },
+          {
+            "label": "30 days",
+            "detail": "Stakeholder briefing; first weekly summary of sentiment, correction reach and risk"
+          }
+        ],
+        "measures_extra": [
+          {
+            "measure": "Reach of corrections against reach of claims",
+            "baseline": "Not measured yet",
+            "direction": "Corrections reach at least half"
+          },
+          {
+            "measure": "Names restored via check-and-restore",
+            "baseline": "Not yet available",
+            "direction": "Published weekly"
+          }
+        ],
+        "closing": {
+          "title": "Open, accurate and fair",
+          "line": "The way out is openness rather than restriction. The first test is the Jantar Mantar protest on 10 October.",
+          "pillars": [
+            "Publish the data",
+            "Make correction easy",
+            "Condemn all threats",
+            "Speak as the Commission"
+          ]
+        }
       }
     }
   ]

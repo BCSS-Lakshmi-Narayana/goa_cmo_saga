@@ -99,13 +99,14 @@ const printPage = async (url, token, timeout) => {
 };
 
 /** Join PDFs in order and stamp "Page X of Y" at the foot of every page. */
-const joinAndNumber = async (buffers) => {
+const joinAndNumber = async (buffers, { number = true } = {}) => {
     const out = await PDFDocument.create();
     for (const buf of buffers) {
         const doc = await PDFDocument.load(buf);
         const pages = await out.copyPages(doc, doc.getPageIndices());
         pages.forEach((p) => out.addPage(p));
     }
+    if (!number) return Buffer.from(await out.save());
     const font = await out.embedFont(StandardFonts.Helvetica);
     const total = out.getPageCount();
     out.getPages().forEach((page, i) => {
@@ -134,11 +135,12 @@ const toneCounts = async (report) => {
     return Object.fromEntries(entries);
 };
 
-const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = false }) => {
+const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = false, presentation = false }) => {
     {
         const printUrl = (extra = '') => `${baseUrl}/workspace/print/${encodeURIComponent(report.id)}?pdf=1${extra}`;
         await ensureMemory(MIN_FREE_MB_REPORT);
-        const parts = [await printPage(printUrl(executive ? '&format=executive' : ''), token, 120000)];
+        const format = presentation ? '&format=presentation' : executive ? '&format=executive' : '';
+        const parts = [await printPage(printUrl(format), token, 120000)];
 
         if (withPosts) {
             const counts = await toneCounts(report);
@@ -156,7 +158,8 @@ const renderReportPdf = async ({ baseUrl, token, report, withPosts, executive = 
                 }
             }
         }
-        return await joinAndNumber(parts);
+        // Slides carry their own numbers.
+        return await joinAndNumber(parts, { number: !presentation });
     }
 };
 

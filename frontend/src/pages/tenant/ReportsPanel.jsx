@@ -5,6 +5,7 @@ import api from '../../lib/api';
 import { Button } from '../../components/ui/button';
 import ReportBrief from './ReportBrief';
 import ExecutiveReport from './ExecutiveReport';
+import SituationDeck from './SituationDeck';
 import { exportPostsExcel } from './exportPostsExcel';
 
 /**
@@ -83,12 +84,12 @@ const ReportsPanel = ({ event, workspace }) => {
 
   // The server renders the PDF in the background (queued, one at a time); the page polls the
   // job and downloads the finished file, so no browser print header or footer ends up in it.
-  const downloadPdf = async (r, withPosts = false, executive = false) => {
-    const key = `pdf${executive ? 'e' : ''}${withPosts ? 'p' : ''}${r.id}`;
+  const downloadPdf = async (r, withPosts = false, executive = false, presentation = false) => {
+    const key = `pdf${presentation ? 's' : ''}${executive ? 'e' : ''}${withPosts ? 'p' : ''}${r.id}`;
     setBusy((b) => ({ ...b, [key]: true }));
     const note = toast.loading(withPosts ? 'Preparing PDF with all posts — this can take a few minutes…' : 'Preparing PDF…');
     try {
-      const { data } = await api.post(`/tenant/reports/${r.id}/pdf`, { posts: withPosts, format: executive ? 'executive' : 'detailed' });
+      const { data } = await api.post(`/tenant/reports/${r.id}/pdf`, { posts: withPosts, format: presentation ? 'presentation' : executive ? 'executive' : 'detailed' });
       let job = data.job;
       const started = Date.now();
       while (job.status === 'queued' || job.status === 'running') {
@@ -176,6 +177,9 @@ const ReportsPanel = ({ event, workspace }) => {
                     {r.status === 'ready' && (
                       <div className="flex justify-end gap-1">
                         <Button variant="ghost" size="sm" onClick={() => openReport(r.id)}><Eye className="h-4 w-4 mr-1" />View</Button>
+                        <Button variant="outline" size="sm" onClick={() => downloadPdf(r, false, false, true)} disabled={busy[`pdfs${r.id}`]} title="Situation assessment and way forward, as presentation slides">
+                          {busy[`pdfs${r.id}`] ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}Presentation PDF
+                        </Button>
                         <Button variant="outline" size="sm" onClick={() => downloadPdf(r, false, true)} disabled={busy[`pdfe${r.id}`]} title="The short executive-format report">
                           {busy[`pdfe${r.id}`] ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Download className="h-4 w-4 mr-1" />}Executive PDF
                         </Button>
@@ -201,12 +205,13 @@ const ReportsPanel = ({ event, workspace }) => {
       <div className="bg-white rounded-lg p-4 md:p-6 print:p-0">
         {open && (
           <div className="flex gap-1 mb-4 print:hidden" role="tablist">
-            {[['executive', 'Executive report'], ['detailed', 'Detailed report']].map(([k, label]) => (
+            {[['presentation', 'Presentation'], ['executive', 'Executive report'], ['detailed', 'Detailed report']].map(([k, label]) => (
               <Button key={k} type="button" size="sm" variant={format === k ? 'default' : 'outline'} aria-pressed={format === k} onClick={() => setFormat(k)}>{label}</Button>
             ))}
           </div>
         )}
         {!open ? <p className="text-slate-600">No report yet. Choose a period and generate one.</p>
+          : format === 'presentation' ? <div className="overflow-x-auto"><SituationDeck report={open} workspace={workspace} /></div>
           : format === 'executive' ? <ExecutiveReport report={open} />
             : <ReportBrief report={open} workspace={workspace} onDownloadPdf={() => downloadPdf(open)} />}
       </div>
