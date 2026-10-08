@@ -36,12 +36,29 @@ const titleCase = (s) => String(s || '').trim().replace(/\s+/g, ' ').replace(/\b
 
 const riskBand = (p) => p.analysis?.review?.risk_band || p.analysis?.risk_band || 'low';
 const isPublicAccount = (p) => PUBLIC_ACCOUNT_TYPES.has(p.analysis?.account_type) || (p.author_followers || 0) >= PUBLIC_FOLLOWER_FLOOR;
-const tone = (p) => ({ positive: 'positive', negative: 'negative', mixed: 'negative' }[p.analysis?.sentiment] || 'neutral');
+/**
+ * Tone toward the subject (the person the report is prepared for), not the post's mood:
+ *   positive — supports the subject;
+ *   negative — criticises the subject, or supports the protest and its demands against them;
+ *   neutral  — everything else (news, comment on the organisers or police, unclear).
+ * A cheerful "join the protest" post is therefore negative for the subject.
+ */
+const tone = (p) => {
+    const subject = p.analysis?.stance_toward_subject;
+    if (subject === 'supportive') return 'positive';
+    if (subject === 'critical' || p.analysis?.stance_toward_protest === 'supportive') return 'negative';
+    return 'neutral';
+};
 // The same split as a database filter.
 const TONE_QUERY = {
-    positive: { 'analysis.sentiment': 'positive' },
-    negative: { 'analysis.sentiment': { $in: ['negative', 'mixed'] } },
-    neutral: { 'analysis.sentiment': { $nin: ['positive', 'negative', 'mixed'] } },
+    positive: { 'analysis.stance_toward_subject': 'supportive' },
+    negative: {
+        $or: [
+            { 'analysis.stance_toward_subject': 'critical' },
+            { 'analysis.stance_toward_subject': { $ne: 'supportive' }, 'analysis.stance_toward_protest': 'supportive' },
+        ],
+    },
+    neutral: { 'analysis.stance_toward_subject': { $nin: ['supportive', 'critical'] }, 'analysis.stance_toward_protest': { $ne: 'supportive' } },
 };
 
 /** likes + 2×comments + 3×shares + views/10 */
@@ -371,7 +388,7 @@ const computeStats = (event, all) => {
         keyIntel.push({
             key: 'volume_spike',
             title: `Public conversation peaked on ${dayLabel(peak.day)} ${peak.day.slice(0, 4)}`,
-            detail: `${peak.total.toLocaleString('en-IN')} relevant posts on ${dayLabel(peak.day)} ${peak.day.slice(0, 4)}${median ? `, about ${(peak.total / median).toFixed(1)}× the median day (${median.toLocaleString('en-IN')})` : ''}; ${peak.negative_pct}% negative in tone.`,
+            detail: `${peak.total.toLocaleString('en-IN')} relevant posts on ${dayLabel(peak.day)} ${peak.day.slice(0, 4)}${median ? `, about ${(peak.total / median).toFixed(1)}× the median day (${median.toLocaleString('en-IN')})` : ''}; ${peak.negative_pct}% negative toward ${event.subject?.name || 'the subject'}.`,
             caveat: 'X search returns the newest posts first, so the most recent days are over-represented; read late peaks as directional.',
         });
     }
@@ -610,7 +627,7 @@ const templateProse = (event, s) => {
 
     const bottom = [
         `${from === to ? `On ${from}` : `Between ${from} and ${to}`}, ${num(t.relevant)} relevant public posts (${platforms}) discussed ${event.short_name || event.name}, drawing about ${compact(t.engagement)} engagements${t.views ? ` and ${compact(t.views)} views` : ''}.`,
-        `Tone was ${tone('positive').pct}% positive, ${tone('neutral').pct}% neutral and ${tone('negative').pct}% negative.`,
+        `Toward ${event.subject?.name || 'the subject'}, posts were ${tone('positive').pct}% positive, ${tone('neutral').pct}% neutral and ${tone('negative').pct}% negative (negative includes support for the protest against ${event.subject?.name || 'the subject'}).`,
         `Where posts take a position on ${subject}, ${num(st('stance_toward_subject', 'critical').count)} are critical and ${num(st('stance_toward_subject', 'supportive').count)} supportive; ${st('stance_toward_protest', 'supportive').pct}% support the protest and ${st('stance_toward_protest', 'critical').pct}% criticise it.`,
         topNarr.length ? `The leading narratives are ${topNarr.map((n) => `${n.label} (${n.pct}%)`).join(', ')}.` : '',
         `${band('critical')} posts are in the critical risk band and ${band('high')} in the high band${riskRows.length ? `; the most-engaged of them reached ${num(maxRiskReach)} engagements` : ''}.`,
@@ -821,4 +838,5 @@ const completeReport = async (event, reportId, { from = null, to = null } = {}) 
 };
 
 module.exports = {
+    tone,
     TONE_QUERY, generateReport, completeReport, buildReportData, computeStats, templateProse, engagementScore, footageOf, isPublicAccount };

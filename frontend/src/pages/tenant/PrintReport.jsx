@@ -19,7 +19,7 @@ export const PostsAppendix = ({ posts, slice = null }) => (
       <>
         <h2 className="mt-2 mb-1 pb-1 border-b-2 border-[#1e3a5f] text-[17px] font-bold text-[#1e3a5f]">Appendix — all posts in the period</h2>
         <p className="text-[11px] text-slate-600 mb-3">
-          {(slice ? slice.total : posts.length).toLocaleString('en-IN')} relevant posts, newest first within each tone. Private individuals' posts are listed by link only; "Stance" is toward the subject.
+          {(slice ? slice.total : posts.length).toLocaleString('en-IN')} relevant posts, newest first within each tone. Tone is toward the subject: negative includes posts backing the protest against them. Private individuals' posts are listed by link only; "Stance" is toward the subject.
         </p>
       </>
     )}

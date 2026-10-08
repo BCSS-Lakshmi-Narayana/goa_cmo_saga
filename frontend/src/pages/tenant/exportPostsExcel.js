@@ -14,7 +14,7 @@ const row = (p) => ({
   Handle: p.handle || '',
   'Post text': String(p.text || '').slice(0, 32000),
   Summary: p.summary || '',
-  Tone: p.tone,
+  'Tone toward subject': p.tone,
   'Stance toward subject': p.stance_toward_subject || '',
   'Stance toward protest': p.stance_toward_protest || '',
   Category: (p.category || '').replace(/_/g, ' '),
@@ -52,7 +52,7 @@ export const exportPostsExcel = (posts, { title, from, to }) => {
     ['Period', `${from || 'start'} to ${to || 'latest'}`],
     ['Relevant posts', posts.length],
     [],
-    ['Tone', 'Posts', 'Share', ...platforms.map((p) => PLATFORM[p] || p)],
+    ['Tone toward subject', 'Posts', 'Share', ...platforms.map((p) => PLATFORM[p] || p)],
     ...['positive', 'negative', 'neutral'].map((k) => [
       k[0].toUpperCase() + k.slice(1),
       byTone[k].length,

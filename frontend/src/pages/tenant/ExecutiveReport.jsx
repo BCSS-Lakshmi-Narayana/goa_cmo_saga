@@ -1,5 +1,6 @@
 import React from 'react';
 import { PLATFORM_LABEL, DailyToneChart, Footage, fmt, fmtBig, fmtDay } from './ReportBrief';
+import { recommendationGroups, lcFirst, listJoin } from './reportRecommendations';
 
 /**
  * Executive-format report: a short, decision-oriented reading of the same
@@ -8,11 +9,8 @@ import { PLATFORM_LABEL, DailyToneChart, Footage, fmt, fmtBig, fmtDay } from './
  */
 
 const NAVY = '#1e3a5f';
-// Lower-case a label's first letter for mid-sentence use, but keep proper names ("Special Intensive Revision…").
-const lcFirst = (s) => (!s || /^[A-Z][\w'’-]* [A-Z]/.test(s) ? s : s[0].toLowerCase() + s.slice(1));
 const pctTxt = (n) => `${Number(n || 0).toFixed(1)}%`;
 const share = (n, total) => (total ? (100 * n) / total : 0);
-const listJoin = (items) => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`);
 
 const H2 = ({ n, children }) => (
   <h2 className="mt-7 mb-2 pb-1 border-b-2 text-[17px] font-bold tracking-wide uppercase" style={{ borderColor: NAVY, color: NAVY, breakAfter: 'avoid' }}>
@@ -118,50 +116,12 @@ const ExecutiveReport = ({ report }) => {
   const factCount = (k) => facts.filter((f) => f.status === k).length;
   const openClaims = facts.filter((f) => f.status !== 'verified');
   const upcoming = (d.attention || []).filter((a) => /^Upcoming/i.test(a.title));
-  // Recommended actions: three groups, each led by points computed from this period's data,
-  // followed by the analyst's specific items.
-  const recs = d.recommendations || {};
-  const topPlatforms = listJoin([...platforms].sort((a, b) => (b.engagement || 0) - (a.engagement || 0)).slice(0, 2).map((p) => PLATFORM_LABEL[p.platform] || p.platform));
-  const REC_GROUPS = [
-    {
-      key: 'fact_check',
-      title: 'Claims to verify and answer, highest reach first',
-      items: [
-        // Claims made in the same post share its engagement: list them together.
-        ...Object.values((s.allegations || []).reduce((acc, a) => {
-          const k = `${a.platform}:${a.engagement}`;
-          (acc[k] = acc[k] || { ...a, texts: [] }).texts.push(`“${a.text}”`);
-          return acc;
-        }, {})).slice(0, 3).map((a) => `${listJoin(a.texts)} — ${fmtBig(a.engagement)} engagements on ${PLATFORM_LABEL[a.platform] || a.platform}. Check ${a.texts.length > 1 ? 'each' : 'it'} against the official record and publish the finding if ${a.texts.length > 1 ? 'any is' : 'it is'} wrong.`),
-        ...(recs.fact_check || []).map((x) => `Check ${lcFirst(x)}`),
-      ],
-    },
-    {
-      key: 'communication',
-      title: 'Communication approach',
-      items: [
-        leading.length && `Address the issues behind most criticism of ${name} first: ${listJoin(leading.slice(0, 2).map((n) => `${lcFirst(n.label)}${n.critical_share !== undefined ? ` (in ${pctTxt(n.critical_share)} of critical posts)` : ''}`))}.`,
-        `Respond where the discussion is: ${topPlatforms} carry the most engagement${influencers[0] ? `, and the most influential voice is ${influencers[0].name || influencers[0].handle}` : ''}. Official responses on these platforms reach the audience that is engaging.`,
-        next && `Put factual material out before ${nextLabel}, while attention is highest; volume on ${fmtDay(peak?.day)} was about ${multiple}× a normal day.`,
-        ...(recs.communication || []),
-      ].filter(Boolean),
-    },
-    {
-      key: 'monitoring',
-      title: 'What to watch next',
-      items: [
-        next && `${nextLabel}: ${nextWhat}. ${fmt(next.mobilisation_posts)} posts mobilise for it, ${fmt(next.recent_posts)} of them in the last two days.`,
-        `Explicit threats: ${fmt(band('critical').count)} so far${ex.threats ? ` (${fmt(ex.threats.at_subject)} at ${name} or the Commission)` : ''}; escalate any that name a date, a place or a home address.`,
-        ex.information?.misattributed_media ? `Manipulated or misattributed media: ${fmt(ex.information.misattributed_media)} posts so far; flag new items early, before they spread.` : null,
-        ...(recs.monitoring || []).filter((x) => !(next && x.includes(nextLabel) && /protest/i.test(x))
-          && !(ex.information?.misattributed_media && /misattributed|AI-generated/i.test(x))),
-      ].filter(Boolean),
-    },
-  ].filter((g) => g.items.length);
+  // Recommended actions (shared with the detailed report).
+  const REC_GROUPS = recommendationGroups(report);
 
   const assessment = [
     ['Conversation intensity', intensity],
-    ['Overall tone', [neg >= 50 ? 'high' : 'medium', toneWord]],
+    [`Tone toward ${name}`, [neg >= 50 ? 'high' : 'medium', toneWord]],
     [`Direct criticism of ${name}`, sizeWord(criticalOfSubject)],
     ['Support for the protest or its demands', sizeWord(protestSupport)],
     ['High and critical risk', riskLevel],
@@ -184,7 +144,7 @@ const ExecutiveReport = ({ report }) => {
       <div className="mt-4 grid grid-cols-4 border-t-4 bg-slate-50" style={{ borderColor: NAVY }}>
         {[
           [fmt(total), 'Relevant posts'],
-          [pctTxt(neg), 'Negative tone'],
+          [pctTxt(neg), `Negative toward ${name}`],
           [pctTxt(criticalOfSubject), `Critical of ${name}`],
           [dayChange === null ? '—' : `${dayChange >= 0 ? '+' : ''}${dayChange.toFixed(0)}%`, 'Last 24 hours against the 24 before'],
         ].map(([v, l]) => (
@@ -199,12 +159,12 @@ const ExecutiveReport = ({ report }) => {
       <H2 n={1}>Executive summary</H2>
       <H3>Overall conversation</H3>
       <P>
-        The monitored conversation shows a {lcFirst(toneWord)} overall tone ({pctTxt(neg)} negative), with discussion largely centred on{' '}
+        Toward {name}, the monitored conversation is {lcFirst(toneWord)}: {pctTxt(neg)} of relevant posts are negative (they criticise {name} or back the protest against {name}), and {pctTxt(pos)} are positive. Discussion is largely centred on{' '}
         {listJoin(narratives.slice(0, 4).map((n) => lcFirst(n.label)))}.
       </P>
       <P>
-        However, overall sentiment should not be read directly as public sentiment toward {name}. The stance analysis shows that{' '}
-        {pctTxt(criticalOfSubject)} of relevant posts were critical of {name}, while {pctTxt(protestSupport)} expressed support for the protest or its demands.
+        Within the negative share, {pctTxt(criticalOfSubject)} of relevant posts criticise {name} directly, while {pctTxt(protestSupport)} support the protest or its demands;
+        only {pctTxt(stanceS('supportive').pct)} of posts support {name}.
       </P>
       {peak && (
         <P>
@@ -220,7 +180,7 @@ const ExecutiveReport = ({ report }) => {
         align={['l', 'r']}
         rows={[
           ['Relevant posts analysed', fmt(total)],
-          ['Negative overall tone', pctTxt(neg)],
+          [`Negative toward ${name}`, pctTxt(neg)],
           [`Critical toward ${name}`, pctTxt(criticalOfSubject)],
           ['Supportive of the protest or its demands', pctTxt(protestSupport)],
           ['High and critical risk posts', fmt(highCritical)],
@@ -242,10 +202,10 @@ const ExecutiveReport = ({ report }) => {
 
       {/* 2 */}
       <H2 n={2}>Conversation landscape</H2>
-      <H3>Volume and tone</H3>
+      <H3>Volume and tone toward {name}</H3>
       <P>{fmt(total)} relevant posts were analysed across {platforms.length} platforms.</P>
       <Table
-        head={['Tone', 'Posts', 'Share']}
+        head={[`Toward ${name}`, 'Posts', 'Share']}
         align={['l', 'r', 'r']}
         rows={['negative', 'neutral', 'positive'].map((k) => tone(k)).sort((a, b) => b.pct - a.pct)
           .map((t) => [t.key[0].toUpperCase() + t.key.slice(1), fmt(t.count), pctTxt(t.pct)])}
@@ -257,7 +217,7 @@ const ExecutiveReport = ({ report }) => {
         rows={platforms.map((p) => [PLATFORM_LABEL[p.platform] || p.platform, fmt(p.relevant), pctTxt(share(p.relevant, total))])}
       />
       <H3>Posts and negativity by day</H3>
-      <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>Relevant posts per day (newest first), split by tone; the line is the share of negative posts.</p>
+      <p className="text-[11.5px] text-slate-600 mb-1" style={{ breakAfter: 'avoid' }}>Relevant posts per day (newest first), split by tone toward {name}; the line is the share of negative posts.</p>
       <DailyToneChart rows={days} />
       {peak && (
         <>
@@ -332,7 +292,7 @@ const ExecutiveReport = ({ report }) => {
         {protestSupport > criticalOfSubject
           ? `Support for the protest or its demands (${pctTxt(protestSupport)}) is stronger than direct criticism of ${name} (${pctTxt(criticalOfSubject)}), and only ${pctTxt(stanceS('supportive').pct)} of posts support ${name}.`
           : `Direct criticism of ${name} (${pctTxt(criticalOfSubject)}) outweighs support for the protest or its demands (${pctTxt(protestSupport)}).`}
-        {' '}This distinction matters when interpreting the overall negative tone.
+        {' '}Both feed the negative share toward {name}.
       </Note>
 
       {(s.target_table || []).length > 0 && (

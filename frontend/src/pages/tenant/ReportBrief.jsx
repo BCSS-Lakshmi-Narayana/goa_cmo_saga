@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExternalLink, Printer } from 'lucide-react';
 import { Button } from '../../components/ui/button';
+import { recommendationGroups } from './reportRecommendations';
 
 /**
  * Printable monitoring brief for a tenant event (report data version 2).
@@ -266,7 +267,6 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
   const band = (k) => s.risk.bands.find((x) => x.key === k) || { count: 0, pct: 0 };
   const subjectMentions = s.share_of_voice.find((k) => k.term.toLowerCase() === (ev.subject?.name || '').toLowerCase());
   const topTag = s.hashtags[0];
-  const rec = d.recommendations || {};
 
   return (
     <article className="max-w-[900px] mx-auto text-slate-900 print:max-w-none print:text-[12px]">
@@ -359,7 +359,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       <H2>Posts by platform</H2>
       <HBars rows={s.by_platform.filter((p) => p.relevant).map((p) => ({ label: PLATFORM_LABEL[p.platform], value: p.relevant }))} labelWidth="w-24" />
 
-      <H2>Tone split</H2>
+      <H2>Tone toward {ev.subject?.name || 'the subject'}</H2>
       <ToneBar tone={s.tone} />
 
       {s.share_of_voice.length > 0 && <>
@@ -370,7 +370,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
 
       <H2>Posts and negativity by day</H2>
       <p className="text-[12px] text-slate-600 mb-2">
-        Relevant posts per day by publication date (Indian Standard Time), newest date first, split by tone: <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.negative }} /> negative,{' '}
+        Relevant posts per day by publication date (Indian Standard Time), newest date first, split by tone toward {ev.subject?.name || 'the subject'}: <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.negative }} /> negative,{' '}
         <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.neutral }} /> neutral,{' '}
         <span className="inline-block w-2 h-2 align-middle" style={{ background: TONE_COLOR.positive }} /> positive. The figure above each bar is that day's share of negative posts;
         a red dot marks days with critical or high-risk posts. Peak: {fmt(s.volume_change.peak_posts)} posts on {s.volume_change.peak_day ? fmtDay(s.volume_change.peak_day) : '—'}.
@@ -421,7 +421,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
 
       <H2 n="03">Sentiment and stance</H2>
       <Tiles items={[[fmt(toneOf('positive').count), `Positive (${toneOf('positive').pct}%)`], [fmt(toneOf('neutral').count), `Neutral (${toneOf('neutral').pct}%)`], [fmt(toneOf('negative').count), `Negative (${toneOf('negative').pct}%)`], [fmt(t.relevant), 'Analysed']]} />
-      <p className="text-[12px] italic text-slate-500 mt-2">Tone and stance are measured separately. Negative tone is the criticism load, not a threat by itself.</p>
+      <p className="text-[12px] italic text-slate-500 mt-2">Tone is measured toward {ev.subject?.name || 'the subject'}: negative includes posts backing the protest against {ev.subject?.name || 'the subject'}. Negative is the criticism load, not a threat by itself.</p>
       <div className="grid md:grid-cols-2 gap-4 mt-3 text-[12px]">
         {[['Stance toward ' + (ev.subject?.name || 'the subject'), s.stance_toward_subject], ['Stance toward the protest and its demands', s.stance_toward_protest]].map(([title, rows]) => (
           <div key={title}>
@@ -433,7 +433,7 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
 
             {s.tone_sections && <>
         <H2 n="04">Positive, negative and neutral posts</H2>
-        <p className="text-[12px] text-slate-600 mb-3">Each post's overall tone, separated. Tone is not the same as stance: a negative post can be negative about the protest rather than about {ev.subject?.name || 'the subject'} — the stance line under each tone shows which.</p>
+        <p className="text-[12px] text-slate-600 mb-3">Each post's tone toward {ev.subject?.name || 'the subject'}, separated. Positive: supports {ev.subject?.name || 'the subject'}. Negative: criticises {ev.subject?.name || 'the subject'} or backs the protest and its demands. Neutral: everything else, such as news reports and comment on the organisers or the police.</p>
         <div className="grid md:grid-cols-3 gap-3">
           {s.tone_sections.map((ts) => (
             <div key={ts.key} className="border rounded p-3 break-inside-avoid" style={{ borderTop: `4px solid ${TONE_COLOR[ts.key]}` }}>
@@ -566,14 +566,11 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
         </ul>
       </>}
 
-      <H2 n="10">Recommended considerations</H2>
-      <p className="text-[12px] text-slate-500 mb-2">Neutral, information-focused considerations for the office. Not messaging or persuasion advice.</p>
-      <div className="grid md:grid-cols-2 gap-4">
-        {[['Fact-check against official records', rec.fact_check], ['Questions a factual clarification could answer', rec.clarifications], ['Communication considerations', rec.communication],
-          ['Information gaps', rec.information_gaps], ['Continue monitoring', rec.monitoring], ['Safety and platform reporting', rec.safety]]
-          .filter(([, items]) => items && items.length)
-          .map(([title, items]) => <div key={title} className="break-inside-avoid"><div className="font-semibold text-[13px] mb-1">{title}</div><Bullets items={items} /></div>)}
-      </div>
+      <H2 n="10">Recommended actions</H2>
+      <p className="text-[12px] text-slate-500 mb-2">Considerations drawn from the monitored conversation; they are for the decision-maker's judgement, not instructions.</p>
+      {recommendationGroups(report).map((g) => (
+        <div key={g.key} className="break-inside-avoid mb-3"><div className="font-semibold text-[13px] mb-1">{g.title}</div><Bullets items={g.items} /></div>
+      ))}
       {(d.analyst_review?.notes || []).length > 0 && <>
         <div className="font-semibold text-[13px] mt-4 mb-1">Analyst notes</div>
         <Bullets items={d.analyst_review.notes} />
@@ -603,8 +600,13 @@ const ReportBrief = ({ report, workspace, onDownloadPdf }) => {
       <H2>Summary</H2>
       <ul className="list-disc pl-5 text-[13px] space-y-1">
         <li>Prepared for: {ev.subject?.name}, {ev.subject?.role}. Event: {ev.name}. Relevant posts analysed: {fmt(t.relevant)} of {fmt(t.collected)} collected.</li>
+        <li>
+          Not in the analysis: {fmt(t.collected - t.relevant)} posts — {fmt(t.excluded_unrelated)} read and set aside as unrelated to the event
+          {t.pending ? `, ${fmt(t.pending)} collected but not yet analysed (mostly recent Instagram comments)` : ''}
+          {t.analysis_failed ? `, ${fmt(t.analysis_failed)} that could not be analysed` : ''}. Duplicates are merged when posts are collected, so each post is counted once.
+        </li>
         <li>Platforms: {s.by_platform.filter((p) => p.relevant).map((p) => `${PLATFORM_LABEL[p.platform]} ${fmt(p.relevant)}`).join(' · ')}.</li>
-        <li>Places named: {fmt(s.places.count)}; most named {s.places.rows[0]?.place || '—'}. Tone (positive / neutral / negative): {fmt(toneOf('positive').count)} / {fmt(toneOf('neutral').count)} / {fmt(toneOf('negative').count)}.</li>
+        <li>Places named: {fmt(s.places.count)}; most named {s.places.rows[0]?.place || '—'}. Tone toward {ev.subject?.name || 'the subject'} (positive / neutral / negative): {fmt(toneOf('positive').count)} / {fmt(toneOf('neutral').count)} / {fmt(toneOf('negative').count)}.</li>
         <li>Risk bands (critical / high / medium / low): {['critical', 'high', 'medium', 'low'].map((k) => fmt(band(k).count)).join(' / ')}.</li>
       </ul>
 

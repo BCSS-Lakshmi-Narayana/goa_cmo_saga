@@ -12,7 +12,7 @@ const { startPdfJob, getJob } = require('../services/tenant/tenantPdfService');
 const { isTenantUser, tenantOf } = require('../config/tenancy');
 const { createAuditLog } = require('../services/auditService');
 const { runEventPipeline, getPipelineState } = require('../services/tenant/tenantPipeline');
-const { completeReport, footageOf, isPublicAccount, TONE_QUERY } = require('../services/tenant/tenantReportService');
+const { completeReport, footageOf, isPublicAccount, TONE_QUERY, tone } = require('../services/tenant/tenantReportService');
 const { expand } = require('../services/tenant/textClean');
 
 const requireTenant = (req, res, next) => {
@@ -135,6 +135,29 @@ const startReportPdf = async (req, res) => {
     res.status(202).json({ job: { id: job.id, status: job.status } });
 };
 
+/**
+ * GET /reports/:reportId/pdf?format=&posts=1 — the older one-request download, kept for pages
+ * loaded before PDF jobs existed: queues a job, waits for it, then sends the file.
+ */
+const downloadReportPdf = async (req, res) => {
+    req.body = { posts: req.query.posts === '1', format: req.query.format };
+    let job;
+    const capture = { status: (code) => ({ json: (body) => { job = code === 202 ? body.job : null; if (!job) res.status(code).json(body); } }) };
+    await startReportPdf(req, capture);
+    if (!job) return undefined;
+    const started = Date.now();
+    let current = getJob(req.tenantId, job.id);
+    while (current && (current.status === 'queued' || current.status === 'running') && Date.now() - started < 15 * 60000) {
+        await new Promise((r) => setTimeout(r, 2000));
+        current = getJob(req.tenantId, job.id);
+    }
+    if (!current || current.status !== 'ready') {
+        return res.status(current?.status === 'failed' ? 500 : 503).json({ message: current?.error || 'The PDF is taking too long. Please try again.' });
+    }
+    req.params.jobId = job.id;
+    return downloadPdfJob(req, res);
+};
+
 /** GET /pdf-jobs/:jobId — status of a queued PDF. */
 const getPdfJob = async (req, res) => {
     const job = getJob(req.tenantId, req.params.jobId);
@@ -228,7 +251,7 @@ const exportPosts = async (req, res) => {
             comments: p.metrics?.comments ?? null,
             shares: p.metrics?.shares ?? null,
             views: p.metrics?.views ?? null,
-            tone: { positive: 'positive', negative: 'negative', mixed: 'negative' }[p.analysis?.sentiment] || 'neutral',
+            tone: tone(p),
             sentiment: p.analysis?.sentiment,
             stance_toward_subject: p.analysis?.stance_toward_subject,
             stance_toward_protest: p.analysis?.stance_toward_protest,
@@ -272,6 +295,7 @@ module.exports = {
     getLatestReport: wrap(getLatestReport),
     getReport: wrap(getReport),
     startReportPdf: wrap(startReportPdf),
+    downloadReportPdf: wrap(downloadReportPdf),
     getPdfJob: wrap(getPdfJob),
     downloadPdfJob: wrap(downloadPdfJob),
     refreshEvent: wrap(refreshEvent),
