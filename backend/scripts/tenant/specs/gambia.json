@@ -35,7 +35,17 @@
           "Talib"
         ]
       },
-      "organisers": [],
+      "organisers": [
+        {
+          "name": "Talib Ahmed Bensouda (own accounts)",
+          "role": "subject's own accounts",
+          "aliases": [
+            "@talib.bensouda",
+            "@mayortalib",
+            "@talibahmedbensouda"
+          ]
+        }
+      ],
       "related_figures": [],
       "keywords": [
         "Talib Ahmed Bensouda",
@@ -140,16 +150,22 @@
         "facebook_pages": [],
         "facebook_page_pages": 5,
         "instagram_accounts": [
+          "talib.bensouda",
+          "mayortalib",
           "talibahmedbensouda",
-          "udp_gambia",
-          "eyeafricatv"
+          "kerrfatou",
+          "qtv_gambia",
+          "infogambia220",
+          "eyeafricatv",
+          "koratvradio",
+          "udp_gambia"
         ],
-        "instagram_pages": 8,
-        "instagram_reel_pages": 3,
-        "instagram_tagged_pages": 3,
-        "instagram_comment_posts": 80,
+        "instagram_pages": 10,
+        "instagram_reel_pages": 4,
+        "instagram_tagged_pages": 5,
+        "instagram_comment_posts": 120,
         "instagram_comments_per_post": 1500,
-        "instagram_max_comments": 8000,
+        "instagram_max_comments": 12000,
         "youtube_queries": [
           "Talib Bensouda",
           "Talib Ahmed Bensouda",
@@ -294,14 +310,18 @@
         "facebook_pages": [],
         "facebook_page_pages": 5,
         "instagram_accounts": [
-          "eyeafricatv"
+          "kerrfatou",
+          "qtv_gambia",
+          "infogambia220",
+          "eyeafricatv",
+          "koratvradio"
         ],
-        "instagram_pages": 8,
-        "instagram_reel_pages": 3,
-        "instagram_tagged_pages": 3,
-        "instagram_comment_posts": 80,
+        "instagram_pages": 10,
+        "instagram_reel_pages": 4,
+        "instagram_tagged_pages": 5,
+        "instagram_comment_posts": 120,
         "instagram_comments_per_post": 1500,
-        "instagram_max_comments": 8000,
+        "instagram_max_comments": 12000,
         "youtube_queries": [
           "Adama Barrow",
           "President Barrow Gambia",
@@ -351,7 +371,15 @@
           "Darboe"
         ]
       },
-      "organisers": [],
+      "organisers": [
+        {
+          "name": "Ousainou Darboe (own accounts)",
+          "role": "subject's own accounts",
+          "aliases": [
+            "@ousainou_darboe"
+          ]
+        }
+      ],
       "related_figures": [],
       "keywords": [
         "Ousainou Darboe",
@@ -448,16 +476,20 @@
         "facebook_pages": [],
         "facebook_page_pages": 5,
         "instagram_accounts": [
-          "ousainoudarboe",
-          "udp_gambia",
-          "eyeafricatv"
+          "ousainou_darboe",
+          "kerrfatou",
+          "qtv_gambia",
+          "infogambia220",
+          "eyeafricatv",
+          "koratvradio",
+          "udp_gambia"
         ],
-        "instagram_pages": 8,
-        "instagram_reel_pages": 3,
-        "instagram_tagged_pages": 3,
-        "instagram_comment_posts": 80,
+        "instagram_pages": 10,
+        "instagram_reel_pages": 4,
+        "instagram_tagged_pages": 5,
+        "instagram_comment_posts": 120,
         "instagram_comments_per_post": 1500,
-        "instagram_max_comments": 8000,
+        "instagram_max_comments": 12000,
         "youtube_queries": [
           "Ousainou Darboe",
           "Lawyer Ousainou Darboe",
