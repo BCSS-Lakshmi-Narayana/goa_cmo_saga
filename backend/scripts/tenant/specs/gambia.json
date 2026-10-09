@@ -20,7 +20,7 @@
       "name": "Public discussion: Talib Ahmed Bensouda, Mayor of Kanifing Municipal Council",
       "short_name": "Talib Ahmed Bensouda",
       "description": "Public social-media discussion about Talib Ahmed Bensouda, Mayor of Kanifing Municipal Council.",
-      "start_date": "2026-01-01T00:00:00.000Z",
+      "start_date": "2025-01-01T00:00:00.000Z",
       "location": "The Gambia",
       "status": "active",
       "subject": {
@@ -104,7 +104,7 @@
         "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings."
       },
       "collection_plan": {
-        "since": "2026-01-01T00:00:00.000Z",
+        "since": "2025-01-01T00:00:00.000Z",
         "x_queries": [
           "\"Talib Bensouda\"",
           "\"Talib Ahmed Bensouda\"",
@@ -173,7 +173,7 @@
       "name": "Public discussion: Adama Barrow, President of the Republic of The Gambia",
       "short_name": "Adama Barrow",
       "description": "Public social-media discussion about Adama Barrow, President of the Republic of The Gambia.",
-      "start_date": "2026-01-01T00:00:00.000Z",
+      "start_date": "2025-01-01T00:00:00.000Z",
       "location": "The Gambia",
       "status": "active",
       "subject": {
@@ -248,7 +248,7 @@
         "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings."
       },
       "collection_plan": {
-        "since": "2026-01-01T00:00:00.000Z",
+        "since": "2025-01-01T00:00:00.000Z",
         "x_queries": [
           "\"Adama Barrow\"",
           "\"President Barrow\"",
@@ -317,7 +317,7 @@
       "name": "Public discussion: Ousainou Darboe, former Vice President of The Gambia",
       "short_name": "Ousainou Darboe",
       "description": "Public social-media discussion about Ousainou Darboe, Former Vice President of The Gambia.",
-      "start_date": "2026-01-01T00:00:00.000Z",
+      "start_date": "2025-01-01T00:00:00.000Z",
       "location": "The Gambia",
       "status": "active",
       "subject": {
@@ -394,7 +394,7 @@
         "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings."
       },
       "collection_plan": {
-        "since": "2026-01-01T00:00:00.000Z",
+        "since": "2025-01-01T00:00:00.000Z",
         "x_queries": [
           "\"Ousainou Darboe\"",
           "\"Ousainu Darboe\"",

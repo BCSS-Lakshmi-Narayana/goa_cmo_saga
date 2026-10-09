@@ -784,4 +784,4 @@ const collectForEvent = async (event, { platforms = ALL_PLATFORMS, incrementalSi
     return summary;
 };
 
-module.exports = { collectForEvent, fromTweet, extractHashtags, ALL_PLATFORMS };
+module.exports = { collectForEvent, fromTweet, extractHashtags, readSearchPage, ALL_PLATFORMS };
