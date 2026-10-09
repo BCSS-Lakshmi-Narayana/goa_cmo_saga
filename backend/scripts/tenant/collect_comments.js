@@ -4,7 +4,7 @@
  * Parents are the event's stored Facebook posts and X tweets, most-commented first.
  *
  *   node scripts/tenant/collect_comments.js --tenant <id> --event <event id>
- *        [--fb-posts 40] [--fb-per-post 300] [--x-posts 60] [--x-per-post 200]
+ *        [--fb-posts 40] [--fb-per-post 300] [--fb-skip 0] [--x-posts 60] [--x-per-post 200] [--x-skip 0] [--only facebook|x]
  */
 require('dotenv').config({ path: require('path').resolve(__dirname, '../../.env') });
 
@@ -35,6 +35,9 @@ const main = async () => {
     const tenantId = arg('--tenant');
     const eventId = arg('--event');
     const only = arg('--only'); // 'facebook' | 'x' to run one platform
+    // Skip the most-discussed parents already read on an earlier run.
+    const fbSkip = parseInt(arg('--fb-skip', '0'), 10);
+    const xSkip = parseInt(arg('--x-skip', '0'), 10);
     const fbPosts = parseInt(arg('--fb-posts', '40'), 10);
     const fbPer = parseInt(arg('--fb-per-post', '300'), 10);
     const xPosts = parseInt(arg('--x-posts', '60'), 10);
@@ -55,7 +58,7 @@ const main = async () => {
 
     // Facebook comments.
     const fbParents = only === 'x' ? [] : await TenantPost.find({ tenant_id: tenantId, event_id: eventId, platform: 'facebook', post_type: { $ne: 'comment' }, 'metrics.comments': { $gt: 0 } })
-        .sort({ 'metrics.comments': -1 }).limit(fbPosts).lean();
+        .sort({ 'metrics.comments': -1 }).skip(fbSkip).limit(fbPosts).lean();
     for (const parent of fbParents) {
         stats.facebook.parents += 1;
         let cursor; let got = 0;
@@ -93,7 +96,7 @@ const main = async () => {
 
     // X replies.
     const xParents = only === 'facebook' ? [] : await TenantPost.find({ tenant_id: tenantId, event_id: eventId, platform: 'x', post_type: { $in: ['original', 'quote'] }, 'metrics.comments': { $gt: 2 } })
-        .sort({ 'metrics.comments': -1 }).limit(xPosts).lean();
+        .sort({ 'metrics.comments': -1 }).skip(xSkip).limit(xPosts).lean();
     for (const parent of xParents) {
         stats.x.parents += 1;
         let cursor; let got = 0;
