@@ -259,4 +259,4 @@ const importLabels = async (event, post, raw, model) => {
     await TenantPost.updateOne({ tenant_id: event.tenant_id, event_id: event.id, _id: post._id }, { $set: { 'analysis.model': model } });
 };
 
-module.exports = { classifyEvent, importLabels, prefilterUnrelated, CATEGORIES, RISK_BANDS, SYSTEM_PROMPT, SCHEMA, eventContext };
+module.exports = { classifyEvent, importLabels, normalise, prefilterUnrelated, CATEGORIES, RISK_BANDS, SYSTEM_PROMPT, SCHEMA, eventContext };
