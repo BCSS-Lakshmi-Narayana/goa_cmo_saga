@@ -19,6 +19,7 @@
  * reposts are stored as their own rows pointing at the original.
  */
 
+const axios = require('axios');
 const TenantPost = require('../../models/tenant/TenantPost');
 const xService = require('../rapidApiXService');
 const igService = require('../rapidApiInstagramService');
@@ -436,6 +437,20 @@ const collectInstagramComments = async (parents, { perPost = 600, maxTotal = 200
 
 const ytGet = async (resource, params) => (await blugate.get('youtube', resource, params)).data;
 
+/**
+ * Video ids from YouTube's public results page (relevance order, uploaded this
+ * year). Used when the Data API's daily search quota is spent — the quota for
+ * video details and comments is separate, so collection carries on.
+ */
+const ytSearchPage = async (q) => {
+    const res = await axios.get('https://www.youtube.com/results', {
+        params: { search_query: q, sp: 'EgIIBQ==' },
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36', 'Accept-Language': 'en' },
+        timeout: 30000,
+    });
+    return [...new Set([...String(res.data).matchAll(/"videoId":"([\w-]{11})"/g)].map((m) => m[1]))];
+};
+
 const ytVideoPost = (v) => {
     const sn = v.snippet || {};
     const st = v.statistics || {};
@@ -489,7 +504,25 @@ const collectYouTube = async (queries, since, commentVideos, mentionsEvent, { se
                 pageToken = search.nextPageToken;
                 if (!pageToken) break;
             } catch (err) {
-                console.warn(`[tenantCollect] YouTube search failed for "${q}": ${err.message}`);
+                if (err.response?.status === 429 || err.response?.status === 403) {
+                    // Search quota spent: fall back to the public results page for this query.
+                    try {
+                        const ids = (await ytSearchPage(q)).filter((id) => !videos.has(id));
+                        for (let i = 0; i < ids.length; i += 50) {
+                            const details = await ytGet('videos', { part: 'snippet,statistics', id: ids.slice(i, i + 50).join(',') });
+                            (details.items || []).forEach((v) => {
+                                const post = ytVideoPost(v);
+                                videos.set(v.id, post);
+                                out.push({ query: q, post });
+                            });
+                        }
+                        console.warn(`[tenantCollect] YouTube search quota spent; "${q}" via results page: ${ids.length} videos`);
+                    } catch (e2) {
+                        console.warn(`[tenantCollect] YouTube results page failed for "${q}": ${e2.message}`);
+                    }
+                } else {
+                    console.warn(`[tenantCollect] YouTube search failed for "${q}": ${err.message}`);
+                }
                 break;
             }
         }
