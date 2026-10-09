@@ -46,6 +46,21 @@ const main = async () => {
     );
     console.log(`workspace  ${tenantId}: ok`);
 
+    // User (skipped with --no-user, e.g. when the login is created by another app's own user model)
+    if (process.argv.includes('--no-user')) {
+        for (const ev of spec.events || []) {
+            const doc = {
+                ...ev, tenant_id: tenantId, created_by: null,
+                start_date: new Date(ev.start_date), end_date: ev.end_date ? new Date(ev.end_date) : null,
+                collection_plan: { ...ev.collection_plan, since: ev.collection_plan?.since ? new Date(ev.collection_plan.since) : null },
+            };
+            const existing = await TenantEvent.findOne(ev.id ? { tenant_id: tenantId, id: ev.id } : { tenant_id: tenantId, name: ev.name });
+            if (existing) { existing.set(doc); await existing.save(); console.log(`event      "${ev.name}": updated (${existing.id})`); }
+            else { const created = await TenantEvent.create(doc); console.log(`event      "${ev.name}": created (${created.id})`); }
+        }
+        return;
+    }
+
     // User
     const email = spec.user.email.toLowerCase().trim();
     const password = process.env.TENANT_USER_PASSWORD;
