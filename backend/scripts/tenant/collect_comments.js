@@ -34,6 +34,7 @@ const get = async (platform, path, params) => {
 const main = async () => {
     const tenantId = arg('--tenant');
     const eventId = arg('--event');
+    const only = arg('--only'); // 'facebook' | 'x' to run one platform
     const fbPosts = parseInt(arg('--fb-posts', '40'), 10);
     const fbPer = parseInt(arg('--fb-per-post', '300'), 10);
     const xPosts = parseInt(arg('--x-posts', '60'), 10);
@@ -53,7 +54,7 @@ const main = async () => {
     };
 
     // Facebook comments.
-    const fbParents = await TenantPost.find({ tenant_id: tenantId, event_id: eventId, platform: 'facebook', post_type: { $ne: 'comment' }, 'metrics.comments': { $gt: 0 } })
+    const fbParents = only === 'x' ? [] : await TenantPost.find({ tenant_id: tenantId, event_id: eventId, platform: 'facebook', post_type: { $ne: 'comment' }, 'metrics.comments': { $gt: 0 } })
         .sort({ 'metrics.comments': -1 }).limit(fbPosts).lean();
     for (const parent of fbParents) {
         stats.facebook.parents += 1;
@@ -91,7 +92,7 @@ const main = async () => {
     }
 
     // X replies.
-    const xParents = await TenantPost.find({ tenant_id: tenantId, event_id: eventId, platform: 'x', post_type: { $in: ['original', 'quote'] }, 'metrics.comments': { $gt: 2 } })
+    const xParents = only === 'facebook' ? [] : await TenantPost.find({ tenant_id: tenantId, event_id: eventId, platform: 'x', post_type: { $in: ['original', 'quote'] }, 'metrics.comments': { $gt: 2 } })
         .sort({ 'metrics.comments': -1 }).limit(xPosts).lean();
     for (const parent of xParents) {
         stats.x.parents += 1;
@@ -99,7 +100,10 @@ const main = async () => {
         try {
             while (got < xPer) {
                 const d = await get('twitter', 'comments', { pid: parent.platform_post_id, count: 40, rankingMode: 'Relevance', ...(cursor ? { cursor } : {}) });
-                const { tweets, cursor: next } = readSearchPage(d);
+                // The replies endpoint puts instructions at result.instructions and the cursor at cursor.bottom.
+                const parsed = readSearchPage(d?.result?.instructions ? { result: { timeline: { instructions: d.result.instructions } } } : d);
+                const tweets = parsed.tweets;
+                const next = d?.cursor?.bottom || parsed.cursor;
                 const replies = tweets.filter((t) => String(t.id || t.tweet_id || '') !== String(parent.platform_post_id));
                 if (!replies.length) break;
                 for (const t of replies) {
