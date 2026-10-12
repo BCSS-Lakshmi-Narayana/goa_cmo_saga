@@ -124,9 +124,20 @@ const buildQualityGate = ({ llmResult, political, finalSentiment }) => {
   const directStance = ['pro_target', 'anti_target'].includes(political?.stance);
   const oppositeVerdicts = (llmSentiment === 'positive' && targetSentiment === 'negative')
     || (llmSentiment === 'negative' && targetSentiment === 'positive');
+  // "Pass A found nothing" (neutral) is not the same as "Pass A agrees", on a
+  // direct-stance post. Audited example: a crude romanized-Hindi insult aimed
+  // at @BJP4Goa read as neutral by Pass A but "positive" by Stage 4 (reasoned
+  // as "a blessing") — directStance was true but the old check below only
+  // fired on strict positive/negative opposition, so a neutral-vs-positive
+  // mismatch waved it through as a non-blocking warning instead of flagging
+  // the conflict.
+  const passAFoundNothing = llmSentiment === 'neutral' && targetSentiment !== 'neutral';
   if (sentimentDisagreement) {
-    if (passAWasClientRelative && directStance && oppositeVerdicts) reasons.push('client_sentiment_conflict');
-    else warnings.push('sentiment_disagreement');
+    if (directStance && ((passAWasClientRelative && oppositeVerdicts) || passAFoundNothing)) {
+      reasons.push('client_sentiment_conflict');
+    } else {
+      warnings.push('sentiment_disagreement');
+    }
   }
   if (political?.provider === 'fallback') reasons.push('llm_fallback');
 

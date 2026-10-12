@@ -369,6 +369,11 @@ POLITICAL_ENTITIES.state_government = {
     aliases: [
         'government of goa', 'goa government', 'goa govt', 'govt of goa', 'goa sarkar',
         '@dip_goa', 'dip goa', 'directorate of information and publicity goa',
+        // @govtofgoa is one of the actively tracked X sources (see
+        // GrievanceSource) but its concatenated handle spelling had no
+        // alias — tagged mentions resolved to no entity at all, silently
+        // skipping stance attribution for a whole tracked account.
+        '@govtofgoa', 'govtofgoa',
         'गोवा सरकार', 'गोंय सरकार', 'राज्य सरकार',
     ],
 };
