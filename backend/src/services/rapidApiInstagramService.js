@@ -1,7 +1,7 @@
 const axios = require('axios');
 const blugateClient = require('./blugateClient');
 
-const INSTAGRAM_BASE = `${blugateClient.GATEWAY_BASE}/instagram`;
+const INSTAGRAM_BASE = blugateClient.baseFor('instagram');
 
 // ─── Cooldown Tracking (single BluGate client key — no rotation) ──────────
 let cooldownUntil = 0;
@@ -59,7 +59,7 @@ const rapidPost = async (path, data, _retryCount = 0) => {
     try {
         const response = await axios.post(`${INSTAGRAM_BASE}${path}`, data, {
             headers: {
-                ...blugateClient.getHeaders(),
+                ...blugateClient.getHeaders('instagram'),
                 'Content-Type': 'application/json'
             },
             timeout: 30000, // 30s timeout
@@ -144,6 +144,36 @@ const fetchUserPosts = async (username, maxId = "") => {
         const body = { username: cleanUsername };
         if (maxId) body.maxId = maxId;
         const response = await rapidPost('/api/instagram/posts', body);
+        return response?.data || null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/**
+ * One page of an account's reels or of posts that tag it
+ * (feed = 'reels' | 'taggedPosts'); same paging as fetchUserPosts.
+ */
+const fetchUserFeed = async (feed, username, maxId = "") => {
+    const cleanUsername = normalizeUsername(username);
+    if (!cleanUsername || !['reels', 'taggedPosts'].includes(feed)) return null;
+    try {
+        const body = { username: cleanUsername };
+        if (maxId) body.maxId = maxId;
+        const response = await rapidPost(`/api/instagram/${feed}`, body);
+        return response?.data || null;
+    } catch (error) {
+        return null;
+    }
+};
+
+/** One page (15) of a post's comments, newest first; pass the previous page's next_min_id as minId. */
+const fetchComments = async (shortcode, minId = "") => {
+    if (!shortcode) return null;
+    try {
+        const body = { shortcode };
+        if (minId) body.minId = minId;
+        const response = await rapidPost('/api/instagram/comments', body);
         return response?.data || null;
     } catch (error) {
         return null;
@@ -321,6 +351,8 @@ const searchPosts = async (query, limit = IG_DEFAULT_LIMIT) => {
 
 module.exports = {
     fetchUserPosts,
+    fetchUserFeed,
+    fetchComments,
     fetchUserStories,
     fetchUserProfile,
     fetchInstagramPostDetail,

@@ -49,7 +49,8 @@ export const RbacProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        if (!user) {
+        // Tenant users have no Goa pages; their workspace is outside RBAC.
+        if (!user || user.is_tenant_user) {
             setAllowedPages([]);
             setPermissions({});
             setLoading(false);

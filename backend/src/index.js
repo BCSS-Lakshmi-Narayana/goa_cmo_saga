@@ -53,6 +53,9 @@ app.use(cors({
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
+// Tenant users may reach only their own workspace routes; must run before every /api router.
+app.use('/api', require('./middleware/tenantGuard').tenantGuard);
+
 // Routes
 app.use('/api/deepfake', require('./routes/deepfakeRoutes'));
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -104,6 +107,7 @@ app.use('/api/voter-profiles', require('./routes/voterProfileRoutes'));
 app.use('/api/booth-imports', require('./routes/boothImportRoutes'));
 app.use('/api/web-articles', require('./routes/webArticleRoutes'));
 app.use('/api/youtube-live', require('./routes/youtubeLiveRoutes'));
+app.use('/api/tenant', require('./routes/tenantRoutes'));
 
 // Proxy for Location Service (to share ngrok tunnel). Signed-in users only,
 // and only the two endpoints the frontend uses, so it cannot be used to reach
@@ -233,7 +237,7 @@ const createDefaultSettings = async () => {
 const seedSources = async () => {
   try {
     const sourcesList = require('./data/sources_list.json');
-    const canResolveYoutube = blugateClient.hasCredentials();
+    const canResolveYoutube = blugateClient.hasCredentials('youtube');
 
     //console.log(`Seeding ${sourcesList.length} sources...`);
 
@@ -813,6 +817,9 @@ const startServer = async () => {
       .then(() => warmProfilesCache())
       .then(() => console.log('[Server] Cache warm-up complete.'))
       .catch((err) => console.warn('[Server] Cache warm-up failed (non-fatal):', err.message));
+
+    // Keep tenant workspaces' monitored events up to date.
+    require('./services/tenant/tenantScheduler').startTenantScheduler();
   });
 };
 

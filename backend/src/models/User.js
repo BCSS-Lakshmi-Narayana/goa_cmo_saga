@@ -85,6 +85,15 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  // Workspace the user belongs to. 'goa' (or unset, for pre-tenancy users) is
+  // this deployment's own tenant; anything else is a sealed workspace that can
+  // only reach /api/tenant/* (see config/tenancy.js).
+  tenant_id: {
+    type: String,
+    default: 'goa',
+    trim: true,
+    index: true
+  },
   is_active: {
     type: Boolean,
     default: true

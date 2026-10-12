@@ -2,7 +2,8 @@ import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
-const ProtectedRoute = ({ children }) => {
+// Tenant users live only in /workspace; Goa users never see it.
+const ProtectedRoute = ({ children, tenantWorkspace = false }) => {
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -15,6 +16,10 @@ const ProtectedRoute = ({ children }) => {
 
   if (!user) {
     return <Navigate to="/login" replace />;
+  }
+
+  if (Boolean(user.is_tenant_user) !== tenantWorkspace) {
+    return <Navigate to={user.is_tenant_user ? '/workspace' : '/'} replace />;
   }
 
   return children;

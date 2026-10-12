@@ -495,9 +495,9 @@ const rapidApiGet = async (path, rawParams, maxRetries = 2) => {
     // strips blank values, so no null-param hit ever reaches BluGate.
     const { params } = rapidApiXService.prepareXRequest(path, rawParams);
     for (let attempt = 0; ; attempt++) {
-        const res = await blugateClient.withRateLimitRetry(() => axios.get(`${blugateClient.GATEWAY_BASE}/twitter${path}`, {
+        const res = await blugateClient.withRateLimitRetry(() => axios.get(`${blugateClient.baseFor('twitter')}${path}`, {
             params,
-            headers: blugateClient.getHeaders(),
+            headers: blugateClient.getHeaders('twitter'),
             ...blugateClient.responseOptions(),
         }), { label: 'BluGate X search' });
 

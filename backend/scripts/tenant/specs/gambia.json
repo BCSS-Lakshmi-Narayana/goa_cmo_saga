@@ -1,0 +1,523 @@
+{
+  "tenant_id": "gambia",
+  "workspace": {
+    "name": "The Gambia — Political Monitoring",
+    "client_description": "Public discussion monitoring",
+    "branding": {
+      "name": "Blue Cloud Softech Solutions Limited",
+      "classification": "Restricted",
+      "address": "Plot No 38, 5th Floor, N Heights, Hitech City, Madhapur, Hyderabad 500081",
+      "contact": "info@bluecloudsoftech.com | www.bluecloudsoftech.com"
+    }
+  },
+  "user": {
+    "email": "gambia@blurasaga.com",
+    "full_name": "Gambia Monitoring"
+  },
+  "events": [
+    {
+      "id": "6f1e2a40-0b1c-4d6e-9a11-6a6b6c0d0001",
+      "name": "Public discussion: Talib Ahmed Bensouda, Mayor of Kanifing Municipal Council",
+      "short_name": "Talib Ahmed Bensouda",
+      "description": "Public social-media discussion about Talib Ahmed Bensouda, Mayor of Kanifing Municipal Council.",
+      "start_date": "2025-01-01T00:00:00.000Z",
+      "location": "The Gambia",
+      "status": "active",
+      "subject": {
+        "name": "Talib Ahmed Bensouda",
+        "type": "person",
+        "role": "Mayor of Kanifing Municipal Council",
+        "aliases": [
+          "Talib Ahmed Bensouda",
+          "Talib Bensouda",
+          "Mayor Bensouda",
+          "Mayor Talib",
+          "Talib"
+        ]
+      },
+      "organisers": [
+        {
+          "name": "Talib Ahmed Bensouda (own accounts)",
+          "role": "subject's own accounts",
+          "aliases": [
+            "@talib.bensouda",
+            "@mayortalib",
+            "@talibahmedbensouda"
+          ]
+        }
+      ],
+      "related_figures": [],
+      "keywords": [
+        "Talib Ahmed Bensouda",
+        "Talib Bensouda",
+        "Mayor Bensouda",
+        "Mayor Talib",
+        "Talib"
+      ],
+      "hashtags": [],
+      "narratives": [
+        {
+          "key": "election_2026",
+          "label": "The 2026 presidential election and campaign",
+          "description": "Candidacies, campaigning, rallies, polls, voter registration and electoral process."
+        },
+        {
+          "key": "governance_economy",
+          "label": "Governance, the economy and cost of living",
+          "description": "Government performance, prices, jobs, electricity, water, infrastructure and development projects."
+        },
+        {
+          "key": "corruption_allegations",
+          "label": "Corruption and misuse-of-office allegations",
+          "description": "Claims of corruption, mismanagement, nepotism or misuse of public funds."
+        },
+        {
+          "key": "party_politics",
+          "label": "Party politics, alliances and defections",
+          "description": "Party leadership, coalitions, splits, defections and internal disputes (UDP, NPP and others)."
+        },
+        {
+          "key": "local_services",
+          "label": "Municipal services in Kanifing",
+          "description": "Waste collection, roads, markets, drainage, rates and other council services."
+        },
+        {
+          "key": "security_justice",
+          "label": "Security, justice and human rights",
+          "description": "Policing, courts, transitional justice, rights and freedoms."
+        },
+        {
+          "key": "foreign_diaspora",
+          "label": "Foreign relations and the diaspora",
+          "description": "International relations, foreign visits, aid and the Gambian diaspora."
+        },
+        {
+          "key": "endorsements_support",
+          "label": "Support, endorsements and praise",
+          "description": "Declarations of support, praise, endorsements and solidarity."
+        },
+        {
+          "key": "attacks_satire",
+          "label": "Personal attacks, insults and satire",
+          "description": "Insults, mockery, memes and personal attacks."
+        }
+      ],
+      "facts": [],
+      "watch_items": [],
+      "sources": [],
+      "briefing": {
+        "subject_alignment": "opposition",
+        "axis_label": "the Barrow government",
+        "subject_label": "Talib Ahmed Bensouda",
+        "title": "Situation Assessment and Way Forward",
+        "description": "Online public discussion on Talib Ahmed Bensouda, Mayor of Kanifing Municipal Council",
+        "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings."
+      },
+      "collection_plan": {
+        "since": "2025-01-01T00:00:00.000Z",
+        "x_queries": [
+          "\"Talib Bensouda\"",
+          "\"Talib Ahmed Bensouda\"",
+          "\"Mayor Bensouda\"",
+          "\"Mayor Talib\"",
+          "Bensouda KMC",
+          "Bensouda Kanifing",
+          "#TalibBensouda",
+          "Talib Gambia",
+          "Talib 2026 Gambia",
+          "Bensouda president Gambia",
+          "\"Bensouda\" mayor",
+          "\"Talib\" KMC",
+          "Kanifing mayor",
+          "#KMC Gambia",
+          "Talib Bensouda UDP",
+          "Bensouda coalition Gambia"
+        ],
+        "x_latest_pages": 40,
+        "facebook_queries": [
+          "Talib Bensouda",
+          "Talib Ahmed Bensouda",
+          "Mayor Bensouda",
+          "Mayor Talib Bensouda",
+          "Bensouda KMC",
+          "Talib Bensouda 2026",
+          "KMC mayor Bensouda",
+          "Talib Bensouda news",
+          "Talib Bensouda UDP",
+          "Kanifing Municipal Council mayor"
+        ],
+        "facebook_search_pages": 10,
+        "facebook_pages": [],
+        "facebook_page_pages": 5,
+        "instagram_accounts": [
+          "talib.bensouda",
+          "mayortalib",
+          "talibahmedbensouda",
+          "kerrfatou",
+          "qtv_gambia",
+          "infogambia220",
+          "eyeafricatv",
+          "koratvradio",
+          "udp_gambia"
+        ],
+        "instagram_pages": 10,
+        "instagram_reel_pages": 4,
+        "instagram_tagged_pages": 5,
+        "instagram_comment_posts": 120,
+        "instagram_comments_per_post": 1500,
+        "instagram_max_comments": 12000,
+        "youtube_queries": [
+          "Talib Bensouda",
+          "Talib Ahmed Bensouda",
+          "Mayor Bensouda KMC",
+          "Talib Bensouda interview",
+          "Talib Bensouda 2026",
+          "Talib Bensouda KMC",
+          "Talib Bensouda Gambia",
+          "Mayor of Kanifing",
+          "Talib Bensouda speech",
+          "Talib Bensouda interview Kerr Fatou",
+          "Talib Bensouda Fatu Network",
+          "Talib Bensouda presidential",
+          "Mayor Talib Bensouda news",
+          "Bensouda Kanifing mayor",
+          "Talib Bensouda rally",
+          "Talib Bensouda Paradise TV"
+        ],
+        "youtube_search_pages": 3,
+        "youtube_comment_videos": 80,
+        "youtube_comments_per_video": 250,
+        "reddit_queries": [],
+        "telegram_queries": []
+      },
+      "auto_refresh": {
+        "enabled": false
+      }
+    },
+    {
+      "id": "6f1e2a40-0b1c-4d6e-9a11-6a6b6c0d0002",
+      "name": "Public discussion: Adama Barrow, President of the Republic of The Gambia",
+      "short_name": "Adama Barrow",
+      "description": "Public social-media discussion about Adama Barrow, President of the Republic of The Gambia.",
+      "start_date": "2025-01-01T00:00:00.000Z",
+      "location": "The Gambia",
+      "status": "active",
+      "subject": {
+        "name": "Adama Barrow",
+        "type": "person",
+        "role": "President of the Republic of The Gambia",
+        "aliases": [
+          "Adama Barrow",
+          "President Barrow",
+          "Barrow"
+        ]
+      },
+      "organisers": [],
+      "related_figures": [],
+      "keywords": [
+        "Adama Barrow",
+        "President Barrow",
+        "Barrow"
+      ],
+      "hashtags": [],
+      "narratives": [
+        {
+          "key": "election_2026",
+          "label": "The 2026 presidential election and campaign",
+          "description": "Candidacies, campaigning, rallies, polls, voter registration and electoral process."
+        },
+        {
+          "key": "governance_economy",
+          "label": "Governance, the economy and cost of living",
+          "description": "Government performance, prices, jobs, electricity, water, infrastructure and development projects."
+        },
+        {
+          "key": "corruption_allegations",
+          "label": "Corruption and misuse-of-office allegations",
+          "description": "Claims of corruption, mismanagement, nepotism or misuse of public funds."
+        },
+        {
+          "key": "party_politics",
+          "label": "Party politics, alliances and defections",
+          "description": "Party leadership, coalitions, splits, defections and internal disputes (UDP, NPP and others)."
+        },
+        {
+          "key": "security_justice",
+          "label": "Security, justice and human rights",
+          "description": "Policing, courts, transitional justice, rights and freedoms."
+        },
+        {
+          "key": "foreign_diaspora",
+          "label": "Foreign relations and the diaspora",
+          "description": "International relations, foreign visits, aid and the Gambian diaspora."
+        },
+        {
+          "key": "endorsements_support",
+          "label": "Support, endorsements and praise",
+          "description": "Declarations of support, praise, endorsements and solidarity."
+        },
+        {
+          "key": "attacks_satire",
+          "label": "Personal attacks, insults and satire",
+          "description": "Insults, mockery, memes and personal attacks."
+        }
+      ],
+      "facts": [],
+      "watch_items": [],
+      "sources": [],
+      "briefing": {
+        "subject_alignment": "ally",
+        "axis_label": "the Barrow government",
+        "subject_label": "Adama Barrow",
+        "title": "Situation Assessment and Way Forward",
+        "description": "Online public discussion on Adama Barrow, President of the Republic of The Gambia",
+        "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings."
+      },
+      "collection_plan": {
+        "since": "2025-01-01T00:00:00.000Z",
+        "x_queries": [
+          "\"Adama Barrow\"",
+          "\"President Barrow\"",
+          "#AdamaBarrow",
+          "Barrow Gambia",
+          "Barrow NPP",
+          "Barrow government Gambia",
+          "Barrow 2026 Gambia",
+          "Barrow State House",
+          "\"Barrow\" Gambia election",
+          "Barrow Banjul",
+          "\"Barrow\" Gambia president",
+          "#Gambia Barrow",
+          "Barrow third term",
+          "Barrow NPP campaign",
+          "\"Barrow\" State House",
+          "Gambia president 2026"
+        ],
+        "x_latest_pages": 40,
+        "facebook_queries": [
+          "Adama Barrow",
+          "President Barrow",
+          "Barrow Gambia",
+          "Adama Barrow 2026",
+          "Barrow NPP",
+          "Barrow government",
+          "Adama Barrow news",
+          "President Barrow Gambia news",
+          "Barrow NPP 2026",
+          "Adama Barrow speech"
+        ],
+        "facebook_search_pages": 10,
+        "facebook_pages": [],
+        "facebook_page_pages": 5,
+        "instagram_accounts": [
+          "kerrfatou",
+          "qtv_gambia",
+          "infogambia220",
+          "eyeafricatv",
+          "koratvradio"
+        ],
+        "instagram_pages": 10,
+        "instagram_reel_pages": 4,
+        "instagram_tagged_pages": 5,
+        "instagram_comment_posts": 120,
+        "instagram_comments_per_post": 1500,
+        "instagram_max_comments": 12000,
+        "youtube_queries": [
+          "Adama Barrow",
+          "President Barrow Gambia",
+          "Adama Barrow speech",
+          "Barrow NPP rally",
+          "Adama Barrow 2026",
+          "Adama Barrow Gambia",
+          "President Adama Barrow news",
+          "Barrow State House Gambia",
+          "Adama Barrow Kerr Fatou",
+          "Adama Barrow Fatu Network",
+          "Barrow Paradise TV",
+          "President Barrow interview",
+          "Adama Barrow meet the people tour",
+          "Barrow NPP congress",
+          "Adama Barrow third term",
+          "Barrow Gambia news today",
+          "President Barrow press conference",
+          "Adama Barrow QTV"
+        ],
+        "youtube_search_pages": 3,
+        "youtube_comment_videos": 80,
+        "youtube_comments_per_video": 250,
+        "reddit_queries": [],
+        "telegram_queries": []
+      },
+      "auto_refresh": {
+        "enabled": false
+      }
+    },
+    {
+      "id": "6f1e2a40-0b1c-4d6e-9a11-6a6b6c0d0003",
+      "name": "Public discussion: Ousainou Darboe, former Vice President of The Gambia",
+      "short_name": "Ousainou Darboe",
+      "description": "Public social-media discussion about Ousainou Darboe, Former Vice President of The Gambia.",
+      "start_date": "2025-01-01T00:00:00.000Z",
+      "location": "The Gambia",
+      "status": "active",
+      "subject": {
+        "name": "Ousainou Darboe",
+        "type": "person",
+        "role": "Former Vice President of The Gambia",
+        "aliases": [
+          "Ousainou Darboe",
+          "Ousainu Darboe",
+          "Lawyer Darboe",
+          "Darboe"
+        ]
+      },
+      "organisers": [
+        {
+          "name": "Ousainou Darboe (own accounts)",
+          "role": "subject's own accounts",
+          "aliases": [
+            "@ousainou_darboe"
+          ]
+        }
+      ],
+      "related_figures": [],
+      "keywords": [
+        "Ousainou Darboe",
+        "Ousainu Darboe",
+        "Lawyer Darboe",
+        "Darboe"
+      ],
+      "hashtags": [],
+      "narratives": [
+        {
+          "key": "election_2026",
+          "label": "The 2026 presidential election and campaign",
+          "description": "Candidacies, campaigning, rallies, polls, voter registration and electoral process."
+        },
+        {
+          "key": "governance_economy",
+          "label": "Governance, the economy and cost of living",
+          "description": "Government performance, prices, jobs, electricity, water, infrastructure and development projects."
+        },
+        {
+          "key": "corruption_allegations",
+          "label": "Corruption and misuse-of-office allegations",
+          "description": "Claims of corruption, mismanagement, nepotism or misuse of public funds."
+        },
+        {
+          "key": "party_politics",
+          "label": "Party politics, alliances and defections",
+          "description": "Party leadership, coalitions, splits, defections and internal disputes (UDP, NPP and others)."
+        },
+        {
+          "key": "security_justice",
+          "label": "Security, justice and human rights",
+          "description": "Policing, courts, transitional justice, rights and freedoms."
+        },
+        {
+          "key": "foreign_diaspora",
+          "label": "Foreign relations and the diaspora",
+          "description": "International relations, foreign visits, aid and the Gambian diaspora."
+        },
+        {
+          "key": "endorsements_support",
+          "label": "Support, endorsements and praise",
+          "description": "Declarations of support, praise, endorsements and solidarity."
+        },
+        {
+          "key": "attacks_satire",
+          "label": "Personal attacks, insults and satire",
+          "description": "Insults, mockery, memes and personal attacks."
+        }
+      ],
+      "facts": [],
+      "watch_items": [],
+      "sources": [],
+      "briefing": {
+        "subject_alignment": "opposition",
+        "axis_label": "the Barrow government",
+        "subject_label": "Ousainou Darboe",
+        "title": "Situation Assessment and Way Forward",
+        "description": "Online public discussion on Ousainou Darboe, Former Vice President of The Gambia",
+        "disclaimer": "A communications and monitoring perspective, not legal advice. Allegations are claims made by posters, not findings."
+      },
+      "collection_plan": {
+        "since": "2025-01-01T00:00:00.000Z",
+        "x_queries": [
+          "\"Ousainou Darboe\"",
+          "\"Ousainu Darboe\"",
+          "\"Lawyer Darboe\"",
+          "Darboe UDP",
+          "#OusainouDarboe",
+          "Darboe Gambia",
+          "Darboe 2026 Gambia",
+          "Darboe president Gambia",
+          "UDP Darboe rally",
+          "\"Darboe\" UDP",
+          "#UDP Gambia",
+          "Darboe Gambia election",
+          "UDP leader Gambia",
+          "\"Ousainou\" Gambia",
+          "Darboe coalition"
+        ],
+        "x_latest_pages": 40,
+        "facebook_queries": [
+          "Ousainou Darboe",
+          "Lawyer Darboe",
+          "Darboe UDP",
+          "Ousainou Darboe 2026",
+          "UDP Gambia Darboe",
+          "Ousainou Darboe news",
+          "UDP Darboe 2026",
+          "Lawyer Ousainou Darboe",
+          "Darboe UDP rally"
+        ],
+        "facebook_search_pages": 10,
+        "facebook_pages": [],
+        "facebook_page_pages": 5,
+        "instagram_accounts": [
+          "ousainou_darboe",
+          "kerrfatou",
+          "qtv_gambia",
+          "infogambia220",
+          "eyeafricatv",
+          "koratvradio",
+          "udp_gambia"
+        ],
+        "instagram_pages": 10,
+        "instagram_reel_pages": 4,
+        "instagram_tagged_pages": 5,
+        "instagram_comment_posts": 120,
+        "instagram_comments_per_post": 1500,
+        "instagram_max_comments": 12000,
+        "youtube_queries": [
+          "Ousainou Darboe",
+          "Lawyer Ousainou Darboe",
+          "Darboe UDP rally",
+          "Ousainou Darboe speech",
+          "Darboe 2026",
+          "Ousainou Darboe Gambia",
+          "UDP leader Darboe",
+          "Darboe news Gambia",
+          "Ousainou Darboe Kerr Fatou",
+          "Ousainou Darboe Fatu Network",
+          "Darboe Paradise TV",
+          "Ousainou Darboe interview",
+          "UDP Ousainou Darboe rally",
+          "Darboe UDP congress",
+          "Lawyer Darboe speech",
+          "Ousainou Darboe QTV",
+          "Darboe presidential candidate"
+        ],
+        "youtube_search_pages": 3,
+        "youtube_comment_videos": 80,
+        "youtube_comments_per_video": 250,
+        "reddit_queries": [],
+        "telegram_queries": []
+      },
+      "auto_refresh": {
+        "enabled": false
+      }
+    }
+  ]
+}
